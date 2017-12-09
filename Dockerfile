@@ -38,4 +38,5 @@ RUN echo Start! \
  && npm cache clean \
  && apt-get remove -y --purge ${APT_DEV_PACKAGES} \
  && apt-get autoremove -y --purge \
+ && useradd -U -M -d /nonexistent -s /usr/sbin/nologin taiga \
  && echo Complete!
