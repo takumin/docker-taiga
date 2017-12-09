@@ -32,7 +32,7 @@ RUN echo Start! \
  && apt-get clean autoclean \
  && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* \
  && pip3 --no-cache-dir install -r /opt/taiga-back/requirements.txt \
- && npm install -g /opt/taiga-events \
+ && npm install /opt/taiga-events \
  && npm install -g coffee-script \
  && npm cache clean \
  && apt-get remove -y --purge ${APT_DEV_PACKAGES} \
