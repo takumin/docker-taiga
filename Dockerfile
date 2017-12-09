@@ -17,7 +17,7 @@ COPY taiga-back.ini /etc/circus/conf.d/taiga-back.ini
 COPY taiga-events.ini /etc/circus/conf.d/taiga-events.ini
 
 RUN echo Start! \
- && APT_RUN_PACKAGES="python3 libpython3.5 libjpeg-turbo8 libfreetype6 zlib1g libzmq5 libgdbm3 libncurses5 libffi6 libxml2 libxslt1.1 libssl1.0.0 libcroco3 libgomp1 libunistring0 nodejs circus" \
+ && APT_RUN_PACKAGES="python3 python3-pkg-resources libpython3.5 libjpeg-turbo8 libfreetype6 zlib1g libzmq5 libgdbm3 libncurses5 libffi6 libxml2 libxslt1.1 libssl1.0.0 libcroco3 libgomp1 libunistring0 nodejs circus" \
  && APT_DEV_PACKAGES="python3-dev python3-pip python3-setuptools python3-wheel build-essential autoconf automake libtool flex bison libjpeg-turbo8-dev libfreetype6-dev zlib1g-dev libzmq3-dev libgdbm-dev libncurses5-dev libffi-dev libxml2-dev libxslt1-dev libssl-dev gettext git" \
  && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
