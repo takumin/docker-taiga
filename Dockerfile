@@ -12,9 +12,7 @@ ARG NODEJS_MIRROR="https://deb.nodesource.com/node_6.x"
 COPY taiga-back /opt/taiga-back
 COPY taiga-front /opt/taiga-front
 COPY taiga-events /opt/taiga-events
-
-COPY taiga-back.ini /etc/circus/conf.d/taiga-back.ini
-COPY taiga-events.ini /etc/circus/conf.d/taiga-events.ini
+COPY taiga-circus.ini /opt/taiga-circus.ini
 
 RUN echo Start! \
  && APT_RUN_PACKAGES="python3 python3-pkg-resources libpython3.5 libjpeg-turbo8 libfreetype6 zlib1g libzmq5 libgdbm3 libncurses5 libffi6 libxml2 libxslt1.1 libssl1.0.0 libcroco3 libgomp1 libunistring0 nodejs circus" \
