@@ -18,15 +18,15 @@ services:
     volumes:
       - ./postgres:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB: "taiga"
-      - POSTGRES_USER: "taiga"
-      - POSTGRES_PASSWORD: "taiga"
+      POSTGRES_DB: taiga
+      POSTGRES_USER: taiga
+      POSTGRES_PASSWORD: taiga
 
   rabbitmq:
     image: rabbitmq:alpine
     volumes:
       - ./rabbitmq:/var/lib/rabbitmq
     environment:
-      - RABBITMQ_DEFAULT_VHOST: "taiga"
-      - RABBITMQ_DEFAULT_USER: "taiga"
-      - RABBITMQ_DEFAULT_PASS: "taiga"
+      RABBITMQ_DEFAULT_VHOST: taiga
+      RABBITMQ_DEFAULT_USER: taiga
+      RABBITMQ_DEFAULT_PASS: taiga
