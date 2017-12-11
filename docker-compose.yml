@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  taiga:
+    build: .
+    ports:
+      - 8000:8000
+      - 8888:8888
+    depends_on:
+      - postgres
+      - rabbitmq
+    links:
+      - postgres
+      - rabbitmq
+
+  postgres:
+    image: postgres:alpine
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB: taiga
+      - POSTGRES_USER: taiga
+      - POSTGRES_PASSWORD: taiga
+
+  rabbitmq:
+    image: rabbitmq:alpine
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_VHOST: taiga
+      - RABBITMQ_DEFAULT_USER: taiga
+      - RABBITMQ_DEFAULT_PASS: taiga

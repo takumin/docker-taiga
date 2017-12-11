@@ -13,6 +13,9 @@ COPY taiga-back /opt/taiga-back
 COPY taiga-front /opt/taiga-front
 COPY taiga-events /opt/taiga-events
 COPY taiga-circus.ini /opt/taiga-circus.ini
+COPY taiga-back-local.py /opt/taiga-back/settings/local.py
+COPY taiga-front-conf.json /opt/taiga-front/dist/conf.json
+COPY taiga-events-config.json /opt/taiga-events/config.json
 
 RUN echo Start! \
  && APT_RUN_PACKAGES="python3 python3-pkg-resources libpython3.5 libjpeg-turbo8 libfreetype6 zlib1g libzmq5 libgdbm3 libncurses5 libffi6 libxml2 libxslt1.1 libssl1.0.0 libcroco3 libgomp1 libunistring0 nodejs" \
