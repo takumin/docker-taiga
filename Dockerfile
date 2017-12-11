@@ -17,6 +17,10 @@ COPY taiga-circus.ini /opt/taiga-circus.ini
 RUN echo Start! \
  && APT_RUN_PACKAGES="python3 python3-pkg-resources libpython3.5 libjpeg-turbo8 libfreetype6 zlib1g libzmq5 libgdbm3 libncurses5 libffi6 libxml2 libxslt1.1 libssl1.0.0 libcroco3 libgomp1 libunistring0 nodejs" \
  && APT_DEV_PACKAGES="python3-dev python3-pip python3-setuptools python3-wheel build-essential autoconf automake libtool flex bison libjpeg-turbo8-dev libfreetype6-dev zlib1g-dev libzmq3-dev libgdbm-dev libncurses5-dev libffi-dev libxml2-dev libxslt1-dev libssl-dev gettext git" \
+ && if [ "x${NO_PROXY}" != "x" ]; then export no_proxy="${NO_PROXY}"; fi \
+ && if [ "x${FTP_PROXY}" != "x" ]; then export ftp_proxy="${FTP_PROXY}"; fi \
+ && if [ "x${HTTP_PROXY}" != "x" ]; then export http_proxy="${HTTP_PROXY}"; fi \
+ && if [ "x${HTTPS_PROXY}" != "x" ]; then export https_proxy="${HTTPS_PROXY}"; fi \
  && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
