@@ -13,6 +13,7 @@ COPY taiga-back /opt/taiga-back
 COPY taiga-front /opt/taiga-front
 COPY taiga-events /opt/taiga-events
 COPY taiga-circus.ini /opt/taiga-circus.ini
+COPY taiga-entrypoint.sh /opt/taiga-entrypoint.sh
 COPY taiga-back-local.py /opt/taiga-back/settings/local.py
 COPY taiga-front-conf.json /opt/taiga-front/dist/conf.json
 COPY taiga-events-config.json /opt/taiga-events/config.json
@@ -47,3 +48,6 @@ RUN echo Start! \
  && apt-get autoremove -y --purge \
  && useradd -U -M -d /nonexistent -s /usr/sbin/nologin taiga \
  && echo Complete!
+
+USER taiga
+ENTRYPOINT ["/opt/taiga-entrypoint.sh"]
