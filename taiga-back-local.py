@@ -39,23 +39,23 @@ DATABASES = {
     }
 }
 
-#SITES = {
-#    "api": {
-#       "scheme": "http",
-#       "domain": "localhost:8000",
-#       "name": "api"
-#    },
-#    "front": {
-#       "scheme": "http",
-#       "domain": "localhost:9001",
-#       "name": "front"
-#    },
-#}
+SITES = {
+   "api": {
+      "scheme": "http",
+      "domain": "TAIGA_BACK_HOST",
+      "name": "api"
+   },
+   "front": {
+      "scheme": "http",
+      "domain": "TAIGA_FRONT_HOST",
+      "name": "front"
+   },
+}
 
 #SITE_ID = "api"
 
-#MEDIA_ROOT = '/home/taiga/media'
-#STATIC_ROOT = '/home/taiga/static'
+MEDIA_ROOT = 'media'
+STATIC_ROOT = 'static'
 
 
 #########################################
