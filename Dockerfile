@@ -8,6 +8,8 @@ ARG HTTP_PROXY
 ARG HTTPS_PROXY
 ARG UBUNTU_MIRROR="http://jp.archive.ubuntu.com/ubuntu"
 ARG NODEJS_MIRROR="https://deb.nodesource.com/node_6.x"
+ARG PIP_CACHE_HOST
+ARG PIP_CACHE_PORT="3142"
 
 COPY taiga-back /opt/taiga-back
 COPY taiga-front /opt/taiga-front
@@ -25,6 +27,7 @@ RUN echo Start! \
  && if [ "x${FTP_PROXY}" != "x" ]; then export ftp_proxy="${FTP_PROXY}"; fi \
  && if [ "x${HTTP_PROXY}" != "x" ]; then export http_proxy="${HTTP_PROXY}"; fi \
  && if [ "x${HTTPS_PROXY}" != "x" ]; then export https_proxy="${HTTPS_PROXY}"; fi \
+ && if [ "x${PIP_CACHE_HOST}" != "x" ]; then export PIP_TRUSTED_HOST="${PIP_CACHE_HOST}"; export PIP_INDEX_URL="http://${PIP_CACHE_HOST}:${PIP_CACHE_PORT}/root/pypi/"; fi \
  && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \

@@ -24,6 +24,14 @@ ifneq (x${NODEJS_MIRROR},x)
 ARGS += --build-arg NODEJS_MIRROR=${NODEJS_MIRROR}
 endif
 
+ifneq (x${PIP_CACHE_HOST},x)
+ARGS += --build-arg PIP_CACHE_HOST=${PIP_CACHE_HOST}
+endif
+
+ifneq (x${PIP_CACHE_PORT},x)
+ARGS += --build-arg PIP_CACHE_PORT=${PIP_CACHE_PORT}
+endif
+
 .PHONY: build
 build:
 	@docker build $(ARGS) -t takumi/taiga .
