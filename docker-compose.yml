@@ -2,7 +2,16 @@ version: '3'
 
 services:
   taiga:
-    build: .
+    build:
+      context: .
+      args:
+        - NO_PROXY=${NO_PROXY}
+        - FTP_PROXY=${FTP_PROXY}
+        - HTTP_PROXY=${HTTP_PROXY}
+        - HTTPS_PROXY=${HTTPS_PROXY}
+        - UBUNTU_MIRROR=${UBUNTU_MIRROR}
+        - NODEJS_MIRROR=${NODEJS_MIRROR}
+    image: takumi/taiga
     ports:
       - 8000:8000
       - 8888:8888
