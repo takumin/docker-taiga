@@ -9,7 +9,7 @@ ARG HTTPS_PROXY
 ARG UBUNTU_MIRROR="http://jp.archive.ubuntu.com/ubuntu"
 ARG NODEJS_MIRROR="https://deb.nodesource.com/node_6.x"
 ARG PIP_CACHE_HOST
-ARG PIP_CACHE_PORT="3142"
+ARG PIP_CACHE_PORT="3141"
 
 COPY taiga-back /opt/taiga-back
 COPY taiga-front /opt/taiga-front
