@@ -12,20 +12,23 @@ services:
         - UBUNTU_MIRROR=${UBUNTU_MIRROR}
         - NODEJS_MIRROR=${NODEJS_MIRROR}
     image: takumi/taiga
+    container_name: taiga
+    networks:
+      - taiga
     ports:
       - 8000:8000
       - 8888:8888
     depends_on:
       - postgres
       - rabbitmq
-    links:
-      - postgres
-      - rabbitmq
 
   postgres:
     image: postgres:alpine
+    container_name: taiga_postgres
+    networks:
+      - taiga
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - taiga-postgres:/var/lib/postgresql/data
     environment:
       POSTGRES_DB: taiga
       POSTGRES_USER: taiga
@@ -33,9 +36,19 @@ services:
 
   rabbitmq:
     image: rabbitmq:alpine
+    container_name: taiga_rabbitmq
+    networks:
+      - taiga
     volumes:
-      - ./rabbitmq:/var/lib/rabbitmq
+      - taiga-rabbitmq:/var/lib/rabbitmq
     environment:
       RABBITMQ_DEFAULT_VHOST: taiga
       RABBITMQ_DEFAULT_USER: taiga
       RABBITMQ_DEFAULT_PASS: taiga
+
+networks:
+  taiga:
+
+volumes:
+  taiga-postgres:
+  taiga-rabbitmq:
