@@ -36,10 +36,10 @@ RUN echo Start! \
  && export DEBIAN_FRONTEND="noninteractive" \
  && export DEBIAN_PRIORITY="critical" \
  && export DEBCONF_NONINTERACTIVE_SEEN="true" \
- && apt-get update -y \
- && apt-get dist-upgrade -y \
- && apt-get install -y --no-install-recommends ${APT_RUN_PACKAGES} \
- && apt-get install -y --no-install-recommends ${APT_DEV_PACKAGES} \
+ && apt-get -qq update \
+ && apt-get -qq dist-upgrade \
+ && apt-get -qq install --no-install-recommends ${APT_RUN_PACKAGES} \
+ && apt-get -qq install --no-install-recommends ${APT_DEV_PACKAGES} \
  && apt-get clean autoclean \
  && rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/* \
  && pip3 --no-cache-dir install -r /opt/taiga-back/requirements.txt \
@@ -47,8 +47,8 @@ RUN echo Start! \
  && npm install --production --prefix /opt/taiga-events /opt/taiga-events \
  && npm install -g coffee-script \
  && npm cache clean \
- && apt-get remove -y --purge ${APT_DEV_PACKAGES} \
- && apt-get autoremove -y --purge \
+ && apt-get -qq remove --purge ${APT_DEV_PACKAGES} \
+ && apt-get -qq autoremove --purge \
  && useradd -U -M -d /nonexistent -s /usr/sbin/nologin taiga \
  && echo Complete!
 
