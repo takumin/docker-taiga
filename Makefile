@@ -33,9 +33,9 @@ build:
 up:
 	@docker-compose up -d --build
 	@echo "Boot Wait..."
-	@while true; do echo Waiting taiga-front... && curl -s -o /dev/null http://localhost:${TAIGA_FRONTEND_PORT} && break || sleep 1; done
-	@while true; do echo Waiting taiga-events... && curl -s -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 1; done
-	@while true; do echo Waiting taiga-events... && curl -s -o /dev/null http://localhost:${TAIGA_BACKEND_PORT} && break || sleep 1; done
+	@while true; do echo Waiting taiga-front... && curl -s -I -o /dev/null http://localhost:${TAIGA_FRONTEND_PORT} && break || sleep 1; done
+	@while true; do echo Waiting taiga-events... && curl -s -I -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 1; done
+	@while true; do echo Waiting taiga-events... && curl -s -I -o /dev/null http://localhost:${TAIGA_BACKEND_PORT} && break || sleep 1; done
 
 .PHONY: down
 down:
