@@ -18,6 +18,8 @@ services:
       - taiga
     ports:
       - ${TAIGA_FRONTEND_PORT}:80
+    depends_on:
+      - taiga-events
 
   #
   # taiga-events
