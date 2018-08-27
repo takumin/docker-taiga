@@ -1,0 +1,30 @@
+# vim: set ft=dockerfile :
+
+FROM alpine AS build
+
+MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+
+COPY taiga-front/dist /taiga-front
+COPY taiga-front-conf.json /taiga-front/conf.json
+COPY taiga-front-entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN echo Start! \
+ && rm -f /taiga-front/conf.example.json \
+ && echo Complete!
+
+FROM nginx:alpine
+
+COPY --from=build /taiga-front /taiga-front
+
+RUN echo Start! \
+ && set -ex \
+ && apk --update add --no-cache runit \
+ && apk del --purge \
+ && rm -fr /var/tmp/* \
+ && rm -fr /tmp/* \
+ && mkdir -p /sv \
+ && echo Complete!
+
+WORKDIR /sv
+ENTRYPOINT ["entrypoint.sh"]
+CMD ["default"]

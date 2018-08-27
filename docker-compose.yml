@@ -1,23 +1,29 @@
 version: '3'
 
 services:
+  #
+  # taiga-front
+  #
   taiga-front:
     build:
       context: .
       dockerfile: Dockerfile.front
-      args:
-        NO_PROXY: ${NO_PROXY}
-        FTP_PROXY: ${FTP_PROXY}
-        HTTP_PROXY: ${HTTP_PROXY}
-        HTTPS_PROXY: ${HTTPS_PROXY}
     image: takumi/taiga-front
     container_name: taiga-front
     restart: always
+    environment:
+      # Ex: http://example.com/api/v1/
+      TAIGA_EVENTS_BASE_URI: ${TAIGA_EVENTS_BASE_URI}
+      # Ex: ws://example.com/events
+      TAIGA_BACKEND_BASE_URI: ${TAIGA_BACKEND_BASE_URI}
     networks:
       - taiga
     ports:
-      - ${TAIGA_FRONT_PORT}:8888
+      - ${TAIGA_FRONT_PORT}:80
 
+  #
+  # taiga-events
+  #
   taiga-events:
     build:
       context: .

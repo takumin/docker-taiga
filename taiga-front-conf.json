@@ -1,6 +1,6 @@
 {
-    "api": "http://TAIGA_BACKEND_HOST/api/v1/",
-    "eventsUrl": "ws://TAIGA_EVENTS_HOST/events",
+    "api": "TAIGA_EVENTS_BASE_URI",
+    "eventsUrl": "TAIGA_BACKEND_BASE_URI",
     "eventsMaxMissedHeartbeats": 5,
     "eventsHeartbeatIntervalTime": 60000,
     "eventsReconnectTryInterval": 10000,

@@ -22,8 +22,10 @@ RUN echo Start! \
  && apk del --purge \
  && rm -fr /var/tmp/* \
  && rm -fr /tmp/* \
+ && mkdir -p /sv \
  && echo Complete!
 
+WORKDIR /sv
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
 EXPOSE 8888
