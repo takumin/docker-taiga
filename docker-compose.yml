@@ -8,6 +8,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.frontend
+      args:
+        NO_PROXY: ${NO_PROXY}
+        FTP_PROXY: ${FTP_PROXY}
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
     image: takumi/taiga-frontend
     container_name: taiga-frontend
     restart: always

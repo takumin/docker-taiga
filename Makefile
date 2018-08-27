@@ -1,9 +1,13 @@
 ifeq (x${TAIGA_FRONTEND_PORT},x)
-export TAIGA_FRONTEND_PORT=8080
+export TAIGA_FRONTEND_PORT=8880
 endif
 
 ifeq (x${TAIGA_EVENTS_PORT},x)
 export TAIGA_EVENTS_PORT=8888
+endif
+
+ifeq (x${TAIGA_BACKEND_PORT},x)
+export TAIGA_BACKEND_PORT=8088
 endif
 
 ifeq (x${TAIGA_FRONTEND_EVENTS_BASE_URI},x)
@@ -31,6 +35,7 @@ up:
 	@echo "Boot Wait..."
 	@while true; do echo Waiting taiga-front... && curl -s -o /dev/null http://localhost:${TAIGA_FRONTEND_PORT} && break || sleep 1; done
 	@while true; do echo Waiting taiga-events... && curl -s -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 1; done
+	@while true; do echo Waiting taiga-events... && curl -s -o /dev/null http://localhost:${TAIGA_BACKEND_PORT} && break || sleep 1; done
 
 .PHONY: down
 down:
@@ -42,13 +47,13 @@ ifneq (x$(shell docker ps -aq),x)
 	@docker stop $(shell docker ps -aq)
 	@docker rm $(shell docker ps -aq)
 endif
-ifneq (x$(shell docker image ls -aq takumi/taiga-front),x)
-	@docker rmi takumi/taiga-front
+ifneq (x$(shell docker image ls -aq takumi/taiga-frontend),x)
+	@docker rmi takumi/taiga-frontend
 endif
 ifneq (x$(shell docker image ls -aq takumi/taiga-events),x)
 	@docker rmi takumi/taiga-events
 endif
-ifneq (x$(shell docker image ls -aq takumi/taiga-back),x)
-	@docker rmi takumi/taiga-back
+ifneq (x$(shell docker image ls -aq takumi/taiga-backend),x)
+	@docker rmi takumi/taiga-backend
 endif
 	@docker system prune -f
