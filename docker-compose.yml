@@ -88,6 +88,8 @@ services:
       - taiga
     # ports:
     #   - ${TAIGA_FRONTEND_PORT}:80
+    depends_on:
+      - taiga-backend-postgres
 
   taiga-backend-postgres:
     image: postgres:9.5-alpine
