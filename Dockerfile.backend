@@ -15,8 +15,8 @@ COPY taiga-backend-local.py /taiga-backend/settings/local.py
 
 RUN echo Start! \
  && set -ex \
- && REQ_PACKAGE="python3 libpq5 zlib1g libjpeg-turbo8 libxslt1.1 libncurses5 libffi6" \
- && BLD_PACKAGE="gcc g++ binutils git python3-setuptools python3-pip python3-dev libpq-dev zlib1g-dev libjpeg-turbo8-dev libxslt1-dev libncurses5-dev libffi-dev" \
+ && REQ_PACKAGE="python3 libssl1.0.0 libpq5 zlib1g libjpeg-turbo8 libfreetype6 libxslt1.1 libncurses5 libffi6" \
+ && BLD_PACKAGE="gcc g++ binutils git python3-setuptools python3-pip python3-dev libssl-dev libpq-dev zlib1g-dev libjpeg-turbo8-dev libfreetype6-dev libxslt1-dev libncurses5-dev libffi-dev" \
  && if [ "x${NO_PROXY}" != "x" ]; then export no_proxy="${NO_PROXY}"; fi \
  && if [ "x${FTP_PROXY}" != "x" ]; then export ftp_proxy="${FTP_PROXY}"; fi \
  && if [ "x${HTTP_PROXY}" != "x" ]; then export http_proxy="${HTTP_PROXY}"; fi \
