@@ -69,6 +69,8 @@ else
   exit 1
 fi
 
+wait-for-it.sh ${TAIGA_BACKEND_POSTGRESQL_HOST}:${TAIGA_BACKEND_POSTGRESQL_PORT} -- echo "postgresql is up"
+
 python3 /opt/taiga-backend/manage.py migrate --noinput
 python3 /opt/taiga-backend/manage.py loaddata initial_user
 python3 /opt/taiga-backend/manage.py loaddata initial_project_templates
