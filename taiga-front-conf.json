@@ -6,16 +6,19 @@
     "eventsReconnectTryInterval": 10000,
     "debug": true,
     "debugInfo": false,
-    "defaultLanguage": "en",
+    "defaultLanguage": "ja",
     "themes": ["taiga"],
     "defaultTheme": "taiga",
     "publicRegisterEnabled": true,
-    "feedbackEnabled": true,
+    "feedbackEnabled": false,
+    "supportUrl": null,
     "privacyPolicyUrl": null,
     "termsOfServiceUrl": null,
+    "GDPRUrl": null,
     "maxUploadFileSize": null,
     "contribPlugins": [],
     "tribeHost": null,
     "importers": [],
-    "gravatar": false
+    "gravatar": false,
+    "rtlLanguages": []
 }
