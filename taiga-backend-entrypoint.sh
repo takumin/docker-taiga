@@ -71,11 +71,11 @@ fi
 
 wait-for-it.sh ${TAIGA_BACKEND_POSTGRESQL_HOST}:${TAIGA_BACKEND_POSTGRESQL_PORT} -- echo "postgresql is up"
 
-python3 /opt/taiga-backend/manage.py migrate --noinput
-python3 /opt/taiga-backend/manage.py loaddata initial_user
-python3 /opt/taiga-backend/manage.py loaddata initial_project_templates
-python3 /opt/taiga-backend/manage.py compilemessages
-python3 /opt/taiga-backend/manage.py collectstatic --noinput
+python3 /taiga-backend/manage.py migrate --noinput
+python3 /taiga-backend/manage.py loaddata initial_user
+python3 /taiga-backend/manage.py loaddata initial_project_templates
+python3 /taiga-backend/manage.py compilemessages
+python3 /taiga-backend/manage.py collectstatic --noinput
 
 if [ "$1" = 'default' ]; then
   exec runsv taiga-backend
