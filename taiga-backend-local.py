@@ -1,22 +1,6 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 2014-2017 Andrey Antukh <niwi@niwi.nz>
-# Copyright (C) 2014-2017 Jesús Espino <jespinog@gmail.com>
-# Copyright (C) 2014-2017 David Barragán <bameda@dbarragan.com>
-# Copyright (C) 2014-2017 Alejandro Alonso <alejandro.alonso@kaleidos.net>
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Affero General Public License as
-# published by the Free Software Foundation, either version 3 of the
-# License, or (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Affero General Public License for more details.
-#
-# You should have received a copy of the GNU Affero General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .development import *
+from .common import *
 
 #########################################
 ## GENERIC
@@ -39,24 +23,26 @@ DATABASES = {
     }
 }
 
-#SITES = {
-#    "api": {
-#       "scheme": "http",
-#       "domain": "localhost:8000",
-#       "name": "api"
-#    },
-#    "front": {
-#       "scheme": "http",
-#       "domain": "localhost:9001",
-#       "name": "front"
-#    },
-#}
+SITES = {
+   "api": {
+      "scheme": "TAIGA_BACKEND_API_SCHEME",
+      "domain": "TAIGA_BACKEND_API_DOMAIN:TAIGA_BACKEND_API_PORT",
+      "name": "TAIGA_BACKEND_API_NAME"
+   },
+   "front": {
+      "scheme": "TAIGA_BACKEND_FRONT_SCHEME",
+      "domain": "TAIGA_BACKEND_FRONT_DOMAIN:TAIGA_BACKEND_FRONT_PORT",
+      "name": "TAIGA_BACKEND_FRONT_NAME"
+   },
+}
 
-#SITE_ID = "api"
+MEDIA_ROOT = '/taiga-backend/media'
+STATIC_ROOT = '/taiga-backend/static'
 
-#MEDIA_ROOT = '/home/taiga/media'
-#STATIC_ROOT = '/home/taiga/static'
+MEDIA_URL = "TAIGA_BACKEND_MEDIA_URL"
+STATIC_URL = "TAIGA_BACKEND_STATIC_URL"
 
+SECRET_KEY = "TAIGA_BACKEND_SECRET_KEY"
 
 #########################################
 ## THROTTLING
