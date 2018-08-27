@@ -4,6 +4,11 @@ FROM alpine AS build
 
 MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
 
+ARG NO_PROXY
+ARG FTP_PROXY
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
 COPY taiga-front/dist /taiga-front
 COPY taiga-front-conf.json /taiga-front/conf.json
 COPY taiga-front-entrypoint.sh /usr/local/bin/entrypoint.sh

@@ -2,17 +2,17 @@
 
 set -eu
 
-if [ -n "${TAIGA_EVENTS_BASE_URI}" ]; then
-  sed -i -e "s/TAIGA_EVENTS_BASE_URI/${TAIGA_EVENTS_BASE_URI}/" /taiga-front/conf.json
+if [ -n "${TAIGA_FRONTEND_EVENTS_BASE_URI}" ]; then
+  sed -i -e "s/TAIGA_FRONTEND_EVENTS_BASE_URI/${TAIGA_FRONTEND_EVENTS_BASE_URI}/" /taiga-front/conf.json
 else
-  echo "Set require environment variable: TAIGA_EVENTS_BASE_URI"
+  echo "Set require environment variable: TAIGA_FRONTEND_EVENTS_BASE_URI"
   exit 1
 fi
 
-if [ -n "${TAIGA_BACKEND_BASE_URI}" ]; then
-  sed -i -e "s/TAIGA_BACKEND_BASE_URI/${TAIGA_BACKEND_BASE_URI}/" /taiga-front/conf.json
+if [ -n "${TAIGA_FRONTEND_BACKEND_BASE_URI}" ]; then
+  sed -i -e "s/TAIGA_FRONTEND_BACKEND_BASE_URI/${TAIGA_FRONTEND_BACKEND_BASE_URI}/" /taiga-front/conf.json
 else
-  echo "Set require environment variable: TAIGA_BACKEND_BASE_URI"
+  echo "Set require environment variable: TAIGA_FRONTEND_BACKEND_BASE_URI"
   exit 1
 fi
 

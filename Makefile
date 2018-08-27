@@ -1,9 +1,21 @@
-ifeq (x${TAIGA_FRONT_PORT},x)
-export TAIGA_FRONT_PORT=8080
+ifeq (x${TAIGA_FRONTEND_PORT},x)
+export TAIGA_FRONTEND_PORT=8080
 endif
 
 ifeq (x${TAIGA_EVENTS_PORT},x)
 export TAIGA_EVENTS_PORT=8888
+endif
+
+ifeq (x${TAIGA_FRONTEND_EVENTS_BASE_URI},x)
+export TAIGA_FRONTEND_EVENTS_BASE_URI=http://$(shell hostname):${TAIGA_EVENTS_PORT}/api/v1/
+endif
+
+ifeq (x${TAIGA_FRONTEND_BACKEND_BASE_URI},x)
+export TAIGA_FRONTEND_BACKEND_BASE_URI=ws://$(shell hostname):${TAIGA_BACKEND_PORT}/events
+endif
+
+ifeq (x${TAIGA_EVENTS_SECRET},x)
+export TAIGA_EVENTS_SECRET=$(shell cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 endif
 
 .PHONY: all
@@ -17,7 +29,7 @@ build:
 up:
 	@docker-compose up -d --build
 	@echo "Boot Wait..."
-	@while true; do echo Waiting taiga-front... && curl -s -o /dev/null http://localhost:${TAIGA_FRONT_PORT} && break || sleep 1; done
+	@while true; do echo Waiting taiga-front... && curl -s -o /dev/null http://localhost:${TAIGA_FRONTEND_PORT} && break || sleep 1; done
 	@while true; do echo Waiting taiga-events... && curl -s -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 1; done
 
 .PHONY: down
