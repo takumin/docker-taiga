@@ -1,5 +1,5 @@
 [submodule "taiga-back"]
-	path = taiga-back
+	path = taiga-backend
 	url = https://github.com/taigaio/taiga-back.git
 [submodule "taiga-front"]
 	path = taiga-frontend
