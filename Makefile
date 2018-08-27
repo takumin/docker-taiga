@@ -1,46 +1,37 @@
-ARGS ?= --no-cache
-
-ifneq (x${NO_PROXY},x)
-ARGS += --build-arg NO_PROXY=${NO_PROXY}
+ifeq (x${TAIGA_EVENTS_PORT},x)
+export TAIGA_EVENTS_PORT=8888
 endif
 
-ifneq (x${FTP_PROXY},x)
-ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
-endif
-
-ifneq (x${HTTP_PROXY},x)
-ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
-endif
-
-ifneq (x${HTTPS_PROXY},x)
-ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
-endif
-
-ifneq (x${UBUNTU_MIRROR},x)
-ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
-endif
-
-ifneq (x${NODEJS_MIRROR},x)
-ARGS += --build-arg NODEJS_MIRROR=${NODEJS_MIRROR}
-endif
-
-ifneq (x${PIP_CACHE_HOST},x)
-ARGS += --build-arg PIP_CACHE_HOST=${PIP_CACHE_HOST}
-endif
-
-ifneq (x${PIP_CACHE_PORT},x)
-ARGS += --build-arg PIP_CACHE_PORT=${PIP_CACHE_PORT}
-endif
+.PHONY: all
+all: up
 
 .PHONY: build
 build:
-	@docker build $(ARGS) -t takumi/taiga .
+	@docker-compose build
 
-.PHONY: run
-run:
-	@docker run --name taiga -d takumi/taiga
+.PHONY: up
+up:
+	@docker-compose up -d --build
+	@echo "Boot Wait..."
+	@while true; do echo Waiting... && curl -s -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 3; done
+
+.PHONY: down
+down:
+	@docker-compose down
 
 .PHONY: clean
 clean:
-	@docker image prune -f
-	@docker rmi takumi/taiga
+ifneq (x$(shell docker ps -aq),x)
+	@docker stop $(shell docker ps -aq)
+	@docker rm $(shell docker ps -aq)
+endif
+ifneq (x$(shell docker image ls -aq takumi/taiga-front),x)
+	@docker rmi takumi/taiga-front
+endif
+ifneq (x$(shell docker image ls -aq takumi/taiga-events),x)
+	@docker rmi takumi/taiga-events
+endif
+ifneq (x$(shell docker image ls -aq takumi/taiga-back),x)
+	@docker rmi takumi/taiga-back
+endif
+	@docker system prune -f

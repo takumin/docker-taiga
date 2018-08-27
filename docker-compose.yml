@@ -1,54 +1,44 @@
 version: '3'
 
 services:
-  taiga:
+  taiga-events:
     build:
       context: .
+      dockerfile: Dockerfile.events
       args:
-        - NO_PROXY=${NO_PROXY}
-        - FTP_PROXY=${FTP_PROXY}
-        - HTTP_PROXY=${HTTP_PROXY}
-        - HTTPS_PROXY=${HTTPS_PROXY}
-        - UBUNTU_MIRROR=${UBUNTU_MIRROR}
-        - NODEJS_MIRROR=${NODEJS_MIRROR}
-    image: takumi/taiga
-    container_name: taiga
+        NO_PROXY: ${NO_PROXY}
+        FTP_PROXY: ${FTP_PROXY}
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
+    image: takumi/taiga-events
+    container_name: taiga-events
+    environment:
+      TAIGA_EVENTS_SECRET: ${TAIGA_EVENTS_SECRET}
+      TAIGA_EVENTS_RABBITMQ_HOST: taiga-events-rabbitmq
+      TAIGA_EVENTS_RABBITMQ_PORT: 5672
+      TAIGA_EVENTS_RABBITMQ_USER: taiga-events
+      TAIGA_EVENTS_RABBITMQ_PASS: taiga-events
     networks:
-      - taiga
+      - taiga-events
     ports:
-      - 8000:8000
-      - 8888:8888
+      - ${TAIGA_EVENTS_PORT}:8888
     depends_on:
-      - postgres
-      - rabbitmq
+      - taiga-events-rabbitmq
 
-  postgres:
-    image: postgres:alpine
-    container_name: taiga_postgres
-    networks:
-      - taiga
-    volumes:
-      - taiga-postgres:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: taiga
-      POSTGRES_USER: taiga
-      POSTGRES_PASSWORD: taiga
-
-  rabbitmq:
+  taiga-events-rabbitmq:
     image: rabbitmq:alpine
-    container_name: taiga_rabbitmq
-    networks:
-      - taiga
-    volumes:
-      - taiga-rabbitmq:/var/lib/rabbitmq
+    container_name: taiga-events-rabbitmq
     environment:
-      RABBITMQ_DEFAULT_VHOST: taiga
-      RABBITMQ_DEFAULT_USER: taiga
-      RABBITMQ_DEFAULT_PASS: taiga
+      RABBITMQ_DEFAULT_VHOST: taiga-events
+      RABBITMQ_DEFAULT_USER: taiga-events
+      RABBITMQ_DEFAULT_PASS: taiga-events
+    volumes:
+      - taiga-events-rabbitmq:/var/lib/rabbitmq
+    networks:
+      - taiga-events
 
 networks:
-  taiga:
+  taiga-events:
 
 volumes:
-  taiga-postgres:
-  taiga-rabbitmq:
+  taiga-events-rabbitmq:
