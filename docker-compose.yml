@@ -12,6 +12,7 @@ services:
         HTTPS_PROXY: ${HTTPS_PROXY}
     image: takumi/taiga-events
     container_name: taiga-events
+    restart: always
     environment:
       TAIGA_EVENTS_SECRET: ${TAIGA_EVENTS_SECRET}
       TAIGA_EVENTS_RABBITMQ_HOST: taiga-events-rabbitmq
@@ -28,6 +29,7 @@ services:
   taiga-events-rabbitmq:
     image: rabbitmq:alpine
     container_name: taiga-events-rabbitmq
+    restart: always
     environment:
       RABBITMQ_DEFAULT_VHOST: taiga-events
       RABBITMQ_DEFAULT_USER: taiga-events
