@@ -15,6 +15,7 @@ RUN echo Start! \
 FROM nginx:alpine
 
 COPY --from=build /taiga-front /taiga-front
+COPY taiga-front-nginx.conf /etc/nginx/nginx.conf
 
 RUN echo Start! \
  && set -ex \

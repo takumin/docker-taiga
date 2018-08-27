@@ -12,9 +12,7 @@ services:
     container_name: taiga-front
     restart: always
     environment:
-      # Ex: http://example.com/api/v1/
       TAIGA_EVENTS_BASE_URI: ${TAIGA_EVENTS_BASE_URI}
-      # Ex: ws://example.com/events
       TAIGA_BACKEND_BASE_URI: ${TAIGA_BACKEND_BASE_URI}
     networks:
       - taiga
