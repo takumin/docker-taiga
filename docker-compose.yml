@@ -24,8 +24,8 @@ services:
       - taiga-events
       - taiga-backend
     environment:
-      TAIGA_FRONTEND_EVENTS_BASE_URI: ${TAIGA_FRONTEND_EVENTS_BASE_URI}
-      TAIGA_FRONTEND_BACKEND_BASE_URI: ${TAIGA_FRONTEND_BACKEND_BASE_URI}
+      TAIGA_FRONTEND_EVENTS_BASE_URI: "${TAIGA_FRONTEND_EVENTS_BASE_URI}"
+      TAIGA_FRONTEND_BACKEND_BASE_URI: "${TAIGA_FRONTEND_BACKEND_BASE_URI}"
 
   #
   # taiga-events
@@ -49,11 +49,11 @@ services:
     depends_on:
       - taiga-events-rabbitmq
     environment:
-      TAIGA_EVENTS_SECRET: ${TAIGA_EVENTS_SECRET}
-      TAIGA_EVENTS_RABBITMQ_HOST: taiga-events-rabbitmq
-      TAIGA_EVENTS_RABBITMQ_PORT: 5672
-      TAIGA_EVENTS_RABBITMQ_USER: taiga-events
-      TAIGA_EVENTS_RABBITMQ_PASS: taiga-events
+      TAIGA_EVENTS_SECRET: "${TAIGA_EVENTS_SECRET}"
+      TAIGA_EVENTS_RABBITMQ_HOST: "taiga-events-rabbitmq"
+      TAIGA_EVENTS_RABBITMQ_PORT: "5672"
+      TAIGA_EVENTS_RABBITMQ_USER: "taiga-events"
+      TAIGA_EVENTS_RABBITMQ_PASS: "taiga-events"
 
   taiga-events-rabbitmq:
     image: rabbitmq:alpine
@@ -64,9 +64,9 @@ services:
     volumes:
       - taiga-events-rabbitmq:/var/lib/rabbitmq
     environment:
-      RABBITMQ_DEFAULT_VHOST: taiga-events
-      RABBITMQ_DEFAULT_USER: taiga-events
-      RABBITMQ_DEFAULT_PASS: taiga-events
+      RABBITMQ_DEFAULT_VHOST: "taiga-events-rabbitmq"
+      RABBITMQ_DEFAULT_USER: "taiga-events"
+      RABBITMQ_DEFAULT_PASS: "taiga-events"
 
   #
   # taiga-backend
@@ -91,14 +91,14 @@ services:
     depends_on:
       - taiga-backend-postgres
     environment:
-      TAIGA_BACKEND_DEBUG: False
-      TAIGA_BACKEND_ADMIN_NAME: Admin
-      TAIGA_BACKEND_ADMIN_EMAIL: admin@example.com
-      TAIGA_BACKEND_POSTGRESQL_HOST: taiga-backend-postgres
-      TAIGA_BACKEND_POSTGRESQL_PORT: 5432
-      TAIGA_BACKEND_POSTGRESQL_NAME: taiga-backend
-      TAIGA_BACKEND_POSTGRESQL_USER: taiga-backend
-      TAIGA_BACKEND_POSTGRESQL_PASS: taiga-backend
+      TAIGA_BACKEND_DEBUG: "False"
+      TAIGA_BACKEND_ADMIN_NAME: "Admin"
+      TAIGA_BACKEND_ADMIN_EMAIL: "admin@example.com"
+      TAIGA_BACKEND_POSTGRESQL_HOST: "taiga-backend-postgres"
+      TAIGA_BACKEND_POSTGRESQL_PORT: "5432"
+      TAIGA_BACKEND_POSTGRESQL_NAME: "taiga-backend"
+      TAIGA_BACKEND_POSTGRESQL_USER: "taiga-backend"
+      TAIGA_BACKEND_POSTGRESQL_PASS: "taiga-backend"
 
   taiga-backend-postgres:
     image: postgres:9.5-alpine
@@ -109,10 +109,10 @@ services:
     volumes:
       - taiga-backend-postgres:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: taiga-backend
-      POSTGRES_USER: taiga-backend
-      POSTGRES_PASSWORD: taiga-backend
-      POSTGRES_INITDB_ARGS: --encoding=UTF-8 --locale=C
+      POSTGRES_DB: "taiga-backend"
+      POSTGRES_USER: "taiga-backend"
+      POSTGRES_PASSWORD: "taiga-backend"
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
 
 networks:
   taiga:
