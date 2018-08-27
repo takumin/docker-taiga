@@ -22,40 +22,40 @@ from .development import *
 ## GENERIC
 #########################################
 
-#DEBUG = False
+DEBUG = TAIGA_BACKEND_DEBUG
 
-#ADMINS = (
-#    ("Admin", "example@example.com"),
-#)
+ADMINS = (
+    ("TAIGA_BACKEND_ADMIN_NAME", "TAIGA_BACKEND_ADMIN_EMAIL"),
+)
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'taiga',
-        'USER': 'taiga',
-        'PASSWORD': 'taiga',
-        'HOST': 'postgres',
-        'PORT': '5432',
+        'HOST': 'TAIGA_BACKEND_POSTGRESQL_HOST',
+        'PORT': 'TAIGA_BACKEND_POSTGRESQL_PORT',
+        'NAME': 'TAIGA_BACKEND_POSTGRESQL_NAME',
+        'USER': 'TAIGA_BACKEND_POSTGRESQL_USER',
+        'PASSWORD': 'TAIGA_BACKEND_POSTGRESQL_PASS',
     }
 }
 
-SITES = {
-   "api": {
-      "scheme": "http",
-      "domain": "TAIGA_BACK_HOST",
-      "name": "api"
-   },
-   "front": {
-      "scheme": "http",
-      "domain": "TAIGA_FRONT_HOST",
-      "name": "front"
-   },
-}
+#SITES = {
+#    "api": {
+#       "scheme": "http",
+#       "domain": "localhost:8000",
+#       "name": "api"
+#    },
+#    "front": {
+#       "scheme": "http",
+#       "domain": "localhost:9001",
+#       "name": "front"
+#    },
+#}
 
 #SITE_ID = "api"
 
-MEDIA_ROOT = 'media'
-STATIC_ROOT = 'static'
+#MEDIA_ROOT = '/home/taiga/media'
+#STATIC_ROOT = '/home/taiga/static'
 
 
 #########################################
@@ -92,6 +92,7 @@ STATIC_ROOT = 'static'
 # EMAIL SETTINGS EXAMPLE
 #EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 #EMAIL_USE_TLS = False
+#EMAIL_USE_SSL = False # You cannot use both (TLS and SSL) at the same time!
 #EMAIL_HOST = 'localhost'
 #EMAIL_PORT = 25
 #EMAIL_HOST_USER = 'user'

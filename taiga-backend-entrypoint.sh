@@ -1,9 +1,82 @@
 #!/bin/sh
 
-python3 /opt/taiga-back/manage.py migrate --noinput
-python3 /opt/taiga-back/manage.py loaddata initial_user
-python3 /opt/taiga-back/manage.py loaddata initial_project_templates
-python3 /opt/taiga-back/manage.py loaddata initial_role
-python3 /opt/taiga-back/manage.py compilemessages
+if [ ! -f "/taiga-backend/settings/local.py" ]; then
+  echo "Require /taiga-backend/settings/local.py"
+  exit 1
+fi
 
-exec /usr/local/bin/circusd /opt/taiga-circus.ini
+echo "TAIGA_BACKEND_DEBUG: \"${TAIGA_BACKEND_DEBUG}\""
+if [ -n "${TAIGA_BACKEND_DEBUG}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_DEBUG#${TAIGA_BACKEND_DEBUG}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_DEBUG"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_ADMIN_NAME: \"${TAIGA_BACKEND_ADMIN_NAME}\""
+if [ -n "${TAIGA_BACKEND_ADMIN_NAME}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_ADMIN_NAME#${TAIGA_BACKEND_ADMIN_NAME}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_ADMIN_NAME"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_ADMIN_EMAIL: \"${TAIGA_BACKEND_ADMIN_EMAIL}\""
+if [ -n "${TAIGA_BACKEND_ADMIN_EMAIL}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_ADMIN_EMAIL#${TAIGA_BACKEND_ADMIN_EMAIL}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_ADMIN_EMAIL"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_POSTGRESQL_HOST: \"${TAIGA_BACKEND_POSTGRESQL_HOST}\""
+if [ -n "${TAIGA_BACKEND_POSTGRESQL_HOST}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_HOST#${TAIGA_BACKEND_POSTGRESQL_HOST}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_HOST"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_POSTGRESQL_PORT: \"${TAIGA_BACKEND_POSTGRESQL_PORT}\""
+if [ -n "${TAIGA_BACKEND_POSTGRESQL_PORT}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_PORT#${TAIGA_BACKEND_POSTGRESQL_PORT}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_PORT"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_POSTGRESQL_NAME: \"${TAIGA_BACKEND_POSTGRESQL_NAME}\""
+if [ -n "${TAIGA_BACKEND_POSTGRESQL_NAME}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_NAME#${TAIGA_BACKEND_POSTGRESQL_NAME}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_NAME"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_POSTGRESQL_USER: \"${TAIGA_BACKEND_POSTGRESQL_USER}\""
+if [ -n "${TAIGA_BACKEND_POSTGRESQL_USER}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_USER#${TAIGA_BACKEND_POSTGRESQL_USER}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_USER"
+  exit 1
+fi
+
+echo "TAIGA_BACKEND_POSTGRESQL_PASS: \"${TAIGA_BACKEND_POSTGRESQL_PASS}\""
+if [ -n "${TAIGA_BACKEND_POSTGRESQL_PASS}" ]; then
+  sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_PASS#${TAIGA_BACKEND_POSTGRESQL_PASS}#" /taiga-backend/settings/local.py
+else
+  echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_PASS"
+  exit 1
+fi
+
+python3 /opt/taiga-backend/manage.py migrate --noinput
+python3 /opt/taiga-backend/manage.py loaddata initial_user
+python3 /opt/taiga-backend/manage.py loaddata initial_project_templates
+python3 /opt/taiga-backend/manage.py compilemessages
+python3 /opt/taiga-backend/manage.py collectstatic --noinput
+
+if [ "$1" = 'default' ]; then
+  exec runsv taiga-backend
+fi
+
+exec "$@"
