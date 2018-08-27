@@ -30,7 +30,7 @@ COPY taiga-frontend-entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN echo Start! \
  && set -ex \
  && apk --update add --no-cache runit \
- && apk del --purge \
+ && apk del --no-cache --purge \
  && rm -fr /var/tmp/* \
  && rm -fr /tmp/* \
  && mkdir -p /sv/taiga-frontend \
