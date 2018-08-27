@@ -13,7 +13,7 @@ build:
 up:
 	@docker-compose up -d --build
 	@echo "Boot Wait..."
-	@while true; do echo Waiting... && curl -s -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 3; done
+	@while true; do echo Waiting taiga-events... && curl -s -o /dev/null http://localhost:${TAIGA_EVENTS_PORT} && break || sleep 1; done
 
 .PHONY: down
 down:

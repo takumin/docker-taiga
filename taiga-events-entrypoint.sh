@@ -38,7 +38,15 @@ if [ "$1" = 'default' ]; then
     exit 1
   fi
 
-  exec /nodejs/bin/coffee /taiga-events/index.coffee --config /taiga-events/config.json
+  mkdir -p /service/taiga-events
+  echo "#!/bin/sh" > /service/taiga-events/run
+  echo "set -e" >> /service/taiga-events/run
+  echo "exec 2>&1" >> /service/taiga-events/run
+  echo "exec coffee /taiga-events/index.coffee --config /taiga-events/config.json" >> /service/taiga-events/run
+  chmod 0755 /service/taiga-events/run
+
+  cd /service
+  exec runsv taiga-events
 fi
 
 exec "$@"
