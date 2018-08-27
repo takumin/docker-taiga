@@ -2,14 +2,14 @@ version: '3'
 
 services:
   #
-  # taiga-front
+  # taiga-frontend
   #
-  taiga-front:
+  taiga-frontend:
     build:
       context: .
-      dockerfile: Dockerfile.front
-    image: takumi/taiga-front
-    container_name: taiga-front
+      dockerfile: Dockerfile.frontend
+    image: takumi/taiga-frontend
+    container_name: taiga-frontend
     restart: always
     environment:
       TAIGA_FRONTEND_EVENTS_BASE_URI: ${TAIGA_FRONTEND_EVENTS_BASE_URI}

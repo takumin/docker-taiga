@@ -9,18 +9,16 @@ ARG FTP_PROXY
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
 
-COPY taiga-front/dist /taiga-front
-COPY taiga-front-conf.json /taiga-front/conf.json
-COPY taiga-front-entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY taiga-frontend/dist /taiga-frontend
+COPY taiga-frontend-conf.json /taiga-frontend/conf.json
 
-RUN echo Start! \
- && rm -f /taiga-front/conf.example.json \
- && echo Complete!
+RUN rm -f /taiga-frontend/conf.example.json
 
 FROM nginx:alpine
 
-COPY --from=build /taiga-front /taiga-front
-COPY taiga-front-nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /taiga-frontend /taiga-frontend
+COPY taiga-frontend-nginx.conf /etc/nginx/nginx.conf
+COPY taiga-frontend-entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN echo Start! \
  && set -ex \

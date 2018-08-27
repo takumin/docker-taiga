@@ -2,7 +2,7 @@
 	path = taiga-back
 	url = https://github.com/taigaio/taiga-back.git
 [submodule "taiga-front"]
-	path = taiga-front
+	path = taiga-frontend
 	url = https://github.com/taigaio/taiga-front-dist.git
 [submodule "taiga-events"]
 	path = taiga-events
