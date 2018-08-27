@@ -1,6 +1,23 @@
 version: '3'
 
 services:
+  taiga-front:
+    build:
+      context: .
+      dockerfile: Dockerfile.front
+      args:
+        NO_PROXY: ${NO_PROXY}
+        FTP_PROXY: ${FTP_PROXY}
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
+    image: takumi/taiga-front
+    container_name: taiga-front
+    restart: always
+    networks:
+      - taiga
+    ports:
+      - ${TAIGA_FRONT_PORT}:8888
+
   taiga-events:
     build:
       context: .
@@ -20,7 +37,7 @@ services:
       TAIGA_EVENTS_RABBITMQ_USER: taiga-events
       TAIGA_EVENTS_RABBITMQ_PASS: taiga-events
     networks:
-      - taiga-events
+      - taiga
     ports:
       - ${TAIGA_EVENTS_PORT}:8888
     depends_on:
@@ -37,10 +54,10 @@ services:
     volumes:
       - taiga-events-rabbitmq:/var/lib/rabbitmq
     networks:
-      - taiga-events
+      - taiga
 
 networks:
-  taiga-events:
+  taiga:
 
 volumes:
   taiga-events-rabbitmq:
