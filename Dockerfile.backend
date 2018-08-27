@@ -14,8 +14,9 @@ COPY taiga-backend-local.py /taiga-backend/settings/local.py
 
 RUN echo Start! \
  && set -ex \
- && apk --update add --no-cache python3 \
+ && apk --update add --no-cache python3 postgresql-plpython3 \
  && apk --update add --no-cache --virtual .builddeps git python3-dev \
+ && git config --global url."https://".insteadOf git:// \
  && pip3 install --no-cache-dir --prefix /usr/local -r /taiga-backend/requirements.txt \
  && apk del --no-cache --purge .builddeps \
  && apk del --no-cache --purge \
