@@ -18,6 +18,7 @@ RUN echo Start! \
  && apk --update add --no-cache nodejs npm runit \
  && npm install --production --prefix /usr/local -g /taiga-events \
  && npm install --production --prefix /usr/local -g coffee-script \
+ && rm -fr ~/.npm \
  && apk del --no-cache --purge npm \
  && apk del --no-cache --purge \
  && rm -fr /var/tmp/* \
