@@ -1,0 +1,28 @@
+# vim: set ft=dockerfile :
+
+FROM alpine
+
+MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+
+ARG NO_PROXY
+ARG FTP_PROXY
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
+COPY taiga-events /taiga-events
+COPY taiga-events-config.json /taiga-events/config.json
+COPY taiga-events-entrypoint.sh /taiga-events/entrypoint.sh
+
+RUN echo Start! \
+ && set -ex \
+ && apk --update add --no-cache nodejs npm \
+ && npm install --prefix /nodejs -g /taiga-events \
+ && npm install --prefix /nodejs -g coffee-script \
+ && apk del npm \
+ && chmod 0755 /taiga-events/entrypoint.sh \
+ && echo Complete!
+
+WORKDIR /taiga-events
+ENTRYPOINT ["/taiga-events/entrypoint.sh"]
+CMD ["default"]
+EXPOSE 8888
