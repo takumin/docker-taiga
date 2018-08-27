@@ -1,3 +1,5 @@
+# vim: set ft=dockerfile :
+
 FROM ubuntu
 
 MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
