@@ -30,22 +30,25 @@ endif
 # Build Arguments
 #
 
-ARGS ?= --rm --force-rm
+COMMON_ARGS ?= --rm --force-rm --no-cache
+FRONTEND_ARGS ?=
+EVENTS_ARGS ?=
+BACKEND_ARGS ?=
 
 ifneq (x${NO_PROXY},x)
-ARGS += --build-arg NO_PROXY=${NO_PROXY}
+COMMON_ARGS += --build-arg NO_PROXY=${NO_PROXY}
 endif
 
 ifneq (x${FTP_PROXY},x)
-ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
+COMMON_ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
 endif
 
 ifneq (x${HTTP_PROXY},x)
-ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
+COMMON_ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
 endif
 
 ifneq (x${HTTPS_PROXY},x)
-ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
+COMMON_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
 endif
 
 ifneq (x${UBUNTU_MIRROR},x)
@@ -80,22 +83,22 @@ build: build-frontend build-events build-backend
 
 .PHONY: build-frontend
 build-frontend: clean-frontend
-	@docker build $(ARGS) -f Dockerfile.frontend -t takumi/taiga-frontend .
+	@docker build $(COMMON_ARGS) $(FRONTEND_ARGS) -f Dockerfile.frontend -t takumi/taiga-frontend .
 
 .PHONY: build-events
 build-events: clean-events
-	@docker build $(ARGS) -f Dockerfile.events -t takumi/taiga-events .
+	@docker build $(COMMON_ARGS) $(EVENTS_ARGS) -f Dockerfile.events -t takumi/taiga-events .
 
 .PHONY: build-backend
 build-backend: clean-backend
-	@docker build $(ARGS) $(BACKEND_ARGS) -f Dockerfile.backend -t takumi/taiga-backend .
+	@docker build $(COMMON_ARGS) $(BACKEND_ARGS) -f Dockerfile.backend -t takumi/taiga-backend .
 
 #
 # Clean Rules
 #
 
 .PHONY: clean
-clean: clean-frontend clean-events clean-backend
+clean:
 	@docker system prune -f
 ifneq (x$(shell docker images -aqf "dangling=true"),x)
 	@docker rmi $(shell docker images -aqf "dangling=true")

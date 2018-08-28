@@ -5,64 +5,64 @@ if [ ! -f "/taiga-backend/settings/local.py" ]; then
   exit 1
 fi
 
-echo "TAIGA_BACKEND_DEBUG: \"${TAIGA_BACKEND_DEBUG}\""
 if [ -n "${TAIGA_BACKEND_DEBUG}" ]; then
+  echo "TAIGA_BACKEND_DEBUG: \"${TAIGA_BACKEND_DEBUG}\""
   sed -i -e "s#TAIGA_BACKEND_DEBUG#${TAIGA_BACKEND_DEBUG}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_DEBUG"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_ADMIN_NAME: \"${TAIGA_BACKEND_ADMIN_NAME}\""
 if [ -n "${TAIGA_BACKEND_ADMIN_NAME}" ]; then
+  echo "TAIGA_BACKEND_ADMIN_NAME: \"${TAIGA_BACKEND_ADMIN_NAME}\""
   sed -i -e "s#TAIGA_BACKEND_ADMIN_NAME#${TAIGA_BACKEND_ADMIN_NAME}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_ADMIN_NAME"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_ADMIN_EMAIL: \"${TAIGA_BACKEND_ADMIN_EMAIL}\""
 if [ -n "${TAIGA_BACKEND_ADMIN_EMAIL}" ]; then
+  echo "TAIGA_BACKEND_ADMIN_EMAIL: \"${TAIGA_BACKEND_ADMIN_EMAIL}\""
   sed -i -e "s#TAIGA_BACKEND_ADMIN_EMAIL#${TAIGA_BACKEND_ADMIN_EMAIL}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_ADMIN_EMAIL"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_POSTGRESQL_HOST: \"${TAIGA_BACKEND_POSTGRESQL_HOST}\""
 if [ -n "${TAIGA_BACKEND_POSTGRESQL_HOST}" ]; then
+  echo "TAIGA_BACKEND_POSTGRESQL_HOST: \"${TAIGA_BACKEND_POSTGRESQL_HOST}\""
   sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_HOST#${TAIGA_BACKEND_POSTGRESQL_HOST}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_HOST"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_POSTGRESQL_PORT: \"${TAIGA_BACKEND_POSTGRESQL_PORT}\""
 if [ -n "${TAIGA_BACKEND_POSTGRESQL_PORT}" ]; then
+  echo "TAIGA_BACKEND_POSTGRESQL_PORT: \"${TAIGA_BACKEND_POSTGRESQL_PORT}\""
   sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_PORT#${TAIGA_BACKEND_POSTGRESQL_PORT}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_PORT"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_POSTGRESQL_NAME: \"${TAIGA_BACKEND_POSTGRESQL_NAME}\""
 if [ -n "${TAIGA_BACKEND_POSTGRESQL_NAME}" ]; then
+  echo "TAIGA_BACKEND_POSTGRESQL_NAME: \"${TAIGA_BACKEND_POSTGRESQL_NAME}\""
   sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_NAME#${TAIGA_BACKEND_POSTGRESQL_NAME}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_NAME"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_POSTGRESQL_USER: \"${TAIGA_BACKEND_POSTGRESQL_USER}\""
 if [ -n "${TAIGA_BACKEND_POSTGRESQL_USER}" ]; then
+  echo "TAIGA_BACKEND_POSTGRESQL_USER: \"${TAIGA_BACKEND_POSTGRESQL_USER}\""
   sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_USER#${TAIGA_BACKEND_POSTGRESQL_USER}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_USER"
   exit 1
 fi
 
-echo "TAIGA_BACKEND_POSTGRESQL_PASS: \"${TAIGA_BACKEND_POSTGRESQL_PASS}\""
 if [ -n "${TAIGA_BACKEND_POSTGRESQL_PASS}" ]; then
+  echo "TAIGA_BACKEND_POSTGRESQL_PASS: \"${TAIGA_BACKEND_POSTGRESQL_PASS}\""
   sed -i -e "s#TAIGA_BACKEND_POSTGRESQL_PASS#${TAIGA_BACKEND_POSTGRESQL_PASS}#" /taiga-backend/settings/local.py
 else
   echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_PASS"
