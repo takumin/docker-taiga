@@ -158,6 +158,7 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
   # Admin
   ##############################################################################
+
   if [ -n "${TAIGA_BACKEND_ADMIN_NAME}" -a -n "${TAIGA_BACKEND_ADMIN_EMAIL}" ]; then
     echo ""                                                                     >> settings/local.py
     echo "ADMINS = ("                                                           >> settings/local.py
@@ -173,6 +174,40 @@ if [ "$1" = 'default' ]; then
   wait-for-it.sh ${TAIGA_RABBITMQ_HOST}:${TAIGA_RABBITMQ_PORT} -- echo "RabbitMQ is Up"
 
   ##############################################################################
+  # Daemon
+  ##############################################################################
+
+  if [ -n "${TAIGA_BACKEND_GUNICORN_WORKER}" ]; then
+    sed -i -e "s/TAIGA_BACKEND_GUNICORN_WORKER/${TAIGA_BACKEND_GUNICORN_WORKER}/" gunicorn/run
+  else
+    sed -i -e "s/TAIGA_BACKEND_GUNICORN_WORKER/1/" gunicorn/run
+  fi
+
+  if [ -n "${TAIGA_BACKEND_GUNICORN_TIMEOUT}" ]; then
+    sed -i -e "s/TAIGA_BACKEND_GUNICORN_TIMEOUT/${TAIGA_BACKEND_GUNICORN_TIMEOUT}/" gunicorn/run
+  else
+    sed -i -e "s/TAIGA_BACKEND_GUNICORN_TIMEOUT/3/" gunicorn/run
+  fi
+
+  if [ -n "${TAIGA_BACKEND_CELERY_CHILD}" ]; then
+    sed -i -e "s/TAIGA_BACKEND_CELERY_CHILD/${TAIGA_BACKEND_CELERY_CHILD}/" celery/run
+  else
+    sed -i -e 's/TAIGA_BACKEND_CELERY_CHILD/1/' celery/run
+  fi
+
+  if [ -n "${TAIGA_BACKEND_CELERY_TIMELIMIT}" ]; then
+    sed -i -e "s/TAIGA_BACKEND_CELERY_TIMELIMIT/${TAIGA_BACKEND_CELERY_TIMELIMIT}/" celery/run
+  else
+    sed -i -e 's/TAIGA_BACKEND_CELERY_TIMELIMIT/3/' celery/run
+  fi
+
+  ln -s ../gunicorn service/gunicorn
+
+  if [ "x${TAIGA_BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
+    ln -s ../gunicorn service/celery
+  fi
+
+  ##############################################################################
   # Initialize
   ##############################################################################
 
@@ -186,7 +221,7 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
 
   echo "Starting Server"
-  exec runsv
+  exec runsvdir service
 fi
 
 exec "$@"

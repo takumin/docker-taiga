@@ -127,10 +127,19 @@ RUN echo "Deploy Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && mv /usr/local/backend /taiga-backend \
- && echo '#!/bin/sh'                                           >  /taiga-backend/run \
- && echo 'exec 2>&1'                                           >> /taiga-backend/run \
- && echo 'exec gunicorn -w 4 -t 60 -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/run \
- && chmod 0755 /taiga-backend/run \
+ && mkdir /taiga-backend/gunicorn \
+ && echo '#!/bin/sh'                                                                                                   >  /taiga-backend/gunicorn/run \
+ && echo 'cd /taiga-backend'                                                                                           >> /taiga-backend/gunicorn/run \
+ && echo 'exec 2>&1'                                                                                                   >> /taiga-backend/gunicorn/run \
+ && echo 'exec gunicorn -w TAIGA_BACKEND_GUNICORN_WORKER -t TAIGA_BACKEND_GUNICORN_TIMEOUT -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/gunicorn/run \
+ && chmod 0755 /taiga-backend/gunicorn/run \
+ && mkdir /taiga-backend/celery \
+ && echo '#!/bin/sh'                                                                                             >  /taiga-backend/celery/run \
+ && echo 'cd /taiga-backend'                                                                                     >> /taiga-backend/celery/run \
+ && echo 'exec 2>&1'                                                                                             >> /taiga-backend/celery/run \
+ && echo 'exec celery worker -A taiga -c TAIGA_BACKEND_CELERY_CHILD --time-limit TAIGA_BACKEND_CELERY_TIMELIMIT' >> /taiga-backend/celery/run \
+ && chmod 0755 /taiga-backend/celery/run \
+ && mkdir /taiga-backend/service \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-backend

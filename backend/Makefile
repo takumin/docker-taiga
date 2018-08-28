@@ -66,7 +66,7 @@ endif
 #
 
 .PHONY: clean
-clean:
+clean: down
 ifneq (x$(shell docker ps -aqf "status=exited"),x)
 	@docker rm $(shell docker ps -aqf "status=exited")
 endif
@@ -76,7 +76,7 @@ endif
 	@docker system prune -f
 
 .PHONY: clean-build
-clean-build:
+clean-build: down
 ifneq (x$(shell docker ps -aqf "label=taiga-backend-build"),x)
 	docker stop $(shell docker ps -aqf "label=taiga-backend-build")
 	docker rm $(shell docker ps -aqf "label=taiga-backend-build")
@@ -86,7 +86,7 @@ ifneq (x$(shell docker images -aq "takumi/taiga-backend:build"),x)
 endif
 
 .PHONY: clean-latest
-clean-latest:
+clean-latest: down
 ifneq (x$(shell docker ps -aqf "label=taiga-backend"),x)
 	docker stop $(shell docker ps -aqf "label=taiga-backend")
 	docker rm $(shell docker ps -aqf "label=taiga-backend")
@@ -96,4 +96,4 @@ ifneq (x$(shell docker images -aq "takumi/taiga-backend:latest"),x)
 endif
 
 .PHONY: clean-all
-clean-all: clean-build clean-latest clean
+clean-all: down clean-build clean-latest clean
