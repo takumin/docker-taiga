@@ -203,27 +203,38 @@ if [ "$1" = 'default' ]; then
   # Daemon
   ##############################################################################
 
-  echo "[watcher:taiga]"                                                                        >  circusd.ini
-  echo "working_dir = $(pwd)"                                                                   >> circusd.ini
-  echo "cmd = gunicorn"                                                                         >> circusd.ini
-  echo "args = -w 3 -t 60 --pythonpath=. -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
-  echo "numprocesses = 1"                                                                       >> circusd.ini
-  echo "autostart = true"                                                                       >> circusd.ini
-  echo "send_hup = true"                                                                        >> circusd.ini
-  echo ""                                                                                       >> circusd.ini
-  echo "[env:taiga]"                                                                            >> circusd.ini
-  echo "PATH = ${PATH}"                                                                         >> circusd.ini
+  if [ "x${TAIGA_BACKEND_DEBUG}" = 'xTrue' ]; then
+    echo "[watcher:taiga]"                                                                                                      >  circusd.ini
+    echo "working_dir = $(pwd)"                                                                                                 >> circusd.ini
+    echo "cmd = gunicorn"                                                                                                       >> circusd.ini
+    echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_SITES_FRONT_PORT} -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
+    echo "numprocesses = 1"                                                                                                     >> circusd.ini
+    echo "autostart = true"                                                                                                     >> circusd.ini
+    echo "send_hup = true"                                                                                                      >> circusd.ini
+    echo ""                                                                                                                     >> circusd.ini
+    echo "[env:taiga]"                                                                                                          >> circusd.ini
+    echo "PATH = ${PATH}"                                                                                                       >> circusd.ini
+    echo "PYTHONPATH = $(pwd)"                                                                                                  >> circusd.ini
+  else
+    echo "[watcher:taiga]"                                                         >  circusd.ini
+    echo "working_dir = $(pwd)"                                                    >> circusd.ini
+    echo "cmd = gunicorn"                                                          >> circusd.ini
+    echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
+    echo "numprocesses = 1"                                                        >> circusd.ini
+    echo "autostart = true"                                                        >> circusd.ini
+    echo "send_hup = true"                                                         >> circusd.ini
+    echo ""                                                                        >> circusd.ini
+    echo "[env:taiga]"                                                             >> circusd.ini
+    echo "PATH = ${PATH}"                                                          >> circusd.ini
+    echo "PYTHONPATH = $(pwd)"                                                     >> circusd.ini
+  fi
 
   ##############################################################################
   # Running
   ##############################################################################
 
   echo "Starting Server"
-  if [ "x${TAIGA_BACKEND_DEBUG}" = 'xTrue' ]; then
-    exec python3 manage.py runserver
-  else
-    exec circusd circusd.ini
-  fi
+  exec circusd circusd.ini
 fi
 
 exec "$@"
