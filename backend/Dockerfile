@@ -57,7 +57,7 @@ RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 
 COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
-RUN echo "django-environ==0.4.0" >> /usr/local/backend/requirements.txt
+RUN echo "django-environ==0.4.5" >> /usr/local/backend/requirements.txt
 RUN pip3 install --install-option="--prefix=/usr/local --no-compile" -r /usr/local/backend/requirements.txt
 
 WORKDIR /usr/local/backend
