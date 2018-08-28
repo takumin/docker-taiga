@@ -1,6 +1,6 @@
 # vim: set ft=dockerfile :
 
-FROM alpine
+FROM alpine AS build
 
 MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
 
@@ -23,15 +23,8 @@ RUN echo Start! \
  && apk del --no-cache --purge \
  && rm -fr /var/tmp/* \
  && rm -fr /tmp/* \
- && mkdir -p /sv/taiga-events \
- && echo "#!/bin/sh"                                                                 >  /sv/taiga-events/run \
- && echo "set -e"                                                                    >> /sv/taiga-events/run \
- && echo "exec 2>&1"                                                                 >> /sv/taiga-events/run \
- && echo "exec coffee /taiga-events/index.coffee --config /taiga-events/config.json" >> /sv/taiga-events/run \
- && chmod 0755 /sv/taiga-events/run \
  && echo Complete!
 
-WORKDIR /sv
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
 EXPOSE 8888
