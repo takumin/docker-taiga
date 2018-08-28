@@ -16,7 +16,7 @@ env = environ.Env(
 
 timezone = env('TIMEZONE'),
 
-broker_url = 'amqp:/{USER}:{PASS}@{HOST}:{PORT}/{NAME}'.format(
+broker_url = 'amqp://{USER}:{PASS}@{HOST}:{PORT}/{NAME}'.format(
     USER=env('RABBITMQ_USER'),
     PASS=env('RABBITMQ_PASS'),
     HOST=env('RABBITMQ_HOST'),
