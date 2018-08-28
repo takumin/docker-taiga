@@ -79,6 +79,11 @@ MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
+ && [ -n "${NO_PROXY}" ] && unset NO_PROXY \
+ && [ -n "${FTP_PROXY}" ] && unset FTP_PROXY \
+ && [ -n "${HTTP_PROXY}" ] && unset HTTP_PROXY \
+ && [ -n "${HTTPS_PROXY}" ] && unset HTTPS_PROXY \
+ && mv /usr/local/backend /taiga-backend \
  && cp /usr/local/sources.list /etc/apt/sources.list \
  && rm /usr/local/sources.list \
  && export DEBIAN_FRONTEND="noninteractive" \
@@ -109,14 +114,11 @@ RUN echo "Deploy Config Starting" \
  && unset DEBIAN_FRONTEND \
  && unset DEBIAN_PRIORITY \
  && unset DEBCONF_NONINTERACTIVE_SEEN \
- && [ -n "${NO_PROXY}" ] && unset NO_PROXY \
- && [ -n "${FTP_PROXY}" ] && unset FTP_PROXY \
- && [ -n "${HTTP_PROXY}" ] && unset HTTP_PROXY \
- && [ -n "${HTTPS_PROXY}" ] && unset HTTPS_PROXY \
  && find /usr/local \
  && printenv | sort \
  && echo "Deploy Config Complete!"
 
+WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
 EXPOSE 8000 9000
