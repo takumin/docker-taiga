@@ -1,30 +1,60 @@
 # vim: set ft=dockerfile :
 
-FROM alpine AS build
+#
+# Build Container
+#
 
-MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+FROM alpine AS build
+LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
+LABEL taiga-events-build ""
 
 ARG NO_PROXY
 ARG FTP_PROXY
 ARG HTTP_PROXY
 ARG HTTPS_PROXY
 
-COPY taiga-events /taiga-events
-COPY taiga-events-config.json /taiga-events/config.json
-COPY taiga-events-entrypoint.sh /usr/local/bin/entrypoint.sh
+ENV NO_PROXY ${NO_PROXY}
+ENV no_proxy ${NO_PROXY}
+ENV FTP_PROXY ${FTP_PROXY}
+ENV ftp_proxy ${FTP_PROXY}
+ENV HTTP_PROXY ${HTTP_PROXY}
+ENV http_proxy ${HTTP_PROXY}
+ENV HTTPS_PROXY ${HTTPS_PROXY}
+ENV https_proxy ${HTTPS_PROXY}
 
-RUN echo Start! \
- && set -ex \
- && apk --update add --no-cache nodejs npm runit \
- && npm install --production --prefix /usr/local -g /taiga-events \
- && npm install --production --prefix /usr/local -g coffee-script \
- && rm -fr ~/.npm \
- && apk del --no-cache --purge npm \
- && apk del --no-cache --purge \
- && rm -fr /var/tmp/* \
- && rm -fr /tmp/* \
- && echo Complete!
+RUN apk --update add --no-cache nodejs npm
 
+RUN npm install --production --prefix /usr/local -g coffee-script
+
+COPY ./upstream /usr/local/events
+RUN npm install --production --prefix /usr/local -g /usr/local/events
+
+COPY ./config.json /usr/local/events/config.json
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
+
+#
+# Deploy Container
+#
+
+FROM ubuntu:xenial
+LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
+LABEL taiga-events ""
+
+COPY --from=build /usr/local /usr/local
+
+RUN echo "Deploy Config Starting" \
+ && unset NO_PROXY \
+ && unset FTP_PROXY \
+ && unset HTTP_PROXY \
+ && unset HTTPS_PROXY \
+ && mv /usr/local/events /taiga-events \
+ && apk --update add --no-cache nodejs \
+ && find /usr/local \
+ && printenv | sort \
+ && echo "Deploy Config Complete!"
+
+WORKDIR /taiga-events
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
 EXPOSE 8888
