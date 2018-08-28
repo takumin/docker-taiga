@@ -65,6 +65,7 @@ RUN echo "Build Config Starting" \
  && echo "Build Config Complete!"
 
 COPY ./upstream /usr/local/backend
+COPY ./local_template.py /usr/local/backend/settings/local.py
 RUN git config --global url."https://".insteadOf git://
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
