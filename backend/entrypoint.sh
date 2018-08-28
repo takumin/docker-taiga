@@ -23,9 +23,9 @@ if [ "$1" = 'default' ]; then
     echo "TAIGA_BACKEND_RABBITMQ_HOST: \"${TAIGA_BACKEND_RABBITMQ_HOST}\""
     echo "TAIGA_BACKEND_RABBITMQ_PORT: \"${TAIGA_BACKEND_RABBITMQ_PORT}\""
     echo "TAIGA_BACKEND_RABBITMQ_PATH: \"${TAIGA_BACKEND_RABBITMQ_PATH}\""
-    echo "TAIGA_BACKEND_SITES_API_SCHEME: \"${TAIGA_BACKEND_SITES_API_SCHEME}\""
-    echo "TAIGA_BACKEND_SITES_API_DOMAIN: \"${TAIGA_BACKEND_SITES_API_DOMAIN}\""
-    echo "TAIGA_BACKEND_SITES_API_PORT: \"${TAIGA_BACKEND_SITES_API_PORT}\""
+    echo "TAIGA_BACKEND_SCHEME: \"${TAIGA_BACKEND_SCHEME}\""
+    echo "TAIGA_BACKEND_DOMAIN: \"${TAIGA_BACKEND_DOMAIN}\""
+    echo "TAIGA_BACKEND_PORT: \"${TAIGA_BACKEND_PORT}\""
     echo "TAIGA_BACKEND_MEDIA_URL: \"${TAIGA_BACKEND_MEDIA_URL}\""
     echo "TAIGA_BACKEND_STATIC_URL: \"${TAIGA_BACKEND_STATIC_URL}\""
     echo "TAIGA_BACKEND_SECRET_KEY: \"${TAIGA_BACKEND_SECRET_KEY}\""
@@ -93,18 +93,18 @@ if [ "$1" = 'default' ]; then
   # Sites
   ##############################################################################
 
-  if [ -n "${TAIGA_BACKEND_SITES_API_SCHEME}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SITES_API_SCHEME'$^\1 = '${TAIGA_BACKEND_SITES_API_SCHEME}'^" settings/local.py
+  if [ -n "${TAIGA_BACKEND_SCHEME}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SCHEME'$^\1 = '${TAIGA_BACKEND_SCHEME}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_SITES_API_SCHEME"
+    echo "Set require environment variable: TAIGA_BACKEND_SCHEME"
     exit 1
   fi
 
-  if [ -n "${TAIGA_BACKEND_SITES_API_DOMAIN}" -a -n "${TAIGA_BACKEND_SITES_API_PORT}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SITES_API_DOMAIN:TAIGA_BACKEND_SITES_API_PORT'$^\1 = '${TAIGA_BACKEND_SITES_API_DOMAIN}:${TAIGA_BACKEND_SITES_API_PORT}'^" settings/local.py
+  if [ -n "${TAIGA_BACKEND_DOMAIN}" -a -n "${TAIGA_BACKEND_PORT}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_DOMAIN:TAIGA_BACKEND_PORT'$^\1 = '${TAIGA_BACKEND_DOMAIN}:${TAIGA_BACKEND_PORT}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_SITES_API_DOMAIN,"
-    echo "                                  TAIGA_BACKEND_SITES_API_PORT"
+    echo "Set require environment variable: TAIGA_BACKEND_DOMAIN,"
+    echo "                                  TAIGA_BACKEND_PORT"
     exit 1
   fi
 
@@ -185,17 +185,17 @@ if [ "$1" = 'default' ]; then
   # Daemon
   ##############################################################################
 
-  echo "[watcher:taiga]"                                                         >  circusd.ini
-  echo "working_dir = $(pwd)"                                                    >> circusd.ini
-  echo "cmd = gunicorn"                                                          >> circusd.ini
-  echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
-  echo "numprocesses = 1"                                                        >> circusd.ini
-  echo "autostart = true"                                                        >> circusd.ini
-  echo "send_hup = true"                                                         >> circusd.ini
-  echo ""                                                                        >> circusd.ini
-  echo "[env:taiga]"                                                             >> circusd.ini
-  echo "PATH = ${PATH}"                                                          >> circusd.ini
-  echo "PYTHONPATH = $(pwd)"                                                     >> circusd.ini
+  echo "[watcher:taiga]"                                               >  circusd.ini
+  echo "working_dir = $(pwd)"                                          >> circusd.ini
+  echo "cmd = gunicorn"                                                >> circusd.ini
+  echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_PORT} taiga.wsgi" >> circusd.ini
+  echo "numprocesses = 1"                                              >> circusd.ini
+  echo "autostart = true"                                              >> circusd.ini
+  echo "send_hup = true"                                               >> circusd.ini
+  echo ""                                                              >> circusd.ini
+  echo "[env:taiga]"                                                   >> circusd.ini
+  echo "PATH = ${PATH}"                                                >> circusd.ini
+  echo "PYTHONPATH = $(pwd)"                                           >> circusd.ini
 
   ##############################################################################
   # Running
