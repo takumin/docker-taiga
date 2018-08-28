@@ -32,7 +32,7 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
 
   wait-for-it.sh ${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -- echo "PostgreSQL is Up"
-  wait-for-it.sh ${RABBITMQ_HOST}:${RABBITMQ_PORT} -- echo "RabbitMQ Peer is Up"
+  wait-for-it.sh ${RABBITMQ_HOST}:${RABBITMQ_PORT} -- echo "RabbitMQ is Up"
 
   if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
     wait-for-it.sh ${REDIS_HOST}:${REDIS_PORT} -- echo "Redis is Up"

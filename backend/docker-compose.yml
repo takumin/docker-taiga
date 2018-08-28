@@ -21,6 +21,8 @@ services:
       - 8000:8000
     depends_on:
       - taiga-backend-test-postgres
+      - taiga-backend-test-rabbitmq
+      - taiga-backend-test-redis
     environment:
       TIMEZONE: "Asia/Tokyo"
       BACKEND_DEBUG: "True"
