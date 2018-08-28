@@ -23,7 +23,7 @@ services:
     depends_on:
       - taiga-backend-test-postgres
     environment:
-      TAIGA_BACKEND_DEBUG: "False"
+      TAIGA_BACKEND_DEBUG: "True"
       TAIGA_BACKEND_ADMIN_NAME: "Admin"
       TAIGA_BACKEND_ADMIN_EMAIL: "admin@example.com"
       TAIGA_BACKEND_SECRET_KEY: "taiga"
