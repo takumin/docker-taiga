@@ -70,6 +70,78 @@ if [ "$1" = 'default' ]; then
     exit 1
   fi
 
+  if [ -n "${TAIGA_BACKEND_API_SCHEME}" ]; then
+    echo "TAIGA_BACKEND_API_SCHEME: \"${TAIGA_BACKEND_API_SCHEME}\""
+    sed -i -e "s#TAIGA_BACKEND_API_SCHEME#${TAIGA_BACKEND_API_SCHEME}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_API_SCHEME"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_API_DOMAIN}" ]; then
+    echo "TAIGA_BACKEND_API_DOMAIN: \"${TAIGA_BACKEND_API_DOMAIN}\""
+    sed -i -e "s#TAIGA_BACKEND_API_DOMAIN#${TAIGA_BACKEND_API_DOMAIN}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_API_DOMAIN"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_API_PORT}" ]; then
+    echo "TAIGA_BACKEND_API_PORT: \"${TAIGA_BACKEND_API_PORT}\""
+    sed -i -e "s#TAIGA_BACKEND_API_PORT#${TAIGA_BACKEND_API_PORT}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_API_PORT"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_FRONT_SCHEME}" ]; then
+    echo "TAIGA_BACKEND_FRONT_SCHEME: \"${TAIGA_BACKEND_FRONT_SCHEME}\""
+    sed -i -e "s#TAIGA_BACKEND_FRONT_SCHEME#${TAIGA_BACKEND_FRONT_SCHEME}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_FRONT_SCHEME"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_FRONT_DOMAIN}" ]; then
+    echo "TAIGA_BACKEND_FRONT_DOMAIN: \"${TAIGA_BACKEND_FRONT_DOMAIN}\""
+    sed -i -e "s#TAIGA_BACKEND_FRONT_DOMAIN#${TAIGA_BACKEND_FRONT_DOMAIN}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_FRONT_DOMAIN"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_FRONT_PORT}" ]; then
+    echo "TAIGA_BACKEND_FRONT_PORT: \"${TAIGA_BACKEND_FRONT_PORT}\""
+    sed -i -e "s#TAIGA_BACKEND_FRONT_PORT#${TAIGA_BACKEND_FRONT_PORT}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_FRONT_PORT"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_MEDIA_URL}" ]; then
+    echo "TAIGA_BACKEND_MEDIA_URL: \"${TAIGA_BACKEND_MEDIA_URL}\""
+    sed -i -e "s#TAIGA_BACKEND_MEDIA_URL#${TAIGA_BACKEND_MEDIA_URL}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_MEDIA_URL"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_STATIC_URL}" ]; then
+    echo "TAIGA_BACKEND_STATIC_URL: \"${TAIGA_BACKEND_STATIC_URL}\""
+    sed -i -e "s#TAIGA_BACKEND_STATIC_URL#${TAIGA_BACKEND_STATIC_URL}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_STATIC_URL"
+    exit 1
+  fi
+
+  if [ -n "${TAIGA_BACKEND_SECRET_KEY}" ]; then
+    echo "TAIGA_BACKEND_SECRET_KEY: \"${TAIGA_BACKEND_SECRET_KEY}\""
+    sed -i -e "s#TAIGA_BACKEND_SECRET_KEY#${TAIGA_BACKEND_SECRET_KEY}#" /taiga-backend/settings/local.py
+  else
+    echo "Set require environment variable: TAIGA_BACKEND_SECRET_KEY"
+    exit 1
+  fi
+
   wait-for-it.sh ${TAIGA_BACKEND_POSTGRESQL_HOST}:${TAIGA_BACKEND_POSTGRESQL_PORT} -- echo "postgresql is up"
 
   python3 /taiga-backend/manage.py migrate --noinput
