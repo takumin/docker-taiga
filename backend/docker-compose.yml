@@ -1,0 +1,71 @@
+version: '3'
+
+services:
+  #
+  # taiga-backend
+  #
+  taiga-backend-test:
+    build:
+      context: .
+      args:
+        NO_PROXY: ${NO_PROXY}
+        FTP_PROXY: ${FTP_PROXY}
+        HTTP_PROXY: ${HTTP_PROXY}
+        HTTPS_PROXY: ${HTTPS_PROXY}
+        UBUNTU_MIRROR: ${UBUNTU_MIRROR}
+    image: takumi/taiga-backend
+    container_name: taiga-backend-test
+    networks:
+      - taiga
+    ports:
+      - 8000:8000
+      - 9000:8000
+    depends_on:
+      - taiga-backend-test-postgres
+    environment:
+      TAIGA_BACKEND_DEBUG: "False"
+      TAIGA_BACKEND_ADMIN_NAME: "Admin"
+      TAIGA_BACKEND_ADMIN_EMAIL: "admin@example.com"
+      TAIGA_BACKEND_SECRET_KEY: "taiga"
+      TAIGA_BACKEND_POSTGRESQL_HOST: "taiga-backend-test-postgres"
+      TAIGA_BACKEND_POSTGRESQL_PORT: "5432"
+      TAIGA_BACKEND_POSTGRESQL_NAME: "taiga"
+      TAIGA_BACKEND_POSTGRESQL_USER: "taiga"
+      TAIGA_BACKEND_POSTGRESQL_PASS: "taiga"
+      TAIGA_BACKEND_RABBITMQ_USER: "taiga"
+      TAIGA_BACKEND_RABBITMQ_PASS: "taiga"
+      TAIGA_BACKEND_RABBITMQ_HOST: "taiga-backend-test-rabbitmq"
+      TAIGA_BACKEND_RABBITMQ_PORT: "4396"
+      TAIGA_BACKEND_RABBITMQ_PATH: ""
+      TAIGA_BACKEND_SITES_API_SCHEME: "http"
+      TAIGA_BACKEND_SITES_API_DOMAIN: "localhost"
+      TAIGA_BACKEND_SITES_API_PORT: "8000"
+      TAIGA_BACKEND_SITES_FRONT_SCHEME: "http"
+      TAIGA_BACKEND_SITES_FRONT_DOMAIN: "localhost"
+      TAIGA_BACKEND_SITES_FRONT_PORT: "9000"
+      TAIGA_BACKEND_MEDIA_URL: "http://localhost/media/"
+      TAIGA_BACKEND_STATIC_URL: "http://localhost/static/"
+
+  taiga-backend-test-postgres:
+    image: postgres:9.5-alpine
+    container_name: taiga-backend-test-postgres
+    networks:
+      - taiga
+    environment:
+      POSTGRES_DB: "taiga"
+      POSTGRES_USER: "taiga"
+      POSTGRES_PASSWORD: "taiga"
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+
+  taiga-backend-test-rabbitmq:
+    image: rabbitmq:alpine
+    container_name: taiga-backend-test-rabbitmq
+    networks:
+      - taiga
+    environment:
+      RABBITMQ_DEFAULT_VHOST: "taiga-backend-test-rabbitmq"
+      RABBITMQ_DEFAULT_USER: "taiga"
+      RABBITMQ_DEFAULT_PASS: "taiga"
+
+networks:
+  taiga:
