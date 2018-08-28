@@ -51,6 +51,9 @@ release: clean-all
 
 .PHONY: clean
 clean:
+ifneq (x$(shell docker ps -aqf "status=exited"),x)
+	@docker rm $(shell docker ps -aqf "status=exited")
+endif
 ifneq (x$(shell docker images -aqf "dangling=true"),x)
 	@docker rmi $(shell docker images -aqf "dangling=true")
 endif
