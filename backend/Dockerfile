@@ -101,6 +101,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y install --no-install-recommends \
     runit \
     python3 \
+    python3-six \
     python3-pkg-resources \
     zlib1g \
     libssl1.0.0 \
