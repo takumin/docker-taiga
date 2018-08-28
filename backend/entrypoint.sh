@@ -26,9 +26,6 @@ if [ "$1" = 'default' ]; then
     echo "TAIGA_BACKEND_SITES_API_SCHEME: \"${TAIGA_BACKEND_SITES_API_SCHEME}\""
     echo "TAIGA_BACKEND_SITES_API_DOMAIN: \"${TAIGA_BACKEND_SITES_API_DOMAIN}\""
     echo "TAIGA_BACKEND_SITES_API_PORT: \"${TAIGA_BACKEND_SITES_API_PORT}\""
-    echo "TAIGA_BACKEND_SITES_FRONT_SCHEME: \"${TAIGA_BACKEND_SITES_FRONT_SCHEME}\""
-    echo "TAIGA_BACKEND_SITES_FRONT_DOMAIN: \"${TAIGA_BACKEND_SITES_FRONT_DOMAIN}\""
-    echo "TAIGA_BACKEND_SITES_FRONT_PORT: \"${TAIGA_BACKEND_SITES_FRONT_PORT}\""
     echo "TAIGA_BACKEND_MEDIA_URL: \"${TAIGA_BACKEND_MEDIA_URL}\""
     echo "TAIGA_BACKEND_STATIC_URL: \"${TAIGA_BACKEND_STATIC_URL}\""
     echo "TAIGA_BACKEND_SECRET_KEY: \"${TAIGA_BACKEND_SECRET_KEY}\""
@@ -111,21 +108,6 @@ if [ "$1" = 'default' ]; then
     exit 1
   fi
 
-  if [ -n "${TAIGA_BACKEND_SITES_FRONT_SCHEME}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SITES_FRONT_SCHEME'$^\1 = '${TAIGA_BACKEND_SITES_FRONT_SCHEME}'^" settings/local.py
-  else
-    echo "Set require environment variable: TAIGA_BACKEND_SITES_FRONT_SCHEME"
-    exit 1
-  fi
-
-  if [ -n "${TAIGA_BACKEND_SITES_FRONT_DOMAIN}" -a -n "${TAIGA_BACKEND_SITES_FRONT_PORT}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SITES_FRONT_DOMAIN:TAIGA_BACKEND_SITES_FRONT_PORT'$^\1 = '${TAIGA_BACKEND_SITES_FRONT_DOMAIN}:${TAIGA_BACKEND_SITES_FRONT_PORT}'^" settings/local.py
-  else
-    echo "Set require environment variable: TAIGA_BACKEND_SITES_FRONT_DOMAIN,"
-    echo "                                  TAIGA_BACKEND_SITES_FRONT_PORT"
-    exit 1
-  fi
-
   ##############################################################################
   # URL
   ##############################################################################
@@ -203,31 +185,17 @@ if [ "$1" = 'default' ]; then
   # Daemon
   ##############################################################################
 
-  if [ "x${TAIGA_BACKEND_DEBUG}" = 'xTrue' ]; then
-    echo "[watcher:taiga]"                                                                                                      >  circusd.ini
-    echo "working_dir = $(pwd)"                                                                                                 >> circusd.ini
-    echo "cmd = gunicorn"                                                                                                       >> circusd.ini
-    echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_SITES_FRONT_PORT} -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
-    echo "numprocesses = 1"                                                                                                     >> circusd.ini
-    echo "autostart = true"                                                                                                     >> circusd.ini
-    echo "send_hup = true"                                                                                                      >> circusd.ini
-    echo ""                                                                                                                     >> circusd.ini
-    echo "[env:taiga]"                                                                                                          >> circusd.ini
-    echo "PATH = ${PATH}"                                                                                                       >> circusd.ini
-    echo "PYTHONPATH = $(pwd)"                                                                                                  >> circusd.ini
-  else
-    echo "[watcher:taiga]"                                                         >  circusd.ini
-    echo "working_dir = $(pwd)"                                                    >> circusd.ini
-    echo "cmd = gunicorn"                                                          >> circusd.ini
-    echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
-    echo "numprocesses = 1"                                                        >> circusd.ini
-    echo "autostart = true"                                                        >> circusd.ini
-    echo "send_hup = true"                                                         >> circusd.ini
-    echo ""                                                                        >> circusd.ini
-    echo "[env:taiga]"                                                             >> circusd.ini
-    echo "PATH = ${PATH}"                                                          >> circusd.ini
-    echo "PYTHONPATH = $(pwd)"                                                     >> circusd.ini
-  fi
+  echo "[watcher:taiga]"                                                         >  circusd.ini
+  echo "working_dir = $(pwd)"                                                    >> circusd.ini
+  echo "cmd = gunicorn"                                                          >> circusd.ini
+  echo "args = -w 4 -t 60 -b 0.0.0.0:${TAIGA_BACKEND_SITES_API_PORT} taiga.wsgi" >> circusd.ini
+  echo "numprocesses = 1"                                                        >> circusd.ini
+  echo "autostart = true"                                                        >> circusd.ini
+  echo "send_hup = true"                                                         >> circusd.ini
+  echo ""                                                                        >> circusd.ini
+  echo "[env:taiga]"                                                             >> circusd.ini
+  echo "PATH = ${PATH}"                                                          >> circusd.ini
+  echo "PYTHONPATH = $(pwd)"                                                     >> circusd.ini
 
   ##############################################################################
   # Running
