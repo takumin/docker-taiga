@@ -10,7 +10,7 @@ endif
 # Build Arguments
 #
 
-ARGS ?= --rm=true --force-rm=true
+ARGS ?=
 
 ifneq (x${NO_PROXY},x)
 ARGS += --build-arg NO_PROXY=${NO_PROXY}
@@ -44,7 +44,7 @@ all: build
 #
 
 .PHONY: build
-build: clean
+build:
 	@docker build $(ARGS) -t takumi/taiga-backend .
 
 .PHONY: release
@@ -57,14 +57,14 @@ release: clean
 
 .PHONY: clean
 clean:
+ifneq (x$(shell docker images -aqf "dangling=true"),x)
+	@docker rmi $(shell docker images -aqf "dangling=true")
+endif
 ifneq (x$(shell docker ps -aqf name=taiga-backend),x)
 	@docker stop $(shell docker ps -aqf name=taiga-backend)
 	@docker rm $(shell docker ps -aqf name=taiga-backend)
 endif
 ifneq (x$(shell docker image ls -aq takumi/taiga-backend),x)
 	@docker rmi takumi/taiga-backend
-endif
-ifneq (x$(shell docker images -aqf "dangling=true"),x)
-	@docker rmi $(shell docker images -aqf "dangling=true")
 endif
 	@docker system prune -f
