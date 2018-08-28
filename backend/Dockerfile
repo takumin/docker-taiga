@@ -39,7 +39,6 @@ RUN echo "Build Config Starting" \
     wget \
     git \
     python3 \
-    python3-six \
     python3-setuptools \
     python3-pip \
     python3-dev \
@@ -68,7 +67,8 @@ RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 
 COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
-RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+RUN echo "django-environ==0.4.0" >> /usr/local/backend/requirements.txt
+RUN pip3 install --install-option="--prefix=/usr/local --no-compile" -r /usr/local/backend/requirements.txt
 
 WORKDIR /usr/local/backend
 RUN python3 manage.py compilemessages
@@ -104,7 +104,6 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y install --no-install-recommends \
     runit \
     python3 \
-    python3-six \
     python3-pkg-resources \
     zlib1g \
     libssl1.0.0 \
@@ -129,16 +128,16 @@ RUN echo "Deploy Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && mv /usr/local/backend /taiga-backend \
  && mkdir /taiga-backend/gunicorn \
- && echo '#!/bin/sh'                                                                                                   >  /taiga-backend/gunicorn/run \
- && echo 'cd /taiga-backend'                                                                                           >> /taiga-backend/gunicorn/run \
- && echo 'exec 2>&1'                                                                                                   >> /taiga-backend/gunicorn/run \
- && echo 'exec gunicorn -w TAIGA_BACKEND_GUNICORN_WORKER -t TAIGA_BACKEND_GUNICORN_TIMEOUT -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/gunicorn/run \
+ && echo '#!/bin/sh'                                                                       >  /taiga-backend/gunicorn/run \
+ && echo 'cd /taiga-backend'                                                               >> /taiga-backend/gunicorn/run \
+ && echo 'exec 2>&1'                                                                       >> /taiga-backend/gunicorn/run \
+ && echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/gunicorn/run \
  && chmod 0755 /taiga-backend/gunicorn/run \
  && mkdir /taiga-backend/celery \
- && echo '#!/bin/sh'                                                                                             >  /taiga-backend/celery/run \
- && echo 'cd /taiga-backend'                                                                                     >> /taiga-backend/celery/run \
- && echo 'exec 2>&1'                                                                                             >> /taiga-backend/celery/run \
- && echo 'exec celery worker -A taiga -c TAIGA_BACKEND_CELERY_CHILD --time-limit TAIGA_BACKEND_CELERY_TIMELIMIT' >> /taiga-backend/celery/run \
+ && echo '#!/bin/sh'                                                                 >  /taiga-backend/celery/run \
+ && echo 'cd /taiga-backend'                                                         >> /taiga-backend/celery/run \
+ && echo 'exec 2>&1'                                                                 >> /taiga-backend/celery/run \
+ && echo 'exec celery worker -A taiga -c CELERY_CHILD --time-limit CELERY_TIMELIMIT' >> /taiga-backend/celery/run \
  && chmod 0755 /taiga-backend/celery/run \
  && mkdir /taiga-backend/service \
  && echo "Deploy Config Complete!"

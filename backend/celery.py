@@ -1,15 +1,37 @@
 # -*- coding: utf-8 -*-
 
 from kombu import Queue
+from environ import environ
 
-broker_url = 'amqp://guest:guest@localhost:5672//'
-result_backend = 'redis://localhost:6379/0'
+env = Env(
+    TIMEZONE=(str, 'UTC'),
+    RABBITMQ_NODE_HOST=(str, 'rabbitmq'),
+    RABBITMQ_NODE_PORT=(int, 5672),
+    RABBITMQ_NODE_NAME=(str, 'node'),
+    RABBITMQ_NODE_USER=(str, 'taiga'),
+    RABBITMQ_NODE_PASS=(str, 'taiga'),
+    REDIS_HOST=(str, 'redis'),
+    REDIS_PORT=(int, 6379),
+)
 
-accept_content = ['pickle',] # Values are 'pickle', 'json', 'msgpack' and 'yaml'
+timezone = env('TIMEZONE'),
+
+broker_url = 'amqp:/{USER}:{PASS}@{HOST}:{PORT}/{NAME}'.format(
+    USER=env('RABBITMQ_NODE_USER'),
+    PASS=env('RABBITMQ_NODE_PASS'),
+    HOST=env('RABBITMQ_NODE_HOST'),
+    PORT=env('RABBITMQ_NODE_PORT'),
+    NAME=env('RABBITMQ_NODE_NAME'),
+)
+result_backend = 'redis://{HOST}:{PORT}/0'.format(
+    HOST=env('REDIS_HOST'),
+    PORT=env('REDIS_PORT'),
+)
+
+# Values are 'pickle', 'json', 'msgpack' and 'yaml'
+accept_content = ['pickle']
 task_serializer = "pickle"
 result_serializer = "pickle"
-
-timezone = 'Europe/Madrid'
 
 task_default_queue = 'tasks'
 task_queues = (
