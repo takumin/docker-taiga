@@ -4,24 +4,32 @@
 
 BUILD_ARGS ?=
 
-ifneq (x${NO_PROXY},x)
+ifneq (x${no_proxy}x,xx)
+BUILD_ARGS += --build-arg no_proxy=${no_proxy}
+endif
+ifneq (x${NO_PROXY}x,xx)
 BUILD_ARGS += --build-arg NO_PROXY=${NO_PROXY}
 endif
 
-ifneq (x${FTP_PROXY},x)
+ifneq (x${ftp_proxy}x,xx)
+BUILD_ARGS += --build-arg ftp_proxy=${ftp_proxy}
+endif
+ifneq (x${FTP_PROXY}x,xx)
 BUILD_ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
 endif
 
-ifneq (x${HTTP_PROXY},x)
+ifneq (x${http_proxy}x,xx)
+BUILD_ARGS += --build-arg http_proxy=${http_proxy}
+endif
+ifneq (x${HTTP_PROXY}x,xx)
 BUILD_ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
 endif
 
-ifneq (x${HTTPS_PROXY},x)
-BUILD_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
+ifneq (x${https_proxy}x,xx)
+BUILD_ARGS += --build-arg https_proxy=${https_proxy}
 endif
-
-ifneq (x${UBUNTU_MIRROR},x)
-BUILD_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
+ifneq (x${HTTPS_PROXY}x,xx)
+BUILD_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
 endif
 
 #
