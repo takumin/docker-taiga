@@ -12,16 +12,16 @@ env = environ.Env(
     FRONTEND_HOSTNAME=(str, 'localhost'),
     FRONTEND_MEDIA_URL=(str, 'http://localhost/media/'),
     FRONTEND_STATIC_URL=(str, 'http://localhost/static/'),
+    POSTGRESQL_USER=(str, 'taiga'),
+    POSTGRESQL_PASS=(str, 'taiga'),
     POSTGRESQL_HOST=(str, 'postgres'),
     POSTGRESQL_PORT=(int, 5432),
     POSTGRESQL_NAME=(str, 'taiga'),
-    POSTGRESQL_USER=(str, 'taiga'),
-    POSTGRESQL_PASS=(str, 'taiga'),
+    RABBITMQ_PEER_USER=(str, 'taiga'),
+    RABBITMQ_PEER_PASS=(str, 'taiga'),
     RABBITMQ_PEER_HOST=(str, 'rabbitmq'),
     RABBITMQ_PEER_PORT=(int, 4369),
     RABBITMQ_PEER_NAME=(str, 'peer'),
-    RABBITMQ_PEER_USER=(str, 'taiga'),
-    RABBITMQ_PEER_PASS=(str, 'taiga'),
     BACKEND_ADMIN_NAME=(str, 'Admin'),
     BACKEND_ADMIN_EMAIL=(str, 'admin@example.com'),
     BACKEND_CELERY_ENABLED=(bool, False),
@@ -50,11 +50,11 @@ STATIC_URL = env('FRONTEND_STATIC_URL')
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
+        'USER': env('POSTGRESQL_USER'),
+        'PASSWORD': env('POSTGRESQL_PASS'),
         'HOST': env('POSTGRESQL_HOST'),
         'PORT': env('POSTGRESQL_PORT'),
         'NAME': env('POSTGRESQL_NAME'),
-        'USER': env('POSTGRESQL_USER'),
-        'PASSWORD': env('POSTGRESQL_PASS'),
     }
 }
 
