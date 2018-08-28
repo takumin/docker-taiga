@@ -22,6 +22,7 @@ services:
     depends_on:
       - taiga-backend-test-postgres
     environment:
+      TIMEZONE: "Asia/Tokyo"
       BACKEND_DEBUG: "True"
       BACKEND_SECRET: "taiga"
       BACKEND_SCHEME: "http"
