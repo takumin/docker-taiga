@@ -81,10 +81,10 @@ LABEL taiga-backend ""
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
- && [ -n "${NO_PROXY}" ] && unset NO_PROXY \
- && [ -n "${FTP_PROXY}" ] && unset FTP_PROXY \
- && [ -n "${HTTP_PROXY}" ] && unset HTTP_PROXY \
- && [ -n "${HTTPS_PROXY}" ] && unset HTTPS_PROXY \
+ && unset NO_PROXY \
+ && unset FTP_PROXY \
+ && unset HTTP_PROXY \
+ && unset HTTPS_PROXY \
  && mv /usr/local/backend /taiga-backend \
  && cp /usr/local/sources.list /etc/apt/sources.list \
  && rm /usr/local/sources.list \
@@ -110,12 +110,12 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y clean \
  && rm -rf /var/cache/apt/archives/* \
  && rm -rf /var/lib/apt/lists/* \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && unset DEBIAN_FRONTEND \
  && unset DEBIAN_PRIORITY \
  && unset DEBCONF_NONINTERACTIVE_SEEN \
+ && echo "deb http://archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
+ && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
+ && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && find /usr/local \
  && printenv | sort \
  && echo "Deploy Config Complete!"
