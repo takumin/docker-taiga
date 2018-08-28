@@ -56,13 +56,13 @@ endif
 ifneq (x$(shell docker images -aqf label=taiga-backend-build),x)
 	@docker rmi $(shell docker images -aqf label=taiga-backend-build)
 endif
-ifneq (x$(shell docker ps -aqf label=taiga-backend),x)
-	@docker stop $(shell docker ps -aqf label=taiga-backend)
-	@docker rm $(shell docker ps -aqf label=taiga-backend)
-endif
-ifneq (x$(shell docker images -aqf label=taiga-backend),x)
-	@docker rmi $(shell docker images -aqf label=taiga-backend)
-endif
+# ifneq (x$(shell docker ps -aqf label=taiga-backend),x)
+# 	@docker stop $(shell docker ps -aqf label=taiga-backend)
+# 	@docker rm $(shell docker ps -aqf label=taiga-backend)
+# endif
+# ifneq (x$(shell docker images -aqf label=taiga-backend),x)
+# 	@docker rmi $(shell docker images -aqf label=taiga-backend)
+# endif
 ifneq (x$(shell docker images -aqf dangling=true),x)
 	@docker rmi $(shell docker images -aqf dangling=true)
 endif
