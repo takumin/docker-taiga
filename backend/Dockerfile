@@ -73,6 +73,10 @@ RUN chmod 0755 /usr/local/bin/entrypoint.sh
 RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
 RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 
+WORKDIR /usr/local/backend
+RUN python3 manage.py compilemessages
+RUN python3 manage.py collectstatic --noinput
+
 #
 # Deploy Container
 #
