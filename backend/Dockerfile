@@ -45,9 +45,12 @@ RUN echo "Build Config Starting" \
     zlib1g-dev \
     libssl-dev \
     libpq-dev \
-    zlib1g-dev \
+    libgdbm-dev \
+    libzmq3-dev \
+    librabbitmq-dev \
     libjpeg-turbo8-dev \
     libfreetype6-dev \
+    libxml2-dev \
     libxslt1-dev \
     libncurses5-dev \
     libffi-dev \
@@ -101,8 +104,12 @@ RUN echo "Deploy Config Starting" \
     zlib1g \
     libssl1.0.0 \
     libpq5 \
+    libgdbm3 \
+    libzmq5 \
+    librabbitmq4 \
     libjpeg-turbo8 \
     libfreetype6 \
+    libxml2 \
     libxslt1.1 \
     libncurses5 \
     libffi6 \
