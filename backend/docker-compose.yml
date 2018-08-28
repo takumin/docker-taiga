@@ -46,12 +46,12 @@ services:
       RABBITMQ_PEER_PASS: "taiga"
       RABBITMQ_PEER_HOST: "taiga-backend-test-rabbitmq"
       RABBITMQ_PEER_PORT: "4369"
-      RABBITMQ_PEER_PATH: "taiga"
+      RABBITMQ_PEER_NAME: "taiga"
       RABBITMQ_NODE_USER: "taiga"
       RABBITMQ_NODE_PASS: "taiga"
       RABBITMQ_NODE_HOST: "taiga-backend-test-rabbitmq"
       RABBITMQ_NODE_PORT: "5672"
-      RABBITMQ_NODE_PATH: "taiga"
+      RABBITMQ_NODE_NAME: "taiga"
       REDIS_HOST: "taiga-backend-test-redis"
       REDIS_PORT: "6379"
 
@@ -72,9 +72,9 @@ services:
     networks:
       - taiga
     environment:
-      RABBITMQ_DEFAULT_VHOST: "taiga-backend-test-rabbitmq"
       RABBITMQ_DEFAULT_USER: "taiga"
       RABBITMQ_DEFAULT_PASS: "taiga"
+      RABBITMQ_DEFAULT_VHOST: "taiga"
 
   taiga-backend-test-redis:
     image: redis:alpine
