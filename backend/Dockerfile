@@ -5,7 +5,8 @@
 #
 
 FROM ubuntu:xenial AS build
-MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
+LABEL taiga-backend-build ""
 
 ARG NO_PROXY
 ARG FTP_PROXY
@@ -74,7 +75,8 @@ RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 #
 
 FROM ubuntu:xenial
-MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
+LABEL taiga-backend ""
 
 COPY --from=build /usr/local /usr/local
 

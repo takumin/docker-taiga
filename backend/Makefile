@@ -1,12 +1,4 @@
 #
-# Configuration
-#
-
-ifeq (x${LISTEN_PORT},x)
-export LISTEN_PORT=8088
-endif
-
-#
 # Build Arguments
 #
 
@@ -45,7 +37,7 @@ all: build
 
 .PHONY: build
 build:
-	@docker build $(ARGS) -t takumi/taiga-backend .
+	@docker build $(ARGS) -t takumi/taiga-backend:latest .
 
 .PHONY: release
 release: clean
@@ -57,14 +49,21 @@ release: clean
 
 .PHONY: clean
 clean:
-ifneq (x$(shell docker images -aqf "dangling=true"),x)
-	@docker rmi $(shell docker images -aqf "dangling=true")
+ifneq (x$(shell docker ps -aqf label=taiga-backend-build),x)
+	@docker stop $(shell docker ps -aqf label=taiga-backend-build)
+	@docker rm $(shell docker ps -aqf label=taiga-backend-build)
 endif
-ifneq (x$(shell docker ps -aqf name=taiga-backend),x)
-	@docker stop $(shell docker ps -aqf name=taiga-backend)
-	@docker rm $(shell docker ps -aqf name=taiga-backend)
+ifneq (x$(shell docker images -aqf label=taiga-backend-build),x)
+	@docker rmi $(shell docker images -aqf label=taiga-backend-build)
 endif
-ifneq (x$(shell docker image ls -aq takumi/taiga-backend),x)
-	@docker rmi takumi/taiga-backend
+ifneq (x$(shell docker ps -aqf label=taiga-backend),x)
+	@docker stop $(shell docker ps -aqf label=taiga-backend)
+	@docker rm $(shell docker ps -aqf label=taiga-backend)
+endif
+ifneq (x$(shell docker images -aqf label=taiga-backend),x)
+	@docker rmi $(shell docker images -aqf label=taiga-backend)
+endif
+ifneq (x$(shell docker images -aqf dangling=true),x)
+	@docker rmi $(shell docker images -aqf dangling=true)
 endif
 	@docker system prune -f
