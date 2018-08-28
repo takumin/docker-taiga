@@ -48,7 +48,6 @@ RUN echo "Build Config Starting" \
     libpq-dev \
     libgdbm-dev \
     libzmq3-dev \
-    librabbitmq-dev \
     libjpeg-turbo8-dev \
     libfreetype6-dev \
     libxml2-dev \
@@ -107,7 +106,6 @@ RUN echo "Deploy Config Starting" \
     libpq5 \
     libgdbm3 \
     libzmq5 \
-    librabbitmq4 \
     libjpeg-turbo8 \
     libfreetype6 \
     libxml2 \
