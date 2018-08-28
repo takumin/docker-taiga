@@ -78,14 +78,14 @@ COPY ./celery.py /usr/local/backend/settings/celery.py
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
-RUN find /usr/local
-
 #
 # Deploy Container
 #
 
 FROM ubuntu:xenial AS prod
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
+
+ARG UBUNTU_MIRROR="http://jp.archive.ubuntu.com/ubuntu"
 
 COPY --from=build /usr/local /usr/local
 

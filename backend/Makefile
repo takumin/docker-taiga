@@ -32,6 +32,10 @@ ifneq (x${HTTPS_PROXY}x,xx)
 BUILD_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
 endif
 
+ifneq (x${UBUNTU_MIRROR}x,xx)
+BUILD_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
+endif
+
 #
 # Default Rules
 #
@@ -45,15 +49,13 @@ all: build test
 
 .PHONY: build
 build:
-	@docker build $(BUILD_ARGS) .
-	@docker build $(BUILD_ARGS) --target prod -t takumi/taiga-backend:latest .
 	@docker build $(BUILD_ARGS) --target build -t takumi/taiga-backend:build .
+	@docker build $(BUILD_ARGS) --target prod -t takumi/taiga-backend:latest .
 
 .PHONY: release
 release: clean-all
-	@docker build $(BUILD_ARGS) --no-cache=true .
-	@docker build $(BUILD_ARGS) --no-cache=true --target prod -t takumi/taiga-backend:latest .
 	@docker build $(BUILD_ARGS) --no-cache=true --target build -t takumi/taiga-backend:build .
+	@docker build $(BUILD_ARGS) --no-cache=true --target prod -t takumi/taiga-backend:latest .
 
 #
 # Test Rules
