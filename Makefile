@@ -80,15 +80,15 @@ build: build-frontend build-events build-backend
 
 .PHONY: build-frontend
 build-frontend: clean-frontend
-	@docker build $(ARGS) -f Dockerfile.frontend -t takumi/taiga-frontend
+	@docker build $(ARGS) -f Dockerfile.frontend -t takumi/taiga-frontend .
 
 .PHONY: build-events
 build-events: clean-events
-	@docker build $(ARGS) -f Dockerfile.events -t takumi/taiga-events
+	@docker build $(ARGS) -f Dockerfile.events -t takumi/taiga-events .
 
 .PHONY: build-backend
 build-backend: clean-backend
-	@docker build $(ARGS) -f Dockerfile.backend -t takumi/taiga-backend
+	@docker build $(ARGS) -f Dockerfile.backend -t takumi/taiga-backend .
 
 #
 # Clean Rules
