@@ -29,7 +29,7 @@ endif
 #
 
 .PHONY: all
-all: build
+all: test
 
 #
 # Build Rules
