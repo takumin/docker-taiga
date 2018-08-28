@@ -37,11 +37,13 @@ all: build
 
 .PHONY: build
 build:
+	@docker build $(ARGS) --target build -t takumi/taiga-backend:build .
 	@docker build $(ARGS) -t takumi/taiga-backend:latest .
 
 .PHONY: release
 release: clean-all
-	@docker build $(ARGS) --no-cache=true -t takumi/taiga-backend .
+	@docker build $(ARGS) --no-cache=true --target build -t takumi/taiga-backend:build .
+	@docker build $(ARGS) --no-cache=true -t takumi/taiga-backend:latest .
 
 #
 # Clean Rules
@@ -49,30 +51,30 @@ release: clean-all
 
 .PHONY: clean
 clean:
-ifneq (x$(shell docker images -aqf dangling=true),x)
-	@docker rmi $(shell docker images -aqf dangling=true)
+ifneq (x$(shell docker images -aqf "dangling=true"),x)
+	@docker rmi $(shell docker images -aqf "dangling=true")
 endif
 	@docker system prune -f
 
 .PHONY: clean-build
 clean-build:
-ifneq (x$(shell docker ps -aqf label=taiga-backend-build),x)
-	@docker stop $(shell docker ps -aqf label=taiga-backend-build)
-	@docker rm $(shell docker ps -aqf label=taiga-backend-build)
+ifneq (x$(shell docker ps -aqf "name=takumi/taiga-backend:build"),x)
+	docker stop $(shell docker ps -aqf "name=takumi/taiga-backend:build")
+	docker rm $(shell docker ps -aqf "name=takumi/taiga-backend:build")
 endif
-ifneq (x$(shell docker images -aqf label=taiga-backend-build),x)
-	@docker rmi $(shell docker images -aqf label=taiga-backend-build)
+ifneq (x$(shell docker images -aq "takumi/taiga-backend:build"),x)
+	docker rmi $(shell docker images -aq "takumi/taiga-backend:build")
 endif
 
-.PHONY: clean-prod
-clean-prod:
-ifneq (x$(shell docker ps -aqf label=taiga-backend),x)
-	@docker stop $(shell docker ps -aqf label=taiga-backend)
-	@docker rm $(shell docker ps -aqf label=taiga-backend)
+.PHONY: clean-latest
+clean-latest:
+ifneq (x$(shell docker ps -aqf "name=takumi/taiga-backend:latest"),x)
+	docker stop $(shell docker ps -aqf "name=takumi/taiga-backend:latest")
+	docker rm $(shell docker ps -aqf "name=takumi/taiga-backend:latest")
 endif
-ifneq (x$(shell docker images -aqf label=taiga-backend),x)
-	@docker rmi $(shell docker images -aqf label=taiga-backend)
+ifneq (x$(shell docker images -aq "takumi/taiga-backend:latest"),x)
+	docker rmi $(shell docker images -aq "takumi/taiga-backend:latest")
 endif
 
 .PHONY: clean-all
-clean-all: clean clean-build clean-prod
+clean-all: clean-build clean-latest clean
