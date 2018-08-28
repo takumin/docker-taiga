@@ -5,11 +5,11 @@ import environ
 
 env = environ.Env(
     TIMEZONE=(str, 'UTC'),
+    RABBITMQ_NODE_USER=(str, 'taiga'),
+    RABBITMQ_NODE_PASS=(str, 'taiga'),
     RABBITMQ_NODE_HOST=(str, 'rabbitmq'),
     RABBITMQ_NODE_PORT=(int, 5672),
     RABBITMQ_NODE_NAME=(str, 'node'),
-    RABBITMQ_NODE_USER=(str, 'taiga'),
-    RABBITMQ_NODE_PASS=(str, 'taiga'),
     REDIS_HOST=(str, 'redis'),
     REDIS_PORT=(int, 6379),
 )
