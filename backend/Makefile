@@ -49,8 +49,16 @@ release: clean-all
 # Test Rules
 #
 .PHONY: test
-test:
+test: up
 	@docker-compose up -d
+
+.PHONY: up
+up:
+	@docker-compose up -d
+
+.PHONY: down
+down:
+	@docker-compose down
 
 #
 # Clean Rules
