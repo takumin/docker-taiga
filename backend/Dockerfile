@@ -37,7 +37,6 @@ RUN echo "Build Config Starting" \
     build-essential \
     wget \
     git \
-    gettext \
     python3 \
     python3-six \
     python3-setuptools \
@@ -98,6 +97,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
+    gettext \
     python3 \
     python3-six \
     python3-pkg-resources \
