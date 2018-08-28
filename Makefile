@@ -43,17 +43,37 @@ down:
 
 .PHONY: clean
 clean:
-ifneq (x$(shell docker ps -aq),x)
-	@docker stop $(shell docker ps -aq)
-	@docker rm $(shell docker ps -aq)
+	@docker system prune -f
+ifneq (x$(shell docker images -aqf "dangling=true"),x)
+	@docker rmi $(shell docker images -aqf "dangling=true")
+endif
+
+.PHONY: clean-frontend
+clean-frontend:
+ifneq (x$(shell docker ps -aqf name=taiga-frontend),x)
+	@docker stop $(shell docker ps -aqf taiga-frontend)
+	@docker rm $(shell docker ps -aqf taiga-frontend)
 endif
 ifneq (x$(shell docker image ls -aq takumi/taiga-frontend),x)
 	@docker rmi takumi/taiga-frontend
 endif
+
+.PHONY: clean-events
+clean-events:
+ifneq (x$(shell docker ps -aqf name=taiga-events),x)
+	@docker stop $(shell docker ps -aqf taiga-events)
+	@docker rm $(shell docker ps -aqf taiga-events)
+endif
 ifneq (x$(shell docker image ls -aq takumi/taiga-events),x)
 	@docker rmi takumi/taiga-events
+endif
+
+.PHONY: clean-backend
+clean-backend:
+ifneq (x$(shell docker ps -aqf name=taiga-backend),x)
+	@docker stop $(shell docker ps -aqf taiga-backend)
+	@docker rm $(shell docker ps -aqf taiga-backend)
 endif
 ifneq (x$(shell docker image ls -aq takumi/taiga-backend),x)
 	@docker rmi takumi/taiga-backend
 endif
-	@docker system prune -f

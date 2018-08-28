@@ -99,6 +99,17 @@ services:
       TAIGA_BACKEND_POSTGRESQL_NAME: "taiga-backend"
       TAIGA_BACKEND_POSTGRESQL_USER: "taiga-backend"
       TAIGA_BACKEND_POSTGRESQL_PASS: "taiga-backend"
+      TAIGA_BACKEND_API_SCHEME: "http"
+      TAIGA_BACKEND_API_DOMAIN: "localhost"
+      TAIGA_BACKEND_API_PORT: ""
+      TAIGA_BACKEND_API_NAME: ""
+      TAIGA_BACKEND_FRONT_SCHEME: ""
+      TAIGA_BACKEND_FRONT_DOMAIN: ""
+      TAIGA_BACKEND_FRONT_PORT: ""
+      TAIGA_BACKEND_FRONT_NAME: ""
+      TAIGA_BACKEND_MEDIA_URL: ""
+      TAIGA_BACKEND_STATIC_URL: ""
+      TAIGA_BACKEND_SECRET_KEY: ""
 
   taiga-backend-postgres:
     image: postgres:9.5-alpine

@@ -52,4 +52,4 @@ RUN echo Start! \
 WORKDIR /sv
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
-EXPOSE 8000
+EXPOSE 8000 9001
