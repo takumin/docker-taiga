@@ -176,7 +176,8 @@ if [ "$1" = 'default' ]; then
   # Wait
   ##############################################################################
 
-  wait-for-it.sh ${TAIGA_BACKEND_POSTGRESQL_HOST}:${TAIGA_BACKEND_POSTGRESQL_PORT} -- echo "postgresql is up"
+  wait-for-it.sh ${TAIGA_BACKEND_POSTGRESQL_HOST}:${TAIGA_BACKEND_POSTGRESQL_PORT} -- echo "PostgreSQL is Up"
+  wait-for-it.sh ${TAIGA_BACKEND_RABBITMQ_HOST}:${TAIGA_BACKEND_RABBITMQ_PORT} -- echo "RabbitMQ is Up"
 
   ##############################################################################
   # Initialize
