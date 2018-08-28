@@ -18,7 +18,7 @@ services:
     networks:
       - taiga
     ports:
-      - ${TAIGA_BACKEND_TEST_PORT}:${TAIGA_BACKEND_TEST_PORT}
+      - ${TAIGA_BACKEND_TEST_PORT}:8000
     depends_on:
       - taiga-backend-test-postgres
     environment:
