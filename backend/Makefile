@@ -45,11 +45,13 @@ all: build test
 
 .PHONY: build
 build:
+	@docker build $(BUILD_ARGS) .
 	@docker build $(BUILD_ARGS) --target prod -t takumi/taiga-backend:latest .
 	@docker build $(BUILD_ARGS) --target build -t takumi/taiga-backend:build .
 
 .PHONY: release
 release: clean-all
+	@docker build $(BUILD_ARGS) --no-cache=true .
 	@docker build $(BUILD_ARGS) --no-cache=true --target prod -t takumi/taiga-backend:latest .
 	@docker build $(BUILD_ARGS) --no-cache=true --target build -t takumi/taiga-backend:build .
 

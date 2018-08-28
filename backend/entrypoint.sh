@@ -7,6 +7,7 @@
 PYTHON_MEJOR="$(python3 -c 'import sys; print(sys.version_info.major)')"
 PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
 
+python3 -B -m compileall .
 python3 -B -m compileall /usr/lib/python${PYTHON_MEJOR}
 python3 -B -m compileall /usr/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}
 python3 -B -m compileall /usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}

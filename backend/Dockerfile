@@ -90,9 +90,9 @@ LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
- && echo "deb http://jp.archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
- && echo "deb http://jp.archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
- && echo "deb http://jp.archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
+ && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
+ && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
+ && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && export DEBIAN_FRONTEND="noninteractive" \
  && export DEBIAN_PRIORITY="critical" \
  && export DEBCONF_NONINTERACTIVE_SEEN="true" \
