@@ -40,7 +40,7 @@ build:
 	@docker build $(ARGS) -t takumi/taiga-backend:latest .
 
 .PHONY: release
-release: clean
+release: clean-all
 	@docker build $(ARGS) --no-cache=true -t takumi/taiga-backend .
 
 #
@@ -49,6 +49,13 @@ release: clean
 
 .PHONY: clean
 clean:
+ifneq (x$(shell docker images -aqf dangling=true),x)
+	@docker rmi $(shell docker images -aqf dangling=true)
+endif
+	@docker system prune -f
+
+.PHONY: clean-build
+clean-build:
 ifneq (x$(shell docker ps -aqf label=taiga-backend-build),x)
 	@docker stop $(shell docker ps -aqf label=taiga-backend-build)
 	@docker rm $(shell docker ps -aqf label=taiga-backend-build)
@@ -56,14 +63,16 @@ endif
 ifneq (x$(shell docker images -aqf label=taiga-backend-build),x)
 	@docker rmi $(shell docker images -aqf label=taiga-backend-build)
 endif
-# ifneq (x$(shell docker ps -aqf label=taiga-backend),x)
-# 	@docker stop $(shell docker ps -aqf label=taiga-backend)
-# 	@docker rm $(shell docker ps -aqf label=taiga-backend)
-# endif
-# ifneq (x$(shell docker images -aqf label=taiga-backend),x)
-# 	@docker rmi $(shell docker images -aqf label=taiga-backend)
-# endif
-ifneq (x$(shell docker images -aqf dangling=true),x)
-	@docker rmi $(shell docker images -aqf dangling=true)
+
+.PHONY: clean-prod
+clean-prod:
+ifneq (x$(shell docker ps -aqf label=taiga-backend),x)
+	@docker stop $(shell docker ps -aqf label=taiga-backend)
+	@docker rm $(shell docker ps -aqf label=taiga-backend)
 endif
-	@docker system prune -f
+ifneq (x$(shell docker images -aqf label=taiga-backend),x)
+	@docker rmi $(shell docker images -aqf label=taiga-backend)
+endif
+
+.PHONY: clean-all
+clean-all: clean clean-build clean-prod
