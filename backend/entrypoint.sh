@@ -28,7 +28,7 @@ if [ "$1" = 'default' ]; then
     echo "TAIGA_BACKEND_PORT: \"${TAIGA_BACKEND_PORT}\""
     echo "TAIGA_BACKEND_MEDIA_URL: \"${TAIGA_BACKEND_MEDIA_URL}\""
     echo "TAIGA_BACKEND_STATIC_URL: \"${TAIGA_BACKEND_STATIC_URL}\""
-    echo "TAIGA_BACKEND_SECRET_KEY: \"${TAIGA_BACKEND_SECRET_KEY}\""
+    echo "TAIGA_BACKEND_SECRET: \"${TAIGA_BACKEND_SECRET}\""
     echo "TAIGA_BACKEND_DEBUG: \"${TAIGA_BACKEND_DEBUG}\""
     echo "TAIGA_BACKEND_CELERY_ENABLED: \"${TAIGA_BACKEND_CELERY_ENABLED}\""
     echo "TAIGA_BACKEND_ADMIN_NAME: \"${TAIGA_BACKEND_ADMIN_NAME}\""
@@ -130,10 +130,10 @@ if [ "$1" = 'default' ]; then
   # Secret
   ##############################################################################
 
-  if [ -n "${TAIGA_BACKEND_SECRET_KEY}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SECRET_KEY'$^\1 = '${TAIGA_BACKEND_SECRET_KEY}'^" settings/local.py
+  if [ -n "${TAIGA_BACKEND_SECRET}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_SECRET'$^\1 = '${TAIGA_BACKEND_SECRET}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_SECRET_KEY"
+    echo "Set require environment variable: TAIGA_BACKEND_SECRET"
     exit 1
   fi
 
