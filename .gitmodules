@@ -5,5 +5,5 @@
 	path = frontend/taiga-frontend
 	url = https://github.com/taigaio/taiga-front-dist.git
 [submodule "taiga-events"]
-	path = events/taiga-events
+	path = events/upstream
 	url = https://github.com/taigaio/taiga-events.git

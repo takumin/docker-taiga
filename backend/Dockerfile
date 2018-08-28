@@ -67,7 +67,6 @@ RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vish
 RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 
 COPY ./upstream /usr/local/backend
-COPY ./local_template.py /usr/local/backend/settings/local.py
 RUN git config --global url."https://".insteadOf git://
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 RUN pip3 install --install-option="--prefix=/usr/local" circus
@@ -76,6 +75,7 @@ WORKDIR /usr/local/backend
 RUN python3 manage.py compilemessages
 RUN python3 manage.py collectstatic --noinput
 
+COPY ./local_template.py /usr/local/backend/settings/local.py
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 

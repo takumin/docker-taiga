@@ -1,7 +1,0 @@
-{
-    "url": "amqp://TAIGA_EVENTS_RABBITMQ_USER:TAIGA_EVENTS_RABBITMQ_PASS@TAIGA_EVENTS_RABBITMQ_HOST:TAIGA_EVENTS_RABBITMQ_PORT",
-    "secret": "TAIGA_EVENTS_SECRET",
-    "webSocketServer": {
-        "port": 8888
-    }
-}
