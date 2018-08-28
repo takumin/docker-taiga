@@ -13,16 +13,16 @@ if [ "$1" = 'default' ]; then
   fi
 
   if [ "x${TAIGA_BACKEND_DEBUG}" = 'xTrue' ]; then
-    echo "TAIGA_BACKEND_POSTGRESQL_HOST: \"${TAIGA_BACKEND_POSTGRESQL_HOST}\""
-    echo "TAIGA_BACKEND_POSTGRESQL_PORT: \"${TAIGA_BACKEND_POSTGRESQL_PORT}\""
-    echo "TAIGA_BACKEND_POSTGRESQL_NAME: \"${TAIGA_BACKEND_POSTGRESQL_NAME}\""
-    echo "TAIGA_BACKEND_POSTGRESQL_USER: \"${TAIGA_BACKEND_POSTGRESQL_USER}\""
-    echo "TAIGA_BACKEND_POSTGRESQL_PASS: \"${TAIGA_BACKEND_POSTGRESQL_PASS}\""
-    echo "TAIGA_BACKEND_RABBITMQ_USER: \"${TAIGA_BACKEND_RABBITMQ_USER}\""
-    echo "TAIGA_BACKEND_RABBITMQ_PASS: \"${TAIGA_BACKEND_RABBITMQ_PASS}\""
-    echo "TAIGA_BACKEND_RABBITMQ_HOST: \"${TAIGA_BACKEND_RABBITMQ_HOST}\""
-    echo "TAIGA_BACKEND_RABBITMQ_PORT: \"${TAIGA_BACKEND_RABBITMQ_PORT}\""
-    echo "TAIGA_BACKEND_RABBITMQ_PATH: \"${TAIGA_BACKEND_RABBITMQ_PATH}\""
+    echo "TAIGA_POSTGRESQL_HOST: \"${TAIGA_POSTGRESQL_HOST}\""
+    echo "TAIGA_POSTGRESQL_PORT: \"${TAIGA_POSTGRESQL_PORT}\""
+    echo "TAIGA_POSTGRESQL_NAME: \"${TAIGA_POSTGRESQL_NAME}\""
+    echo "TAIGA_POSTGRESQL_USER: \"${TAIGA_POSTGRESQL_USER}\""
+    echo "TAIGA_POSTGRESQL_PASS: \"${TAIGA_POSTGRESQL_PASS}\""
+    echo "TAIGA_RABBITMQ_USER: \"${TAIGA_RABBITMQ_USER}\""
+    echo "TAIGA_RABBITMQ_PASS: \"${TAIGA_RABBITMQ_PASS}\""
+    echo "TAIGA_RABBITMQ_HOST: \"${TAIGA_RABBITMQ_HOST}\""
+    echo "TAIGA_RABBITMQ_PORT: \"${TAIGA_RABBITMQ_PORT}\""
+    echo "TAIGA_RABBITMQ_PATH: \"${TAIGA_RABBITMQ_PATH}\""
     echo "TAIGA_BACKEND_SCHEME: \"${TAIGA_BACKEND_SCHEME}\""
     echo "TAIGA_BACKEND_DOMAIN: \"${TAIGA_BACKEND_DOMAIN}\""
     echo "TAIGA_BACKEND_PORT: \"${TAIGA_BACKEND_PORT}\""
@@ -39,38 +39,38 @@ if [ "$1" = 'default' ]; then
   # PostgreSQL
   ##############################################################################
 
-  if [ -n "${TAIGA_BACKEND_POSTGRESQL_HOST}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_POSTGRESQL_HOST'$^\1 = '${TAIGA_BACKEND_POSTGRESQL_HOST}'^" settings/local.py
+  if [ -n "${TAIGA_POSTGRESQL_HOST}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_POSTGRESQL_HOST'$^\1 = '${TAIGA_POSTGRESQL_HOST}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_HOST"
+    echo "Set require environment variable: TAIGA_POSTGRESQL_HOST"
     exit 1
   fi
 
-  if [ -n "${TAIGA_BACKEND_POSTGRESQL_PORT}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_POSTGRESQL_PORT'$^\1 = '${TAIGA_BACKEND_POSTGRESQL_PORT}'^" settings/local.py
+  if [ -n "${TAIGA_POSTGRESQL_PORT}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_POSTGRESQL_PORT'$^\1 = '${TAIGA_POSTGRESQL_PORT}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_PORT"
+    echo "Set require environment variable: TAIGA_POSTGRESQL_PORT"
     exit 1
   fi
 
-  if [ -n "${TAIGA_BACKEND_POSTGRESQL_NAME}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_POSTGRESQL_NAME'$^\1 = '${TAIGA_BACKEND_POSTGRESQL_NAME}'^" settings/local.py
+  if [ -n "${TAIGA_POSTGRESQL_NAME}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_POSTGRESQL_NAME'$^\1 = '${TAIGA_POSTGRESQL_NAME}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_NAME"
+    echo "Set require environment variable: TAIGA_POSTGRESQL_NAME"
     exit 1
   fi
 
-  if [ -n "${TAIGA_BACKEND_POSTGRESQL_USER}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_POSTGRESQL_USER'$^\1 = '${TAIGA_BACKEND_POSTGRESQL_USER}'^" settings/local.py
+  if [ -n "${TAIGA_POSTGRESQL_USER}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_POSTGRESQL_USER'$^\1 = '${TAIGA_POSTGRESQL_USER}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_USER"
+    echo "Set require environment variable: TAIGA_POSTGRESQL_USER"
     exit 1
   fi
 
-  if [ -n "${TAIGA_BACKEND_POSTGRESQL_PASS}" ]; then
-    sed -i -e "s^# \(.*\) = 'TAIGA_BACKEND_POSTGRESQL_PASS'$^\1 = '${TAIGA_BACKEND_POSTGRESQL_PASS}'^" settings/local.py
+  if [ -n "${TAIGA_POSTGRESQL_PASS}" ]; then
+    sed -i -e "s^# \(.*\) = 'TAIGA_POSTGRESQL_PASS'$^\1 = '${TAIGA_POSTGRESQL_PASS}'^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_POSTGRESQL_PASS"
+    echo "Set require environment variable: TAIGA_POSTGRESQL_PASS"
     exit 1
   fi
 
@@ -78,14 +78,14 @@ if [ "$1" = 'default' ]; then
   # RabbitMQ
   ##############################################################################
 
-  if [ -n "${TAIGA_BACKEND_RABBITMQ_USER}" -a -n "${TAIGA_BACKEND_RABBITMQ_PASS}" -a -n "${TAIGA_BACKEND_RABBITMQ_HOST}" -a -n "${TAIGA_BACKEND_RABBITMQ_PORT}" ]; then
+  if [ -n "${TAIGA_RABBITMQ_USER}" -a -n "${TAIGA_RABBITMQ_PASS}" -a -n "${TAIGA_RABBITMQ_HOST}" -a -n "${TAIGA_RABBITMQ_PORT}" ]; then
     sed -i -e "s^# \(EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'\)$^\1^" settings/local.py
-    sed -i -e "s^# \(.*\) {'url': 'ampq//TAIGA_BACKEND_RABBITMQ_USER:TAIGA_BACKEND_RABBITMQ_PASS@TAIGA_BACKEND_RABBITMQ_HOST:TAIGA_BACKEND_RABBITMQ_PORT/TAIGA_BACKEND_RABBITMQ_PATH'}$^\1 {'url': 'ampq//${TAIGA_BACKEND_RABBITMQ_USER}:${TAIGA_BACKEND_RABBITMQ_PASS}@${TAIGA_BACKEND_RABBITMQ_HOST}:${TAIGA_BACKEND_RABBITMQ_PORT}/${TAIGA_BACKEND_RABBITMQ_PATH}'}^" settings/local.py
+    sed -i -e "s^# \(.*\) {'url': 'ampq//TAIGA_RABBITMQ_USER:TAIGA_RABBITMQ_PASS@TAIGA_RABBITMQ_HOST:TAIGA_RABBITMQ_PORT/TAIGA_RABBITMQ_PATH'}$^\1 {'url': 'ampq//${TAIGA_RABBITMQ_USER}:${TAIGA_RABBITMQ_PASS}@${TAIGA_RABBITMQ_HOST}:${TAIGA_RABBITMQ_PORT}/${TAIGA_RABBITMQ_PATH}'}^" settings/local.py
   else
-    echo "Set require environment variable: TAIGA_BACKEND_RABBITMQ_USER,"
-    echo "                                  TAIGA_BACKEND_RABBITMQ_PASS,"
-    echo "                                  TAIGA_BACKEND_RABBITMQ_HOST,"
-    echo "                                  TAIGA_BACKEND_RABBITMQ_PORT"
+    echo "Set require environment variable: TAIGA_RABBITMQ_USER,"
+    echo "                                  TAIGA_RABBITMQ_PASS,"
+    echo "                                  TAIGA_RABBITMQ_HOST,"
+    echo "                                  TAIGA_RABBITMQ_PORT"
     exit 1
   fi
 
@@ -169,8 +169,8 @@ if [ "$1" = 'default' ]; then
   # Wait
   ##############################################################################
 
-  wait-for-it.sh ${TAIGA_BACKEND_POSTGRESQL_HOST}:${TAIGA_BACKEND_POSTGRESQL_PORT} -- echo "PostgreSQL is Up"
-  wait-for-it.sh ${TAIGA_BACKEND_RABBITMQ_HOST}:${TAIGA_BACKEND_RABBITMQ_PORT} -- echo "RabbitMQ is Up"
+  wait-for-it.sh ${TAIGA_POSTGRESQL_HOST}:${TAIGA_POSTGRESQL_PORT} -- echo "PostgreSQL is Up"
+  wait-for-it.sh ${TAIGA_RABBITMQ_HOST}:${TAIGA_RABBITMQ_PORT} -- echo "RabbitMQ is Up"
 
   ##############################################################################
   # Initialize
