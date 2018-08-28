@@ -6,7 +6,6 @@
 
 FROM ubuntu:xenial AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
-LABEL taiga-backend-build ""
 
 ARG UBUNTU_MIRROR="http://jp.archive.ubuntu.com/ubuntu"
 
@@ -85,9 +84,8 @@ RUN find /usr/local
 # Deploy Container
 #
 
-FROM ubuntu:xenial
+FROM ubuntu:xenial AS prod
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
-LABEL taiga-backend ""
 
 COPY --from=build /usr/local /usr/local
 
