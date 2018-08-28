@@ -89,9 +89,9 @@ endif
 
 .PHONY: clean-build
 clean-build:
-ifneq (x$(shell docker ps -aqf "name=takumi/taiga-backend:build"),x)
-	docker stop $(shell docker ps -aqf "name=takumi/taiga-backend:build")
-	docker rm $(shell docker ps -aqf "name=takumi/taiga-backend:build")
+ifneq (x$(shell docker ps -aqf "label=taiga-backend-build"),x)
+	docker stop $(shell docker ps -aqf "label=taiga-backend-build")
+	docker rm $(shell docker ps -aqf "label=taiga-backend-build")
 endif
 ifneq (x$(shell docker images -aq "takumi/taiga-backend:build"),x)
 	docker rmi $(shell docker images -aq "takumi/taiga-backend:build")
@@ -99,9 +99,9 @@ endif
 
 .PHONY: clean-latest
 clean-latest:
-ifneq (x$(shell docker ps -aqf "name=takumi/taiga-backend:latest"),x)
-	docker stop $(shell docker ps -aqf "name=takumi/taiga-backend:latest")
-	docker rm $(shell docker ps -aqf "name=takumi/taiga-backend:latest")
+ifneq (x$(shell docker ps -aqf "label=taiga-backend"),x)
+	docker stop $(shell docker ps -aqf "label=taiga-backend")
+	docker rm $(shell docker ps -aqf "label=taiga-backend")
 endif
 ifneq (x$(shell docker images -aq "takumi/taiga-backend:latest"),x)
 	docker rmi $(shell docker images -aq "takumi/taiga-backend:latest")
