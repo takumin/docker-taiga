@@ -14,6 +14,7 @@ services:
         HTTPS_PROXY: ${HTTPS_PROXY}
         UBUNTU_MIRROR: ${UBUNTU_MIRROR}
     image: takumi/taiga-backend
+    hostname: taiga-backend-test
     container_name: taiga-backend-test
     networks:
       - taiga
@@ -55,6 +56,7 @@ services:
 
   taiga-backend-test-postgres:
     image: postgres:9.5-alpine
+    hostname: taiga-backend-test-postgres
     container_name: taiga-backend-test-postgres
     networks:
       - taiga
@@ -68,6 +70,7 @@ services:
 
   taiga-backend-test-rabbitmq:
     image: rabbitmq:alpine
+    hostname: taiga-backend-test-rabbitmq
     container_name: taiga-backend-test-rabbitmq
     networks:
       - taiga
@@ -80,6 +83,7 @@ services:
 
   taiga-backend-test-redis:
     image: redis:alpine
+    hostname: taiga-backend-test-redis
     container_name: taiga-backend-test-redis
     networks:
       - taiga
