@@ -221,8 +221,6 @@ if [ "$1" = 'default' ]; then
   python3 /taiga-backend/manage.py migrate --noinput
   python3 /taiga-backend/manage.py loaddata initial_user
   python3 /taiga-backend/manage.py loaddata initial_project_templates
-  python3 /taiga-backend/manage.py compilemessages
-  python3 /taiga-backend/manage.py collectstatic --noinput
 
   exec runsv taiga-backend
 fi

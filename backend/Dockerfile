@@ -37,6 +37,7 @@ RUN echo "Build Config Starting" \
     build-essential \
     wget \
     git \
+    gettext \
     python3 \
     python3-six \
     python3-setuptools \
@@ -73,6 +74,10 @@ RUN chmod 0755 /usr/local/bin/entrypoint.sh
 RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
 RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 
+WORKDIR /usr/local/backend
+RUN python3 manage.py compilemessages
+RUN python3 manage.py collectstatic --noinput
+
 #
 # Deploy Container
 #
@@ -97,7 +102,6 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
-    gettext \
     python3 \
     python3-six \
     python3-pkg-resources \
