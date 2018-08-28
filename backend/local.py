@@ -38,7 +38,7 @@ SITES = {
         'domain': env('BACKEND_HOSTNAME'),
     },
     'front': {
-        'name': 'front'
+        'name': 'front',
         'scheme': env('FRONTEND_SCHEME'),
         'domain': env('FRONTEND_HOSTNAME'),
     },
@@ -70,7 +70,7 @@ EVENTS_PUSH_BACKEND_OPTIONS = {
 }
 
 ADMINS = (
-    env('BACKEND_ADMIN_NAME'): env('BACKEND_ADMIN_EMAIL')
+    env('BACKEND_ADMIN_NAME'): env('BACKEND_ADMIN_EMAIL'),
 )
 
 CELERY_ENABLED = env('BACKEND_CELERY_ENABLED')
