@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from kombu import Queue
-from environ import environ
+import environ
 
-env = Env(
+env = environ.Env(
     TIMEZONE=(str, 'UTC'),
     RABBITMQ_NODE_HOST=(str, 'rabbitmq'),
     RABBITMQ_NODE_PORT=(int, 5672),

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from .common import *
-from environ import environ
+import environ
 
-env = Env(
+env = environ.Env(
     BACKEND_DEBUG=(bool, False),
     BACKEND_SECRET=(str),
     BACKEND_SCHEME=(str, 'http'),

@@ -89,6 +89,8 @@ FROM ubuntu:xenial
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 LABEL taiga-backend ""
 
+ARG UBUNTU_MIRROR="http://jp.archive.ubuntu.com/ubuntu"
+
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
