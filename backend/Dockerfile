@@ -8,26 +8,12 @@ FROM ubuntu:xenial AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 LABEL taiga-backend-build ""
 
-ARG NO_PROXY
-ARG FTP_PROXY
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
 ARG UBUNTU_MIRROR="http://jp.archive.ubuntu.com/ubuntu"
-
-ENV NO_PROXY ${NO_PROXY}
-ENV no_proxy ${NO_PROXY}
-ENV FTP_PROXY ${FTP_PROXY}
-ENV ftp_proxy ${FTP_PROXY}
-ENV HTTP_PROXY ${HTTP_PROXY}
-ENV http_proxy ${HTTP_PROXY}
-ENV HTTPS_PROXY ${HTTPS_PROXY}
-ENV https_proxy ${HTTPS_PROXY}
 
 RUN echo "Build Config Starting" \
  && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
- && cp /etc/apt/sources.list /usr/local/sources.list \
  && export DEBIAN_FRONTEND="noninteractive" \
  && export DEBIAN_PRIORITY="critical" \
  && export DEBCONF_NONINTERACTIVE_SEEN="true" \
@@ -61,6 +47,9 @@ RUN echo "Build Config Starting" \
  && unset DEBIAN_FRONTEND \
  && unset DEBIAN_PRIORITY \
  && unset DEBCONF_NONINTERACTIVE_SEEN \
+ && echo "deb http://archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
+ && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
+ && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "Build Config Complete!"
 
 RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
@@ -91,12 +80,9 @@ LABEL taiga-backend ""
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
- && unset NO_PROXY \
- && unset FTP_PROXY \
- && unset HTTP_PROXY \
- && unset HTTPS_PROXY \
- && cp /usr/local/sources.list /etc/apt/sources.list \
- && rm /usr/local/sources.list \
+ && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
+ && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
+ && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && export DEBIAN_FRONTEND="noninteractive" \
  && export DEBIAN_PRIORITY="critical" \
  && export DEBCONF_NONINTERACTIVE_SEEN="true" \
