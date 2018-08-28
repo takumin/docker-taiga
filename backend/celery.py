@@ -9,7 +9,7 @@ env = environ.Env(
     RABBITMQ_PASS=(str, 'taiga'),
     RABBITMQ_HOST=(str, 'rabbitmq'),
     RABBITMQ_PORT=(int, 5672),
-    RABBITMQ_NAME=(str, 'node'),
+    RABBITMQ_NAME=(str, 'taiga'),
     REDIS_HOST=(str, 'redis'),
     REDIS_PORT=(int, 6379),
 )
