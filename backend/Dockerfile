@@ -75,6 +75,7 @@ RUN python3 manage.py compilemessages
 RUN python3 manage.py collectstatic --noinput
 
 COPY ./local.py /usr/local/backend/settings/local.py
+COPY ./celery.py /usr/local/backend/settings/celery.py
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
