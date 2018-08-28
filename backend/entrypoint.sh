@@ -182,27 +182,11 @@ if [ "$1" = 'default' ]; then
   python3 manage.py loaddata initial_project_templates
 
   ##############################################################################
-  # Daemon
-  ##############################################################################
-
-  echo "[watcher:taiga]"                              >  circusd.ini
-  echo "working_dir = $(pwd)"                         >> circusd.ini
-  echo "cmd = gunicorn"                               >> circusd.ini
-  echo "args = -w 4 -t 60 -b 0.0.0.0:8000 taiga.wsgi" >> circusd.ini
-  echo "numprocesses = 1"                             >> circusd.ini
-  echo "autostart = true"                             >> circusd.ini
-  echo "send_hup = true"                              >> circusd.ini
-  echo ""                                             >> circusd.ini
-  echo "[env:taiga]"                                  >> circusd.ini
-  echo "PATH = ${PATH}"                               >> circusd.ini
-  echo "PYTHONPATH = $(pwd)"                          >> circusd.ini
-
-  ##############################################################################
   # Running
   ##############################################################################
 
   echo "Starting Server"
-  exec circusd circusd.ini
+  exec runsv
 fi
 
 exec "$@"

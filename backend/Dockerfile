@@ -69,13 +69,12 @@ RUN chmod 0755 /usr/local/bin/wait-for-it.sh
 COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
-RUN pip3 install --install-option="--prefix=/usr/local" circus
 
 WORKDIR /usr/local/backend
 RUN python3 manage.py compilemessages
 RUN python3 manage.py collectstatic --noinput
 
-COPY ./local_template.py /usr/local/backend/settings/local.py
+COPY ./local.py /usr/local/backend/settings/local.py
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
@@ -94,7 +93,6 @@ RUN echo "Deploy Config Starting" \
  && unset FTP_PROXY \
  && unset HTTP_PROXY \
  && unset HTTPS_PROXY \
- && mv /usr/local/backend /taiga-backend \
  && cp /usr/local/sources.list /etc/apt/sources.list \
  && rm /usr/local/sources.list \
  && export DEBIAN_FRONTEND="noninteractive" \
@@ -103,6 +101,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
+    runit \
     python3 \
     python3-six \
     python3-pkg-resources \
@@ -127,8 +126,11 @@ RUN echo "Deploy Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
- && find /usr/local \
- && printenv | sort \
+ && mv /usr/local/backend /taiga-backend \
+ && echo '#!/bin/sh'                                           >  /taiga-backend/run \
+ && echo 'exec 2>&1'                                           >> /taiga-backend/run \
+ && echo 'exec gunicorn -w 4 -t 60 -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/run \
+ && chmod 0755 /taiga-backend/run \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-backend
