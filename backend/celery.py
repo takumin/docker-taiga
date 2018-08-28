@@ -5,11 +5,11 @@ import environ
 
 env = environ.Env(
     TIMEZONE=(str, 'UTC'),
-    RABBITMQ_NODE_USER=(str, 'taiga'),
-    RABBITMQ_NODE_PASS=(str, 'taiga'),
-    RABBITMQ_NODE_HOST=(str, 'rabbitmq'),
-    RABBITMQ_NODE_PORT=(int, 5672),
-    RABBITMQ_NODE_NAME=(str, 'node'),
+    RABBITMQ_USER=(str, 'taiga'),
+    RABBITMQ_PASS=(str, 'taiga'),
+    RABBITMQ_HOST=(str, 'rabbitmq'),
+    RABBITMQ_PORT=(int, 5672),
+    RABBITMQ_NAME=(str, 'node'),
     REDIS_HOST=(str, 'redis'),
     REDIS_PORT=(int, 6379),
 )
@@ -17,11 +17,11 @@ env = environ.Env(
 timezone = env('TIMEZONE'),
 
 broker_url = 'amqp:/{USER}:{PASS}@{HOST}:{PORT}/{NAME}'.format(
-    USER=env('RABBITMQ_NODE_USER'),
-    PASS=env('RABBITMQ_NODE_PASS'),
-    HOST=env('RABBITMQ_NODE_HOST'),
-    PORT=env('RABBITMQ_NODE_PORT'),
-    NAME=env('RABBITMQ_NODE_NAME'),
+    USER=env('RABBITMQ_USER'),
+    PASS=env('RABBITMQ_PASS'),
+    HOST=env('RABBITMQ_HOST'),
+    PORT=env('RABBITMQ_PORT'),
+    NAME=env('RABBITMQ_NAME'),
 )
 result_backend = 'redis://{HOST}:{PORT}/0'.format(
     HOST=env('REDIS_HOST'),

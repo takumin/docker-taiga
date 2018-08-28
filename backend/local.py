@@ -17,11 +17,11 @@ env = environ.Env(
     POSTGRESQL_HOST=(str, 'postgres'),
     POSTGRESQL_PORT=(int, 5432),
     POSTGRESQL_NAME=(str, 'taiga'),
-    RABBITMQ_PEER_USER=(str, 'taiga'),
-    RABBITMQ_PEER_PASS=(str, 'taiga'),
-    RABBITMQ_PEER_HOST=(str, 'rabbitmq'),
-    RABBITMQ_PEER_PORT=(int, 4369),
-    RABBITMQ_PEER_NAME=(str, 'peer'),
+    RABBITMQ_USER=(str, 'taiga'),
+    RABBITMQ_PASS=(str, 'taiga'),
+    RABBITMQ_HOST=(str, 'rabbitmq'),
+    RABBITMQ_PORT=(int, 5672),
+    RABBITMQ_NAME=(str, 'peer'),
     BACKEND_ADMIN_NAME=(str, 'Admin'),
     BACKEND_ADMIN_EMAIL=(str, 'admin@example.com'),
     BACKEND_CELERY_ENABLED=(bool, False),
@@ -61,11 +61,11 @@ DATABASES = {
 EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
 EVENTS_PUSH_BACKEND_OPTIONS = {
     'url': 'ampq//{USER}:{PASS}@{HOST}:{PORT}/{NAME}'.format(
-        USER=env('RABBITMQ_PEER_USER'),
-        PASS=env('RABBITMQ_PEER_PASS'),
-        HOST=env('RABBITMQ_PEER_HOST'),
-        PORT=env('RABBITMQ_PEER_PORT'),
-        NAME=env('RABBITMQ_PEER_NAME'),
+        USER=env('RABBITMQ_USER'),
+        PASS=env('RABBITMQ_PASS'),
+        HOST=env('RABBITMQ_HOST'),
+        PORT=env('RABBITMQ_PORT'),
+        NAME=env('RABBITMQ_NAME'),
     ),
 }
 
