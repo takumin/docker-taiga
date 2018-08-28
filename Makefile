@@ -49,7 +49,7 @@ ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
 endif
 
 ifneq (x${UBUNTU_MIRROR},x)
-ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
+BACKEND_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
 endif
 
 #
@@ -88,7 +88,7 @@ build-events: clean-events
 
 .PHONY: build-backend
 build-backend: clean-backend
-	@docker build $(ARGS) -f Dockerfile.backend -t takumi/taiga-backend .
+	@docker build $(ARGS) $(BACKEND_ARGS) -f Dockerfile.backend -t takumi/taiga-backend .
 
 #
 # Clean Rules
