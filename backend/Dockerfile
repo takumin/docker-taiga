@@ -67,6 +67,7 @@ COPY ./upstream /usr/local/backend
 COPY ./local_template.py /usr/local/backend/settings/local.py
 RUN git config --global url."https://".insteadOf git://
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+RUN pip3 install --install-option="--prefix=/usr/local" circus
 
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
@@ -102,7 +103,6 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
-    circus \
     python3 \
     python3-six \
     python3-pkg-resources \

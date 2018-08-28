@@ -184,6 +184,7 @@ if [ "$1" = 'default' ]; then
   # Initialize
   ##############################################################################
 
+  echo "Starting Initialize"
   python3 manage.py migrate --noinput
   python3 manage.py loaddata initial_user
   python3 manage.py loaddata initial_project_templates
@@ -192,19 +193,22 @@ if [ "$1" = 'default' ]; then
   # Daemon
   ##############################################################################
 
-  echo "" > circusd.ini
-  echo "[watcher:taiga]" >> circusd.ini
+  echo "[watcher:taiga]" > circusd.ini
   echo "working_dir = $(pwd)" >> circusd.ini
   echo "cmd = gunicorn" >> circusd.ini
   echo "args = -w 3 -t 60 --pythonpath=. -b ${TAIGA_BACKEND_SITES_FRONT_DOMAIN}:${TAIGA_BACKEND_SITES_FRONT_PORT} taiga.wsgi" >> circusd.ini
   echo "numprocesses = 1" >> circusd.ini
   echo "autostart = true" >> circusd.ini
   echo "send_hup = true" >> circusd.ini
+  echo "" >> circusd.ini
+  echo "[env:taiga]" >> circusd.ini
+  echo "PATH = ${PATH}" >> circusd.ini
 
   ##############################################################################
   # Running
   ##############################################################################
 
+  echo "Starting Server"
   exec circusd circusd.ini
 fi
 
