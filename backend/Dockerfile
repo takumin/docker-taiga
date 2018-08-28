@@ -39,6 +39,7 @@ RUN echo "Build Config Starting" \
     wget \
     git \
     python3 \
+    python3-six \
     python3-setuptools \
     python3-pip \
     python3-dev \
