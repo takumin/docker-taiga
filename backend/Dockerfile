@@ -113,6 +113,7 @@ RUN echo "Deploy Config Starting" \
  && [ -n "${FTP_PROXY}" ] && unset FTP_PROXY \
  && [ -n "${HTTP_PROXY}" ] && unset HTTP_PROXY \
  && [ -n "${HTTPS_PROXY}" ] && unset HTTPS_PROXY \
+ && find /usr/local \
  && printenv | sort \
  && echo "Deploy Config Complete!"
 
