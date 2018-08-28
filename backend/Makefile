@@ -29,7 +29,7 @@ endif
 #
 
 .PHONY: all
-all: down build test
+all: build test
 
 #
 # Build Rules
@@ -52,12 +52,14 @@ release: clean-all
 test: up
 
 .PHONY: up
-up:
+up: down
 	@docker-compose up -d
 
 .PHONY: down
 down:
+ifneq (x$(shell docker-compose ps -q),x)
 	@docker-compose down
+endif
 
 #
 # Clean Rules

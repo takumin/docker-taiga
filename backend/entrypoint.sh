@@ -188,7 +188,24 @@ if [ "$1" = 'default' ]; then
   python3 manage.py loaddata initial_user
   python3 manage.py loaddata initial_project_templates
 
-  exec celery -A taiga worker -c 4
+  ##############################################################################
+  # Daemon
+  ##############################################################################
+
+  echo "" > circusd.ini
+  echo "[watcher:taiga]" >> circusd.ini
+  echo "working_dir = $(pwd)" >> circusd.ini
+  echo "cmd = gunicorn" >> circusd.ini
+  echo "args = -w 3 -t 60 --pythonpath=. -b ${TAIGA_BACKEND_SITES_FRONT_DOMAIN}:${TAIGA_BACKEND_SITES_FRONT_PORT} taiga.wsgi" >> circusd.ini
+  echo "numprocesses = 1" >> circusd.ini
+  echo "autostart = true" >> circusd.ini
+  echo "send_hup = true" >> circusd.ini
+
+  ##############################################################################
+  # Running
+  ##############################################################################
+
+  exec circusd circusd.ini
 fi
 
 exec "$@"
