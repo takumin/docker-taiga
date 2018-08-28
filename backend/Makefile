@@ -50,7 +50,6 @@ release: clean-all
 #
 .PHONY: test
 test: up
-	@docker-compose up -d
 
 .PHONY: up
 up:
