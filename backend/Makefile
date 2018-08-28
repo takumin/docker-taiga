@@ -1,28 +1,49 @@
 #
-# Build Arguments
+# Environment Variables
 #
 
-ARGS ?=
+BUILD_ARGS ?=
 
 ifneq (x${NO_PROXY},x)
-ARGS += --build-arg NO_PROXY=${NO_PROXY}
+BUILD_ARGS += --build-arg NO_PROXY=${NO_PROXY}
 endif
 
 ifneq (x${FTP_PROXY},x)
-ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
+BUILD_ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
 endif
 
 ifneq (x${HTTP_PROXY},x)
-ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
+BUILD_ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
 endif
 
 ifneq (x${HTTPS_PROXY},x)
-ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
+BUILD_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
 endif
 
 ifneq (x${UBUNTU_MIRROR},x)
-ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
+BUILD_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
 endif
+
+TEST_ARGS ?=
+TEST_ARGS += -e TAIGA_BACKEND_SECRET_KEY="taiga"
+TEST_ARGS += -e TAIGA_BACKEND_POSTGRESQL_HOST="localhost"
+TEST_ARGS += -e TAIGA_BACKEND_POSTGRESQL_PORT="5432"
+TEST_ARGS += -e TAIGA_BACKEND_POSTGRESQL_NAME="taiga"
+TEST_ARGS += -e TAIGA_BACKEND_POSTGRESQL_USER="taiga"
+TEST_ARGS += -e TAIGA_BACKEND_POSTGRESQL_PASS="taiga"
+TEST_ARGS += -e TAIGA_BACKEND_RABBITMQ_USER="taiga"
+TEST_ARGS += -e TAIGA_BACKEND_RABBITMQ_PASS="taiga"
+TEST_ARGS += -e TAIGA_BACKEND_RABBITMQ_HOST="localhost"
+TEST_ARGS += -e TAIGA_BACKEND_RABBITMQ_PORT="4396"
+TEST_ARGS += -e TAIGA_BACKEND_RABBITMQ_PATH=""
+TEST_ARGS += -e TAIGA_BACKEND_SITES_API_SCHEME="http"
+TEST_ARGS += -e TAIGA_BACKEND_SITES_API_DOMAIN="localhost"
+TEST_ARGS += -e TAIGA_BACKEND_SITES_API_PORT="8000"
+TEST_ARGS += -e TAIGA_BACKEND_SITES_FRONT_SCHEME="http"
+TEST_ARGS += -e TAIGA_BACKEND_SITES_FRONT_DOMAIN="localhost"
+TEST_ARGS += -e TAIGA_BACKEND_SITES_FRONT_PORT="9000"
+TEST_ARGS += -e TAIGA_BACKEND_MEDIA_URL="http://localhost/media/"
+TEST_ARGS += -e TAIGA_BACKEND_STATIC_URL="http://localhost/static/"
 
 #
 # Default Rules
@@ -37,13 +58,20 @@ all: build
 
 .PHONY: build
 build:
-	@docker build $(ARGS) --target build -t takumi/taiga-backend:build .
-	@docker build $(ARGS) -t takumi/taiga-backend:latest .
+	@docker build $(BUILD_ARGS) --target build -t takumi/taiga-backend:build .
+	@docker build $(BUILD_ARGS) -t takumi/taiga-backend:latest .
 
 .PHONY: release
 release: clean-all
-	@docker build $(ARGS) --no-cache=true --target build -t takumi/taiga-backend:build .
-	@docker build $(ARGS) --no-cache=true -t takumi/taiga-backend:latest .
+	@docker build $(BUILD_ARGS) --no-cache=true --target build -t takumi/taiga-backend:build .
+	@docker build $(BUILD_ARGS) --no-cache=true -t takumi/taiga-backend:latest .
+
+#
+# Test Rules
+#
+.PHONY: test
+test:
+	@docker run $(TEST_ARGS) takumi/taiga-backend:latest
 
 #
 # Clean Rules
