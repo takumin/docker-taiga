@@ -65,7 +65,7 @@ up: down
 
 .PHONY: down
 down:
-ifneq (x$(shell docker-compose ps -q),x)
+ifneq (x$(shell docker-compose --log-level ERROR ps -q),x)
 	@docker-compose down
 endif
 
