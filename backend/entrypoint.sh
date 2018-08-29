@@ -9,16 +9,7 @@ python3 -B -m compileall /usr/lib
 python3 -B -m compileall /usr/local/lib
 
 if [ "$1" = 'default' ]; then
-  ##############################################################################
-  # Check
-  ##############################################################################
-
   set -e
-
-  if [ ! -f "settings/local.py" ]; then
-    echo "Require settings/local.py"
-    exit 1
-  fi
 
   ##############################################################################
   # Wait
@@ -29,6 +20,15 @@ if [ "$1" = 'default' ]; then
 
   if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
     wait-for-it.sh ${REDIS_HOST}:${REDIS_PORT} -- echo "Redis is Up"
+  fi
+
+  ##############################################################################
+  # Service Check
+  ##############################################################################
+
+  if [ ! -f "settings/local.py" ]; then
+    echo "Require settings/local.py"
+    exit 1
   fi
 
   ##############################################################################
