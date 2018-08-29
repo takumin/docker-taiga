@@ -1,17 +1,31 @@
-version: '3'
+version: '3.7'
 
 services:
+  #
+  # build
+  #
+  taiga-backend-build:
+    build:
+      context: .
+      target: build
+    image: takumi/taiga-backend:build
+    hostname: taiga-backend-build
+    container_name: taiga-backend-build
+    networks:
+      - taiga
+
   #
   # taiga-backend
   #
   taiga-backend-test:
     build:
       context: .
-      args:
-        UBUNTU_MIRROR: ${UBUNTU_MIRROR}
+      target: prod
     image: takumi/taiga-backend:latest
     hostname: taiga-backend-test
     container_name: taiga-backend-test
+    cap_drop:
+      - ALL
     networks:
       - taiga
     ports:
@@ -54,6 +68,13 @@ services:
     image: postgres:9.5-alpine
     hostname: taiga-backend-test-postgres
     container_name: taiga-backend-test-postgres
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - FOWNER
+    cap_drop:
+      - ALL
     networks:
       - taiga
     environment:
@@ -68,6 +89,12 @@ services:
     image: rabbitmq:alpine
     hostname: taiga-backend-test-rabbitmq
     container_name: taiga-backend-test-rabbitmq
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    cap_drop:
+      - ALL
     networks:
       - taiga
     environment:
@@ -81,6 +108,12 @@ services:
     image: redis:alpine
     hostname: taiga-backend-test-redis
     container_name: taiga-backend-test-redis
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    cap_drop:
+      - ALL
     networks:
       - taiga
 
