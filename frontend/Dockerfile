@@ -4,11 +4,6 @@ FROM alpine AS build
 
 MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
 
-ARG NO_PROXY
-ARG FTP_PROXY
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-
 COPY taiga-frontend/dist /taiga-frontend-build
 COPY taiga-frontend-conf.json /taiga-frontend-build/conf.json
 
@@ -17,11 +12,6 @@ RUN rm -f /taiga-frontend-build/conf.example.json
 FROM nginx:alpine
 
 MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
-
-ARG NO_PROXY
-ARG FTP_PROXY
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
 
 COPY --from=build /taiga-frontend-build /taiga-frontend
 COPY taiga-frontend-nginx.conf /etc/nginx/nginx.conf
