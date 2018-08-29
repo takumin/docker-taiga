@@ -15,11 +15,18 @@ if [ "$1" = 'default' ]; then
   # Wait
   ##############################################################################
 
-  wait-for-it.sh ${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -- echo "PostgreSQL is Up"
-  wait-for-it.sh ${RABBITMQ_HOST}:${RABBITMQ_PORT} -- echo "RabbitMQ is Up"
+  echo "Wait PostgreSQL..."
+  dockerize -wait tcp://${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -timeout 10s
+  echo "Up PostgreSQL"
+
+  echo "Wait RabbitMQ..."
+  dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+  echo "Up RabbitMQ"
 
   if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
-    wait-for-it.sh ${REDIS_HOST}:${REDIS_PORT} -- echo "Redis is Up"
+    echo "Wait Redis..."
+    dockerize -wait tcp://${REDIS_HOST}:${REDIS_PORT} -timeout 10s
+    echo "Up Redis"
   fi
 
   ##############################################################################

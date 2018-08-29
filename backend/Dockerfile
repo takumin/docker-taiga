@@ -51,8 +51,8 @@ RUN echo "Build Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "Build Config Complete!"
 
-RUN wget -O /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-RUN chmod 0755 /usr/local/bin/wait-for-it.sh
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget -O- https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzvf -
 
 COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
