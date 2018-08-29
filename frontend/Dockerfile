@@ -17,6 +17,7 @@ RUN chmod 0755 /taiga-frontend/dockerize
 
 COPY ./upstream/dist /taiga-frontend
 COPY ./conf.json.tmpl /taiga-frontend
+COPY ./nginx.conf.tmpl /taiga-frontend
 COPY ./entrypoint.sh /taiga-frontend/entrypoint.sh
 RUN chmod 0755 /taiga-frontend/entrypoint.sh
 

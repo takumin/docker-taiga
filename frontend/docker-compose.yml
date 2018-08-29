@@ -36,7 +36,7 @@ services:
     environment:
       TZ: "Asia/Tokyo"
       FRONTEND_WORKER_PROC: "1"
-      FRONTEND_WORKER_CONN: "1"
+      FRONTEND_WORKER_CONN: "1024"
       FRONTEND_API_URL: "http://localhost:8000/api/v1"
       FRONTEND_EVENTS_URL: "http://localhost:8000/events"
       BACKEND_LISTEN_SCHEME: "http"
