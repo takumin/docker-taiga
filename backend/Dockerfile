@@ -123,4 +123,4 @@ RUN echo "Deploy Config Starting" \
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
-EXPOSE 8000
+EXPOSE 8080

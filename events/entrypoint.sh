@@ -10,30 +10,26 @@ if [ "$1" = 'default' ]; then
   dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
 
   ##############################################################################
-  # Service Check
+  # Service Initialize
   ##############################################################################
 
   if [ ! -f "config.json.tmpl" ]; then
     echo "Require config.json.tmpl"
     exit 1
+  else
+    dockerize -template config.json.tmpl:config.json
   fi
-
-  ##############################################################################
-  # Service Initialize
-  ##############################################################################
-
-  dockerize -template config.json.tmpl:config.json
 
   ##############################################################################
   # Daemon Initialized & Enabled
   ##############################################################################
 
-  mkdir /taiga-events/service
-  echo '#!/bin/sh'          >  /taiga-events/service/run
-  echo 'cd /taiga-events'   >> /taiga-events/service/run
-  echo 'exec 2>&1'          >> /taiga-events/service/run
-  echo 'exec node index.js' >> /taiga-events/service/run
-  chmod 0755 /taiga-events/service/run
+  mkdir service
+  echo '#!/bin/sh'          >  service/run
+  echo 'cd /taiga-events'   >> service/run
+  echo 'exec 2>&1'          >> service/run
+  echo 'exec node index.js' >> service/run
+  chmod 0755 service/run
 
   ##############################################################################
   # Daemon Running

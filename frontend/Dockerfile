@@ -1,36 +1,42 @@
 # vim: set ft=dockerfile :
 
+#
+# Build Container
+#
+
 FROM alpine AS build
+LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
-MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+# COPY --from=takumi/taiga-backend:build /usr/local/backend/media /taiga-frontend
+COPY --from=takumi/taiga-backend:build /usr/local/backend/static /taiga-frontend
 
-COPY taiga-frontend/dist /taiga-frontend-build
-COPY taiga-frontend-conf.json /taiga-frontend-build/conf.json
+RUN apk --update add --no-cache wget
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget -O- https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /taiga-frontend -xzvf -
+RUN chmod 0755 /taiga-frontend/dockerize
 
-RUN rm -f /taiga-frontend-build/conf.example.json
+COPY ./upstream/dist /taiga-frontend
+COPY ./conf.json.tmpl /taiga-frontend
+COPY ./entrypoint.sh /taiga-frontend/entrypoint.sh
+RUN chmod 0755 /taiga-frontend/entrypoint.sh
 
-FROM nginx:alpine
+#
+# Deploy Container
+#
 
-MAINTAINER Takumi Takahashi <takumiiinn@gmail.com>
+FROM nginx:alpine AS prod
+LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
-COPY --from=build /taiga-frontend-build /taiga-frontend
-COPY taiga-frontend-nginx.conf /etc/nginx/nginx.conf
-COPY taiga-frontend-entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY --from=build /taiga-frontend /taiga-frontend
 
 RUN echo Start! \
  && set -ex \
+ && mv /taiga-frontend/dockerize /usr/local/bin/dockerize \
+ && mv /taiga-frontend/entrypoint.sh /usr/local/bin/entrypoint.sh \
  && apk --update add --no-cache runit \
- && apk del --no-cache --purge \
- && rm -fr /var/tmp/* \
- && rm -fr /tmp/* \
- && mkdir -p /sv/taiga-frontend \
- && echo "#!/bin/sh"                   >  /sv/taiga-frontend/run \
- && echo "set -e"                      >> /sv/taiga-frontend/run \
- && echo "exec 2>&1"                   >> /sv/taiga-frontend/run \
- && echo "exec nginx -g 'daemon off;'" >> /sv/taiga-frontend/run \
- && chmod 0755 /sv/taiga-frontend/run \
  && echo Complete!
 
-WORKDIR /sv
+WORKDIR /taiga-frontend
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
+EXPOSE 8000

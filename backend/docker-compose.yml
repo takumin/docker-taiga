@@ -29,7 +29,7 @@ services:
     networks:
       - taiga
     ports:
-      - 8000:8000
+      - 8000:8080
     depends_on:
       - taiga-backend-test-postgres
       - taiga-backend-test-rabbitmq

@@ -24,15 +24,6 @@ if [ "$1" = 'default' ]; then
   fi
 
   ##############################################################################
-  # Service Check
-  ##############################################################################
-
-  if [ ! -f "settings/local.py" ]; then
-    echo "Require settings/local.py"
-    exit 1
-  fi
-
-  ##############################################################################
   # Service Initialize
   ##############################################################################
 
@@ -49,7 +40,7 @@ if [ "$1" = 'default' ]; then
   echo '#!/bin/sh'                                                                       >  /taiga-backend/gunicorn/run
   echo 'cd /taiga-backend'                                                               >> /taiga-backend/gunicorn/run
   echo 'exec 2>&1'                                                                       >> /taiga-backend/gunicorn/run
-  echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/gunicorn/run
+  echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8080 taiga.wsgi' >> /taiga-backend/gunicorn/run
   chmod 0755 /taiga-backend/gunicorn/run
 
   mkdir /taiga-backend/celery
@@ -93,10 +84,20 @@ if [ "$1" = 'default' ]; then
 
   mkdir /taiga-backend/service
 
-  ln -s ../gunicorn service/gunicorn
+  if [ ! -f "settings/local.py" ]; then
+    echo "Require settings/local.py"
+    exit 1
+  else
+    ln -s ../gunicorn service/gunicorn
+  fi
 
   if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
-    ln -s ../celery service/celery
+    if [ ! -f "settings/celery.py" ]; then
+      echo "Require settings/celery.py"
+      exit 1
+    else
+      ln -s ../celery service/celery
+    fi
   fi
 
   ##############################################################################

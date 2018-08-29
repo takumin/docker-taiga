@@ -1,65 +1,59 @@
-user  nginx;
-worker_processes  1;
-
-error_log  /var/log/nginx/error.log warn;
-pid        /var/run/nginx.pid;
+user nginx;
+error_log /dev/stderr warn;
+worker_processes {{ .Env.FRONTEND_WORKER_PROC }};
 
 events {
-  worker_connections  1024;
+  worker_connections  {{ .Env.FRONTEND_WORKER_CONN }};
 }
 
 http {
-  include       /etc/nginx/mime.types;
-  default_type  application/octet-stream;
+  include      /etc/nginx/mime.types;
+  default_type application/octet-stream;
 
-  log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
-                    '$status $body_bytes_sent "$http_referer" '
-                    '"$http_user_agent" "$http_x_forwarded_for"';
+  log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                  '$status $body_bytes_sent "$http_referer" '
+                  '"$http_user_agent" "$http_x_forwarded_for"';
 
-  access_log  /var/log/nginx/access.log  main;
+  access_log /dev/stdout main;
 
   server {
-    listen 80;
+    listen 8000;
     server_name _;
 
     large_client_header_buffers 4 32k;
     client_max_body_size 50M;
     charset utf-8;
 
-    # Frontend
     location / {
       root /frontend;
       try_files $uri $uri/ /index.html;
     }
 
-    # Django admin access (/admin/)
-    location /admin {
-      proxy_set_header Host $http_host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Scheme $scheme;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://127.0.0.1:8001$request_uri;
-      proxy_redirect off;
-    }
-
-    # Backend
     location /api {
       proxy_set_header Host $http_host;
       proxy_set_header X-Real-IP $remote_addr;
       proxy_set_header X-Scheme $scheme;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass http://127.0.0.1:8001$request_uri;
+      proxy_pass {{ .Env.BACKEND_LISTEN_SCHEME }}://{{ .Env.BACKEND_LISTEN_HOST }}:{{ .Env.BACKEND_LISTEN_PORT }}/{{ .Env.BACKEND_LISTEN_API_NAME }};
       proxy_redirect off;
     }
 
-    # Taiga-events
+    location /admin {
+      proxy_set_header Host $http_host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Scheme $scheme;
+      proxy_set_header X-Forwarded-Proto $scheme;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_pass {{ .Env.BACKEND_LISTEN_SCHEME }}://{{ .Env.BACKEND_LISTEN_HOST }}:{{ .Env.BACKEND_LISTEN_PORT }}/{{ .Env.BACKEND_LISTEN_ADMIN_NAME }};
+      proxy_redirect off;
+    }
+
     location /events {
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-      proxy_pass http://127.0.0.1:8888/events;
+      proxy_pass {{ .Env.EVENTS_LISTEN_SCHEME }}://{{ .Env.EVENTS_LISTEN_HOST }}:{{ .Env.EVENTS_LISTEN_PORT }}/{{ .Env.EVENTS_LISTEN_NAME }};
       proxy_connect_timeout 7d;
       proxy_send_timeout 7d;
       proxy_read_timeout 7d;
