@@ -6,21 +6,6 @@
 
 FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
-LABEL taiga-events-build ""
-
-ARG NO_PROXY
-ARG FTP_PROXY
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-
-ENV NO_PROXY ${NO_PROXY}
-ENV no_proxy ${NO_PROXY}
-ENV FTP_PROXY ${FTP_PROXY}
-ENV ftp_proxy ${FTP_PROXY}
-ENV HTTP_PROXY ${HTTP_PROXY}
-ENV http_proxy ${HTTP_PROXY}
-ENV HTTPS_PROXY ${HTTPS_PROXY}
-ENV https_proxy ${HTTPS_PROXY}
 
 RUN apk --update add --no-cache nodejs npm
 

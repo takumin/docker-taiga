@@ -41,7 +41,7 @@ endif
 #
 
 .PHONY: all
-all: build test
+all: build up
 
 #
 # Build Rules
@@ -49,19 +49,11 @@ all: build test
 
 .PHONY: build
 build:
-	@docker build $(BUILD_ARGS) --target build -t takumi/taiga-backend:build .
-	@docker build $(BUILD_ARGS) --target prod -t takumi/taiga-backend:latest .
-
-.PHONY: release
-release: clean-all
-	@docker build $(BUILD_ARGS) --no-cache=true --target build -t takumi/taiga-backend:build .
-	@docker build $(BUILD_ARGS) --no-cache=true --target prod -t takumi/taiga-backend:latest .
+	@docker-compose build $(BUILD_ARGS)
 
 #
 # Test Rules
 #
-.PHONY: test
-test: up
 
 .PHONY: up
 up: down
@@ -86,26 +78,3 @@ ifneq (x$(shell docker images -aqf "dangling=true"),x)
 	@docker rmi $(shell docker images -aqf "dangling=true")
 endif
 	@docker system prune -f
-
-.PHONY: clean-build
-clean-build: down
-ifneq (x$(shell docker ps -aqf "label=taiga-backend-build"),x)
-	@docker stop $(shell docker ps -aqf "label=taiga-backend-build")
-	@docker rm $(shell docker ps -aqf "label=taiga-backend-build")
-endif
-ifneq (x$(shell docker images -aq "takumi/taiga-backend:build"),x)
-	@docker rmi $(shell docker images -aq "takumi/taiga-backend:build")
-endif
-
-.PHONY: clean-latest
-clean-latest: down
-ifneq (x$(shell docker ps -aqf "label=taiga-backend"),x)
-	@docker stop $(shell docker ps -aqf "label=taiga-backend")
-	@docker rm $(shell docker ps -aqf "label=taiga-backend")
-endif
-ifneq (x$(shell docker images -aq "takumi/taiga-backend:latest"),x)
-	@docker rmi $(shell docker images -aq "takumi/taiga-backend:latest")
-endif
-
-.PHONY: clean-all
-clean-all: down clean-build clean-latest clean

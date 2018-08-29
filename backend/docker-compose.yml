@@ -8,10 +8,6 @@ services:
     build:
       context: .
       args:
-        NO_PROXY: ${NO_PROXY}
-        FTP_PROXY: ${FTP_PROXY}
-        HTTP_PROXY: ${HTTP_PROXY}
-        HTTPS_PROXY: ${HTTPS_PROXY}
         UBUNTU_MIRROR: ${UBUNTU_MIRROR}
     image: takumi/taiga-backend:latest
     hostname: taiga-backend-test
