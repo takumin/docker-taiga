@@ -22,21 +22,14 @@ RUN chmod 0755 /usr/local/bin/entrypoint.sh
 # Deploy Container
 #
 
-FROM ubuntu:xenial
+FROM alpine AS prod
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
-LABEL taiga-events ""
 
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
- && unset NO_PROXY \
- && unset FTP_PROXY \
- && unset HTTP_PROXY \
- && unset HTTPS_PROXY \
  && mv /usr/local/events /taiga-events \
- && apk --update add --no-cache nodejs \
- && find /usr/local \
- && printenv | sort \
+ && apk --update add --no-cache nodejs runit \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-events

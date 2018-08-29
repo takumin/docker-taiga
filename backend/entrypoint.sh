@@ -4,16 +4,9 @@
 # Compile
 ################################################################################
 
-PYTHON_MEJOR="$(python3 -c 'import sys; print(sys.version_info.major)')"
-PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
-
 python3 -B -m compileall .
-python3 -B -m compileall /usr/lib/python${PYTHON_MEJOR}
-python3 -B -m compileall /usr/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}
-python3 -B -m compileall /usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}
-
-unset PYTHON_MEJOR
-unset PYTHON_MINOR
+python3 -B -m compileall /usr/lib
+python3 -B -m compileall /usr/local/lib
 
 if [ "$1" = 'default' ]; then
   ##############################################################################
@@ -39,7 +32,34 @@ if [ "$1" = 'default' ]; then
   fi
 
   ##############################################################################
-  # Daemon
+  # Service Initialize
+  ##############################################################################
+
+  echo "Starting Initialize"
+  python3 manage.py migrate --noinput
+  python3 manage.py loaddata initial_user
+  python3 manage.py loaddata initial_project_templates
+
+  ##############################################################################
+  # Daemon Initialize
+  ##############################################################################
+
+  mkdir /taiga-backend/gunicorn
+  echo '#!/bin/sh'                                                                       >  /taiga-backend/gunicorn/run
+  echo 'cd /taiga-backend'                                                               >> /taiga-backend/gunicorn/run
+  echo 'exec 2>&1'                                                                       >> /taiga-backend/gunicorn/run
+  echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/gunicorn/run
+  chmod 0755 /taiga-backend/gunicorn/run
+
+  mkdir /taiga-backend/celery
+  echo '#!/bin/sh'                                                                 >  /taiga-backend/celery/run
+  echo 'cd /taiga-backend'                                                         >> /taiga-backend/celery/run
+  echo 'exec 2>&1'                                                                 >> /taiga-backend/celery/run
+  echo 'exec celery worker -A taiga -c CELERY_CHILD --time-limit CELERY_TIMELIMIT' >> /taiga-backend/celery/run
+  chmod 0755 /taiga-backend/celery/run
+
+  ##############################################################################
+  # Daemon Parameter
   ##############################################################################
 
   if [ -n "${BACKEND_GUNICORN_WORKER}" ]; then
@@ -66,6 +86,12 @@ if [ "$1" = 'default' ]; then
     sed -i -e 's/CELERY_TIMELIMIT/3/' celery/run
   fi
 
+  ##############################################################################
+  # Daemon Enabled
+  ##############################################################################
+
+  mkdir /taiga-backend/service
+
   ln -s ../gunicorn service/gunicorn
 
   if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
@@ -73,16 +99,7 @@ if [ "$1" = 'default' ]; then
   fi
 
   ##############################################################################
-  # Initialize
-  ##############################################################################
-
-  echo "Starting Initialize"
-  python3 manage.py migrate --noinput
-  python3 manage.py loaddata initial_user
-  python3 manage.py loaddata initial_project_templates
-
-  ##############################################################################
-  # Running
+  # Daemon Running
   ##############################################################################
 
   echo "Starting Server"

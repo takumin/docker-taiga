@@ -4,20 +4,36 @@
 
 BUILD_ARGS ?=
 
-ifneq (x${NO_PROXY},x)
+ifneq (x${no_proxy}x,xx)
+BUILD_ARGS += --build-arg no_proxy=${no_proxy}
+endif
+ifneq (x${NO_PROXY}x,xx)
 BUILD_ARGS += --build-arg NO_PROXY=${NO_PROXY}
 endif
 
-ifneq (x${FTP_PROXY},x)
+ifneq (x${ftp_proxy}x,xx)
+BUILD_ARGS += --build-arg ftp_proxy=${ftp_proxy}
+endif
+ifneq (x${FTP_PROXY}x,xx)
 BUILD_ARGS += --build-arg FTP_PROXY=${FTP_PROXY}
 endif
 
-ifneq (x${HTTP_PROXY},x)
+ifneq (x${http_proxy}x,xx)
+BUILD_ARGS += --build-arg http_proxy=${http_proxy}
+endif
+ifneq (x${HTTP_PROXY}x,xx)
 BUILD_ARGS += --build-arg HTTP_PROXY=${HTTP_PROXY}
 endif
 
-ifneq (x${HTTPS_PROXY},x)
+ifneq (x${https_proxy}x,xx)
+BUILD_ARGS += --build-arg https_proxy=${https_proxy}
+endif
+ifneq (x${HTTPS_PROXY}x,xx)
 BUILD_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
+endif
+
+ifneq (x${UBUNTU_MIRROR}x,xx)
+BUILD_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
 endif
 
 #
@@ -25,7 +41,7 @@ endif
 #
 
 .PHONY: all
-all: build test
+all: build up
 
 #
 # Build Rules
@@ -33,19 +49,11 @@ all: build test
 
 .PHONY: build
 build:
-	@docker build $(BUILD_ARGS) --target build -t takumi/taiga-events:build .
-	@docker build $(BUILD_ARGS) -t takumi/taiga-events:latest .
-
-.PHONY: release
-release: clean-all
-	@docker build $(BUILD_ARGS) --no-cache=true --target build -t takumi/taiga-events:build .
-	@docker build $(BUILD_ARGS) --no-cache=true -t takumi/taiga-events:latest .
+	@docker-compose build $(BUILD_ARGS)
 
 #
 # Test Rules
 #
-.PHONY: test
-test: up
 
 .PHONY: up
 up: down
@@ -53,7 +61,7 @@ up: down
 
 .PHONY: down
 down:
-ifneq (x$(shell docker-compose ps -q),x)
+ifneq (x$(shell docker-compose --log-level ERROR ps -q),x)
 	@docker-compose down
 endif
 
@@ -62,34 +70,5 @@ endif
 #
 
 .PHONY: clean
-clean:
-ifneq (x$(shell docker ps -aqf "status=exited"),x)
-	@docker rm $(shell docker ps -aqf "status=exited")
-endif
-ifneq (x$(shell docker images -aqf "dangling=true"),x)
-	@docker rmi $(shell docker images -aqf "dangling=true")
-endif
+clean: down
 	@docker system prune -f
-
-.PHONY: clean-build
-clean-build:
-ifneq (x$(shell docker ps -aqf "label=taiga-events-build"),x)
-	docker stop $(shell docker ps -aqf "label=taiga-events-build")
-	docker rm $(shell docker ps -aqf "label=taiga-events-build")
-endif
-ifneq (x$(shell docker images -aq "takumi/taiga-events:build"),x)
-	docker rmi $(shell docker images -aq "takumi/taiga-events:build")
-endif
-
-.PHONY: clean-latest
-clean-latest:
-ifneq (x$(shell docker ps -aqf "label=taiga-events"),x)
-	docker stop $(shell docker ps -aqf "label=taiga-events")
-	docker rm $(shell docker ps -aqf "label=taiga-events")
-endif
-ifneq (x$(shell docker images -aq "takumi/taiga-events:latest"),x)
-	docker rmi $(shell docker images -aq "takumi/taiga-events:latest")
-endif
-
-.PHONY: clean-all
-clean-all: clean-build clean-latest clean

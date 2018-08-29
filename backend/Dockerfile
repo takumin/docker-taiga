@@ -118,19 +118,6 @@ RUN echo "Deploy Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && mv /usr/local/backend /taiga-backend \
- && mkdir /taiga-backend/gunicorn \
- && echo '#!/bin/sh'                                                                       >  /taiga-backend/gunicorn/run \
- && echo 'cd /taiga-backend'                                                               >> /taiga-backend/gunicorn/run \
- && echo 'exec 2>&1'                                                                       >> /taiga-backend/gunicorn/run \
- && echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8000 taiga.wsgi' >> /taiga-backend/gunicorn/run \
- && chmod 0755 /taiga-backend/gunicorn/run \
- && mkdir /taiga-backend/celery \
- && echo '#!/bin/sh'                                                                 >  /taiga-backend/celery/run \
- && echo 'cd /taiga-backend'                                                         >> /taiga-backend/celery/run \
- && echo 'exec 2>&1'                                                                 >> /taiga-backend/celery/run \
- && echo 'exec celery worker -A taiga -c CELERY_CHILD --time-limit CELERY_TIMELIMIT' >> /taiga-backend/celery/run \
- && chmod 0755 /taiga-backend/celery/run \
- && mkdir /taiga-backend/service \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-backend
