@@ -15,7 +15,7 @@ services:
       - taiga
 
   #
-  # taiga-backend
+  # service
   #
   taiga-backend-test:
     build:
@@ -35,7 +35,7 @@ services:
       - taiga-backend-test-rabbitmq
       - taiga-backend-test-redis
     environment:
-      TIMEZONE: "Asia/Tokyo"
+      TZ: "Asia/Tokyo"
       BACKEND_DEBUG: "True"
       BACKEND_SECRET: "taiga"
       BACKEND_SCHEME: "http"
@@ -64,6 +64,9 @@ services:
       REDIS_HOST: "taiga-backend-test-redis"
       REDIS_PORT: "6379"
 
+  #
+  # postgres
+  #
   taiga-backend-test-postgres:
     image: postgres:9.5-alpine
     hostname: taiga-backend-test-postgres
@@ -85,6 +88,9 @@ services:
     tmpfs:
       - /var/lib/postgresql/data
 
+  #
+  # rabbitmq
+  #
   taiga-backend-test-rabbitmq:
     image: rabbitmq:alpine
     hostname: taiga-backend-test-rabbitmq
@@ -104,6 +110,9 @@ services:
     tmpfs:
       - /var/lib/rabbitmq/mnesia
 
+  #
+  # redis
+  #
   taiga-backend-test-redis:
     image: redis:alpine
     hostname: taiga-backend-test-redis

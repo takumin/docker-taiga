@@ -4,7 +4,7 @@ from kombu import Queue
 import environ
 
 env = environ.Env(
-    TIMEZONE=(str, 'UTC'),
+    TZ=(str, 'UTC'),
     RABBITMQ_USER=(str, 'taiga'),
     RABBITMQ_PASS=(str, 'taiga'),
     RABBITMQ_HOST=(str, 'rabbitmq'),
@@ -14,7 +14,7 @@ env = environ.Env(
     REDIS_PORT=(int, 6379),
 )
 
-timezone = env('TIMEZONE'),
+timezone = env('TZ'),
 
 broker_url = 'amqp://{USER}:{PASS}@{HOST}:{PORT}/{NAME}'.format(
     USER=env('RABBITMQ_USER'),

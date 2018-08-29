@@ -1,49 +1,46 @@
 #!/bin/sh
 
-set -eu
-
-echo "TAIGA_EVENTS_SECRET: \"${TAIGA_EVENTS_SECRET}\""
-if [ -f "/taiga-events/config.json" -a -n "${TAIGA_EVENTS_SECRET}" ]; then
-  sed -i -e "s#TAIGA_EVENTS_SECRET#${TAIGA_EVENTS_SECRET}#" /taiga-events/config.json
-else
-  echo "Set require environment variable: TAIGA_EVENTS_SECRET"
-  exit 1
-fi
-
-echo "TAIGA_EVENTS_RABBITMQ_HOST: \"${TAIGA_EVENTS_RABBITMQ_HOST}\""
-if [ -f "/taiga-events/config.json" -a -n "${TAIGA_EVENTS_RABBITMQ_HOST}" ]; then
-  sed -i -e "s#TAIGA_EVENTS_RABBITMQ_HOST#${TAIGA_EVENTS_RABBITMQ_HOST}#" /taiga-events/config.json
-else
-  echo "Set require environment variable: TAIGA_EVENTS_RABBITMQ_HOST"
-  exit 1
-fi
-
-echo "TAIGA_EVENTS_RABBITMQ_PORT: \"${TAIGA_EVENTS_RABBITMQ_PORT}\""
-if [ -f "/taiga-events/config.json" -a -n "${TAIGA_EVENTS_RABBITMQ_PORT}" ]; then
-  sed -i -e "s#TAIGA_EVENTS_RABBITMQ_PORT#${TAIGA_EVENTS_RABBITMQ_PORT}#" /taiga-events/config.json
-else
-  echo "Set require environment variable: TAIGA_EVENTS_RABBITMQ_PORT"
-  exit 1
-fi
-
-echo "TAIGA_EVENTS_RABBITMQ_USER: \"${TAIGA_EVENTS_RABBITMQ_USER}\""
-if [ -f "/taiga-events/config.json" -a -n "${TAIGA_EVENTS_RABBITMQ_USER}" ]; then
-  sed -i -e "s#TAIGA_EVENTS_RABBITMQ_USER#${TAIGA_EVENTS_RABBITMQ_USER}#" /taiga-events/config.json
-else
-  echo "Set require environment variable: TAIGA_EVENTS_RABBITMQ_USER"
-  exit 1
-fi
-
-echo "TAIGA_EVENTS_RABBITMQ_PASS: \"${TAIGA_EVENTS_RABBITMQ_PASS}\""
-if [ -f "/taiga-events/config.json" -a -n "${TAIGA_EVENTS_RABBITMQ_PASS}" ]; then
-  sed -i -e "s#TAIGA_EVENTS_RABBITMQ_PASS#${TAIGA_EVENTS_RABBITMQ_PASS}#" /taiga-events/config.json
-else
-  echo "Set require environment variable: TAIGA_EVENTS_RABBITMQ_PASS"
-  exit 1
-fi
-
 if [ "$1" = 'default' ]; then
-  exec runsv taiga-events
+  set -e
+
+  ##############################################################################
+  # Wait
+  ##############################################################################
+
+  dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+
+  ##############################################################################
+  # Service Check
+  ##############################################################################
+
+  if [ ! -f "config.json.tmpl" ]; then
+    echo "Require config.json.tmpl"
+    exit 1
+  fi
+
+  ##############################################################################
+  # Service Initialize
+  ##############################################################################
+
+  dockerize -template config.json.tmpl:config.json
+
+  ##############################################################################
+  # Daemon Initialized & Enabled
+  ##############################################################################
+
+  mkdir /taiga-events/service
+  echo '#!/bin/sh'          >  /taiga-events/service/run
+  echo 'cd /taiga-events'   >> /taiga-events/service/run
+  echo 'exec 2>&1'          >> /taiga-events/service/run
+  echo 'exec node index.js' >> /taiga-events/service/run
+  chmod 0755 /taiga-events/service/run
+
+  ##############################################################################
+  # Daemon Running
+  ##############################################################################
+
+  echo "Starting Server"
+  exec runsvdir service
 fi
 
 exec "$@"
