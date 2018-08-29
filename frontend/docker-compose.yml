@@ -24,6 +24,10 @@ services:
     image: takumi/taiga-frontend:latest
     hostname: taiga-frontend-test
     container_name: taiga-frontend-test
+    # cap_add:
+    #   - FOWNER
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     ports:
