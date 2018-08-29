@@ -63,15 +63,8 @@ WORKDIR /usr/local/backend
 RUN python3 -B manage.py compilemessages
 RUN python3 -B manage.py collectstatic --noinput
 
-RUN export PYTHON_MEJOR="$(python3 -B -c 'import sys; print(sys.version_info.major)')"
-RUN export PYTHON_MINOR="$(python3 -B -c 'import sys; print(sys.version_info.minor)')"
-
-RUN find /usr/lib/python${PYTHON_MEJOR} -type d -name '__pycache__' | xargs rm -fr
-RUN find /usr/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR} -type d -name '__pycache__' | xargs rm -fr
-RUN find /usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR} -type d -name '__pycache__' | xargs rm -fr
-
-RUN unset PYTHON_MEJOR
-RUN unset PYTHON_MINOR
+RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
+RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
 COPY ./local.py /usr/local/backend/settings/local.py
 COPY ./celery.py /usr/local/backend/settings/celery.py
