@@ -53,9 +53,6 @@ services:
   # events
   #
   taiga-frontend-test-events:
-    build:
-      context: .
-      target: prod
     image: takumi/taiga-events:latest
     hostname: taiga-frontend-test-events
     container_name: taiga-frontend-test-events
@@ -78,9 +75,6 @@ services:
   # backend
   #
   taiga-frontend-test-backend:
-    build:
-      context: .
-      target: prod
     image: takumi/taiga-backend:latest
     hostname: taiga-frontend-test-backend
     container_name: taiga-frontend-test-backend
