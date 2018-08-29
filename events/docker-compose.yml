@@ -4,15 +4,15 @@ services:
   #
   # build
   #
-  taiga-events-build:
-    build:
-      context: .
-      target: build
-    image: takumi/taiga-events:build
-    hostname: taiga-events-build
-    container_name: taiga-events-build
-    networks:
-      - taiga
+  # taiga-events-build:
+  #   build:
+  #     context: .
+  #     target: build
+  #   image: takumi/taiga-events:build
+  #   hostname: taiga-events-build
+  #   container_name: taiga-events-build
+  #   networks:
+  #     - taiga
 
   #
   # service

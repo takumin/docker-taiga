@@ -10,7 +10,7 @@ if [ "$1" = 'default' ]; then
   dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
 
   ##############################################################################
-  # Service Initialize
+  # Service Initialized
   ##############################################################################
 
   if [ ! -f "config.json.tmpl" ]; then
@@ -21,15 +21,22 @@ if [ "$1" = 'default' ]; then
   fi
 
   ##############################################################################
-  # Daemon Initialized & Enabled
+  # Daemon Initialized
+  ##############################################################################
+
+  mkdir coffee
+  echo '#!/bin/sh'              >  coffee/run
+  echo 'cd /taiga-events'       >> coffee/run
+  echo 'exec 2>&1'              >> coffee/run
+  echo 'exec coffee index.coffee' >> coffee/run
+  chmod 0755 coffee/run
+
+  ##############################################################################
+  # Daemon Enabled
   ##############################################################################
 
   mkdir service
-  echo '#!/bin/sh'          >  service/run
-  echo 'cd /taiga-events'   >> service/run
-  echo 'exec 2>&1'          >> service/run
-  echo 'exec node index.js' >> service/run
-  chmod 0755 service/run
+  ln -s ../coffee service/coffee
 
   ##############################################################################
   # Daemon Running
