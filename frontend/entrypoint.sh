@@ -7,8 +7,8 @@ if [ "$1" = 'default' ]; then
   # Wait
   ##############################################################################
 
-  dockerize -wait ${BACKEND_LISTEN_SCHEME}://${BACKEND_LISTEN_HOST}:${BACKEND_LISTEN_PORT} -timeout 10s
-  dockerize -wait ${EVENTS_LISTEN_SCHEME}://${EVENTS_LISTEN_HOST}:${EVENTS_LISTEN_PORT} -timeout 10s
+  dockerize -wait tcp://${BACKEND_LISTEN_HOST}:${BACKEND_LISTEN_PORT} -timeout 30s
+  dockerize -wait tcp://${EVENTS_LISTEN_HOST}:${EVENTS_LISTEN_PORT} -timeout 30s
 
   ##############################################################################
   # Service Initialize
