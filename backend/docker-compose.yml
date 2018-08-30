@@ -2,11 +2,12 @@ version: '3.7'
 
 services:
   #
-  # build
+  # xenial build
   #
   taiga-backend-build-xenial:
     build:
       context: .
+      dockerfile: xenial/Dockerfile
       target: build
     image: takumi/taiga-backend:build-xenial
     hostname: taiga-backend-build-xenial
@@ -15,11 +16,12 @@ services:
       - taiga
 
   #
-  # service
+  # xenial service
   #
   taiga-backend-xenial-test:
     build:
       context: .
+      dockerfile: xenial/Dockerfile
       target: prod
     image: takumi/taiga-backend:latest
     hostname: taiga-backend-xenial-test
@@ -35,7 +37,7 @@ services:
       - taiga-backend-test-rabbitmq
       - taiga-backend-test-redis
     env_file:
-      - ../backend_test.env
+      - ./backend_test.env
 
   #
   # postgres
