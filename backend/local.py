@@ -4,6 +4,7 @@ from .common import *
 import environ
 
 env = environ.Env(
+    TZ=(str, 'UTC'),
     BACKEND_DEBUG=(bool, False),
     BACKEND_SECRET=(str),
     BACKEND_SCHEME=(str, 'http'),
@@ -27,9 +28,18 @@ env = environ.Env(
     BACKEND_CELERY_ENABLED=(bool, False),
 )
 
+USE_TZ = True
+TIME_ZONE = env('TZ')
+
 DEBUG = env('BACKEND_DEBUG')
 
 SECRET_KEY = env('BACKEND_SECRET')
+
+CELERY_ENABLED = env('BACKEND_CELERY_ENABLED')
+
+ADMINS = (
+    (env('BACKEND_ADMIN_NAME'), env('BACKEND_ADMIN_EMAIL')),
+)
 
 SITES = {
     'api': {
@@ -68,9 +78,3 @@ EVENTS_PUSH_BACKEND_OPTIONS = {
         NAME=env('RABBITMQ_NAME'),
     ),
 }
-
-ADMINS = (
-    (env('BACKEND_ADMIN_NAME'), env('BACKEND_ADMIN_EMAIL')),
-)
-
-CELERY_ENABLED = env('BACKEND_CELERY_ENABLED')
