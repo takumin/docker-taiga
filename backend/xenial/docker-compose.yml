@@ -4,26 +4,26 @@ services:
   #
   # build
   #
-  taiga-backend-build:
+  taiga-backend-build-xenial:
     build:
       context: .
       target: build
-    image: takumi/taiga-backend:build
-    hostname: taiga-backend-build
-    container_name: taiga-backend-build
+    image: takumi/taiga-backend:build-xenial
+    hostname: taiga-backend-build-xenial
+    container_name: taiga-backend-build-xenial
     networks:
       - taiga
 
   #
   # service
   #
-  taiga-backend-test:
+  taiga-backend-xenial-test:
     build:
       context: .
       target: prod
     image: takumi/taiga-backend:latest
-    hostname: taiga-backend-test
-    container_name: taiga-backend-test
+    hostname: taiga-backend-xenial-test
+    container_name: taiga-backend-xenial-test
     cap_drop:
       - ALL
     networks:
@@ -34,43 +34,8 @@ services:
       - taiga-backend-test-postgres
       - taiga-backend-test-rabbitmq
       - taiga-backend-test-redis
-    environment:
-      # Sites
-      SITE_REGISTER: "true"
-      # Frontend - URL
-      FRONTEND_LISTEN_SSL: "false"
-      FRONTEND_LISTEN_HOST: "localhost:8080"
-      # Backend - URL
-      BACKEND_LISTEN_SSL: "false"
-      BACKEND_LISTEN_HOST: "localhost:8080"
-      BACKEND_MEDIA_URL_NAME: "media"
-      BACKEND_STATIC_URL_NAME: "static"
-      # Backend - Common
-      BACKEND_DEBUG: "true"
-      BACKEND_SECRET_KEY: "taiga"
-      BACKEND_SERVER_FROM_EMAIL: "taiga@localhost"
-      BACKEND_DEFAULT_FROM_EMAIL: "noreply@localhost"
-      BACKEND_CELERY_ENABLED: "true"
-      # Backend - Daemon
-      BACKEND_GUNICORN_WORKER: "1"
-      BACKEND_GUNICORN_TIMEOUT: "3"
-      BACKEND_CELERY_WORKER: "3"
-      BACKEND_CELERY_TIMEOUT: "3"
-      # PostgreSQL
-      POSTGRESQL_USER: "taiga"
-      POSTGRESQL_PASS: "taiga"
-      POSTGRESQL_HOST: "taiga-backend-test-postgres"
-      POSTGRESQL_PORT: "5432"
-      POSTGRESQL_NAME: "taiga"
-      # RabbitMQ
-      RABBITMQ_USER: "taiga"
-      RABBITMQ_PASS: "taiga"
-      RABBITMQ_HOST: "taiga-backend-test-rabbitmq"
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_NAME: "taiga"
-      # Redis
-      REDIS_HOST: "taiga-backend-test-redis"
-      REDIS_PORT: "6379"
+    env_file:
+      - ../backend_test.env
 
   #
   # postgres
