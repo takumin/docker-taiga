@@ -2,30 +2,44 @@ version: '3.7'
 
 services:
   #
-  # xenial build
+  # alpine build
   #
-  taiga-backend-build-xenial:
+  taiga-backend-build-alpine:
     build:
       context: .
-      dockerfile: xenial/Dockerfile
+      dockerfile: alpine/Dockerfile
       target: build
-    image: takumi/taiga-backend:build-xenial
-    hostname: taiga-backend-build-xenial
-    container_name: taiga-backend-build-xenial
+    image: takumi/taiga-backend:build-alpine
+    hostname: taiga-backend-build-alpine
+    container_name: taiga-backend-build-alpine
     networks:
       - taiga
 
   #
-  # xenial service
+  # xenial build
+  #
+  # taiga-backend-build-xenial:
+  #   build:
+  #     context: .
+  #     dockerfile: xenial/Dockerfile
+  #     target: build
+  #   image: takumi/taiga-backend:build-xenial
+  #   hostname: taiga-backend-build-xenial
+  #   container_name: taiga-backend-build-xenial
+  #   networks:
+  #     - taiga
+
+  #
+  # alpine service
   #
   taiga-backend-xenial-test:
     build:
       context: .
-      dockerfile: xenial/Dockerfile
+      dockerfile: alpine/Dockerfile
       target: prod
-    image: takumi/taiga-backend:latest
-    hostname: taiga-backend-xenial-test
-    container_name: taiga-backend-xenial-test
+    image: takumi/taiga-backend:alpine
+    hostname: taiga-backend-alpine-test
+    container_name: taiga-backend-alpine-test
     cap_drop:
       - ALL
     networks:
@@ -38,6 +52,30 @@ services:
       - taiga-backend-test-redis
     env_file:
       - ./backend_test.env
+
+  #
+  # xenial service
+  #
+  # taiga-backend-xenial-test:
+  #   build:
+  #     context: .
+  #     dockerfile: xenial/Dockerfile
+  #     target: prod
+  #   image: takumi/taiga-backend:latest
+  #   hostname: taiga-backend-xenial-test
+  #   container_name: taiga-backend-xenial-test
+  #   cap_drop:
+  #     - ALL
+  #   networks:
+  #     - taiga
+  #   ports:
+  #     - 8001:8080
+  #   depends_on:
+  #     - taiga-backend-test-postgres
+  #     - taiga-backend-test-rabbitmq
+  #     - taiga-backend-test-redis
+  #   env_file:
+  #     - ./backend_test.env
 
   #
   # postgres

@@ -51,6 +51,10 @@ if [ "$1" = 'default' ]; then
   # Service Initialize
   ##############################################################################
 
+  PYTHON_MEJOR="$(python3 -c 'import sys; print(sys.version_info.major)')"
+  PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
+  export PYTHONPATH="/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages"
+
   python3 manage.py migrate --noinput
   python3 manage.py loaddata initial_user
   python3 manage.py loaddata initial_project_templates
@@ -60,17 +64,19 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
 
   mkdir /taiga-backend/gunicorn
-  echo '#!/bin/sh'                                                                       >  /taiga-backend/gunicorn/run
-  echo 'cd /taiga-backend'                                                               >> /taiga-backend/gunicorn/run
-  echo 'exec 2>&1'                                                                       >> /taiga-backend/gunicorn/run
-  echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8080 taiga.wsgi' >> /taiga-backend/gunicorn/run
+  echo '#!/bin/sh'                                                                                >  /taiga-backend/gunicorn/run
+  echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/gunicorn/run
+  echo 'cd /taiga-backend'                                                                        >> /taiga-backend/gunicorn/run
+  echo 'exec 2>&1'                                                                                >> /taiga-backend/gunicorn/run
+  echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8080 taiga.wsgi'          >> /taiga-backend/gunicorn/run
   chmod 0755 /taiga-backend/gunicorn/run
 
   mkdir /taiga-backend/celery
-  echo '#!/bin/sh'                                                                >  /taiga-backend/celery/run
-  echo 'cd /taiga-backend'                                                        >> /taiga-backend/celery/run
-  echo 'exec 2>&1'                                                                >> /taiga-backend/celery/run
-  echo 'exec celery worker -A taiga -c CELERY_WORKER --time-limit CELERY_TIMEOUT' >> /taiga-backend/celery/run
+  echo '#!/bin/sh'                                                                                >  /taiga-backend/celery/run
+  echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/celery/run
+  echo 'cd /taiga-backend'                                                                        >> /taiga-backend/celery/run
+  echo 'exec 2>&1'                                                                                >> /taiga-backend/celery/run
+  echo 'exec celery worker -A taiga -c CELERY_WORKER --time-limit CELERY_TIMEOUT'                 >> /taiga-backend/celery/run
   chmod 0755 /taiga-backend/celery/run
 
   ##############################################################################
@@ -105,22 +111,12 @@ if [ "$1" = 'default' ]; then
   # Daemon Enabled
   ##############################################################################
 
-  mkdir /taiga-backend/service
+  mkdir service
 
-  if [ ! -f "settings/local.py" ]; then
-    echo "Require settings/local.py"
-    exit 1
-  else
-    ln -s ../gunicorn service/gunicorn
-  fi
+  ln -s ../gunicorn service/gunicorn
 
   if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
-    if [ ! -f "settings/celery.py" ]; then
-      echo "Require settings/celery.py"
-      exit 1
-    else
-      ln -s ../celery service/celery
-    fi
+    ln -s ../celery service/celery
   fi
 
   ##############################################################################

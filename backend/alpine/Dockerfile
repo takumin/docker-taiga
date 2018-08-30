@@ -8,119 +8,115 @@ FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 RUN echo "Build Config Starting" \
- && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
- && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
- && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
- && export DEBIAN_FRONTEND="noninteractive" \
- && export DEBIAN_PRIORITY="critical" \
- && export DEBCONF_NONINTERACTIVE_SEEN="true" \
- && apt-get -y update \
- && apt-get -y dist-upgrade \
- && apt-get -y install --no-install-recommends \
+ && apk --update add \
     gettext \
-    build-essential \
+    gcc \
+    musl-dev \
     wget \
+    ca-certificates \
     git \
     python3 \
-    python3-six \
-    python3-setuptools \
-    python3-pip \
     python3-dev \
-    zlib1g-dev \
-    libssl-dev \
-    libpq-dev \
-    libgdbm-dev \
-    libzmq3-dev \
-    libjpeg-turbo8-dev \
-    libfreetype6-dev \
-    libxml2-dev \
-    libxslt1-dev \
-    libncurses5-dev \
+    zlib \
+    zlib-dev \
+    ncurses-libs \
+    ncurses-dev \
+    gdbm \
+    gdbm-dev \
+    libffi \
     libffi-dev \
- && apt-get -y autoremove --purge \
- && apt-get -y clean \
- && rm -rf /var/cache/apt/archives/* \
- && rm -rf /var/lib/apt/lists/* \
- && unset DEBIAN_FRONTEND \
- && unset DEBIAN_PRIORITY \
- && unset DEBCONF_NONINTERACTIVE_SEEN \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
+    libressl \
+    libressl-dev \
+    libpq \
+    postgresql-libs \
+    postgresql-dev \
+    libzmq \
+    zeromq-dev \
+    libjpeg-turbo \
+    libjpeg-turbo-dev \
+    libpng \
+    libpng-dev \
+    freetype \
+    freetype-dev \
+    libxml2 \
+    libxml2-dev \
+    libxslt \
+    libxslt-dev \
  && echo "Build Config Complete!"
 
+# Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
-RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+# Copy Source Code
 COPY ./upstream /usr/local/backend
+RUN cp -r /usr/local/backend /build
+
+# Workaround Alpine Linux 3.8
+RUN grep '^six==.*' /build/requirements.txt > six.txt
+RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
+
+# Workaround Alpine Linux 3.8 & LibreSSL 2.7
+RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /build/requirements.txt
+
+# Install Require Python Module
 RUN git config --global url."https://".insteadOf git://
-RUN env PYTHONDONTWRITEBYTECODE=1 pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /build/requirements.txt
 
-WORKDIR /usr/local/backend
-RUN python3 -B manage.py compilemessages
-RUN python3 -B manage.py collectstatic --noinput
+# Buiild Static Files
+WORKDIR /build
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py compilemessages
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py collectstatic --noinput
 
+# Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
-# COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
+# Copy Config File
+COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
 
-# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod 0755 /usr/local/bin/entrypoint.sh
+# Copy Entrypoint Script
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
+
+# Check Copy Files
+RUN find /usr/local
 
 #
 # Deploy Container
 #
 
-FROM ubuntu:xenial AS prod
+FROM alpine AS prod
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
- && echo "deb ${UBUNTU_MIRROR} xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
- && echo "deb ${UBUNTU_MIRROR} xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
- && echo "deb ${UBUNTU_MIRROR} xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
- && export DEBIAN_FRONTEND="noninteractive" \
- && export DEBIAN_PRIORITY="critical" \
- && export DEBCONF_NONINTERACTIVE_SEEN="true" \
- && apt-get -y update \
- && apt-get -y dist-upgrade \
- && apt-get -y install --no-install-recommends \
+ && apk --no-cache --update add \
     runit \
     python3 \
-    python3-six \
-    python3-pkg-resources \
-    zlib1g \
-    libssl1.0.0 \
-    libpq5 \
-    libgdbm3 \
-    libzmq5 \
-    libjpeg-turbo8 \
-    libfreetype6 \
+    zlib \
+    ncurses-libs \
+    gdbm \
+    libffi \
+    libressl \
+    libpq \
+    postgresql-libs \
+    libzmq \
+    libjpeg-turbo \
+    libpng \
+    freetype \
     libxml2 \
-    libxslt1.1 \
-    libncurses5 \
-    libffi6 \
- && apt-get -y autoremove --purge \
- && apt-get -y clean \
- && rm -rf /var/cache/apt/archives/* \
- && rm -rf /var/lib/apt/lists/* \
- && unset DEBIAN_FRONTEND \
- && unset DEBIAN_PRIORITY \
- && unset DEBCONF_NONINTERACTIVE_SEEN \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial          main restricted universe multiverse" >  /etc/apt/sources.list \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial-updates  main restricted universe multiverse" >> /etc/apt/sources.list \
- && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
+    libxslt \
  && mv /usr/local/backend /taiga-backend \
  && echo "Deploy Config Complete!"
 
 # Debug Configration
-COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 0755 /usr/local/bin/entrypoint.sh
+# COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
+# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+# RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]
