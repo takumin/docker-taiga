@@ -1,9 +1,15 @@
+{{- $FRONTEND_WORKER_PROC := default .Env.FRONTEND_WORKER_PROC "1" -}}
+{{- $FRONTEND_WORKER_CONN := default .Env.FRONTEND_WORKER_CONN "1024" -}}
+{{- $BACKEND_LISTEN_SSL   := default .Env.BACKEND_LISTEN_SSL "false" -}}
+{{- $BACKEND_LISTEN_HOST  := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- $EVENTS_LISTEN_SSL    := default .Env.EVENTS_LISTEN_SSL "false" -}}
+{{- $EVENTS_LISTEN_HOST   := default .Env.EVENTS_LISTEN_HOST "localhost:8888" -}}
 #user nginx;
 error_log /dev/stderr warn;
-worker_processes {{ .Env.FRONTEND_WORKER_PROC }};
+worker_processes {{ $FRONTEND_WORKER_PROC }};
 
 events {
-  worker_connections  {{ .Env.FRONTEND_WORKER_CONN }};
+  worker_connections  {{ $FRONTEND_WORKER_CONN }};
 }
 
 http {
@@ -35,7 +41,11 @@ http {
       proxy_set_header X-Scheme $scheme;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass {{ .Env.BACKEND_LISTEN_SCHEME }}://{{ .Env.BACKEND_LISTEN_HOST }}:{{ .Env.BACKEND_LISTEN_PORT }}/{{ .Env.BACKEND_LISTEN_API_NAME }};
+{{- if isTrue $BACKEND_LISTEN_SSL }}
+      proxy_pass https://{{ $BACKEND_LISTEN_HOST }}/api;
+{{- else }}
+      proxy_pass http://{{ $BACKEND_LISTEN_HOST }}/api;
+{{- end }}
       proxy_redirect off;
     }
 
@@ -45,7 +55,11 @@ http {
       proxy_set_header X-Scheme $scheme;
       proxy_set_header X-Forwarded-Proto $scheme;
       proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_pass {{ .Env.BACKEND_LISTEN_SCHEME }}://{{ .Env.BACKEND_LISTEN_HOST }}:{{ .Env.BACKEND_LISTEN_PORT }}/{{ .Env.BACKEND_LISTEN_ADMIN_NAME }};
+{{- if isTrue $BACKEND_LISTEN_SSL }}
+      proxy_pass https://{{ $BACKEND_LISTEN_HOST }}/admin;
+{{- else }}
+      proxy_pass http://{{ $BACKEND_LISTEN_HOST }}/admin;
+{{- end }}
       proxy_redirect off;
     }
 
@@ -53,7 +67,11 @@ http {
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection "upgrade";
-      proxy_pass {{ .Env.EVENTS_LISTEN_SCHEME }}://{{ .Env.EVENTS_LISTEN_HOST }}:{{ .Env.EVENTS_LISTEN_PORT }}/{{ .Env.EVENTS_LISTEN_NAME }};
+{{- if isTrue $EVENTS_LISTEN_SSL }}
+      proxy_pass https://{{ $EVENTS_LISTEN_HOST }}/events;
+{{- else }}
+      proxy_pass http://{{ $EVENTS_LISTEN_HOST }}/events;
+{{- end }}
       proxy_connect_timeout 7d;
       proxy_send_timeout 7d;
       proxy_read_timeout 7d;
