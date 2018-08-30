@@ -52,7 +52,9 @@ RUN echo "Build Config Starting" \
  && echo "Build Config Complete!"
 
 ENV DOCKERIZE_VERSION v0.6.1
-RUN wget -O- https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /usr/local/bin -xzvf -
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
@@ -65,13 +67,10 @@ RUN python3 -B manage.py collectstatic --noinput
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
-RUN rm -f /usr/local/backend/settings/*
-RUN echo '# -*- coding: utf-8 -*-' >  /usr/local/backend/settings/__init__.py
-RUN echo 'from .default import *' >> /usr/local/backend/settings/__init__.py
-RUN echo 'from .config import *' >> /usr/local/backend/settings/__init__.py
+# COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
 
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 0755 /usr/local/bin/entrypoint.sh
+# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+# RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 #
 # Deploy Container
@@ -123,9 +122,9 @@ RUN echo "Deploy Config Starting" \
  && echo "Deploy Config Complete!"
 
 # Debug Configration
-COPY ./default.py /taiga-backend/settings/default.py
-COPY ./config.py /taiga-backend/settings/config.py
-COPY ./celery.py /taiga-backend/settings/celery.py
+COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
+COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]

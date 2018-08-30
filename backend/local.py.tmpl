@@ -1,0 +1,79 @@
+# -*- coding: utf-8 -*-
+
+# Load Default Configuration
+from .common import *
+
+# Register
+{{ default .Env.SITE_REGISTER "false" }}
+{{ if isTrue .Env.SITE_REGISTER }}
+PUBLIC_REGISTER_ENABLED = True
+{{ else }}
+PUBLIC_REGISTER_ENABLED = False
+{{ end }}
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#debug
+{{ default .Env.BACKEND_DEBUG "false" }}
+{{ if isTrue .Env.BACKEND_DEBUG }}
+DEBUG = True
+{{ else }}
+DEBUG = False
+{{ end }}
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
+{{ default .Env.BACKEND_SECRET_KEY "taiga" }}
+SECRET_KEY = '{{ .Env.BACKEND_SECRET_KEY }}'
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#server-email
+{{ default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" }}
+SERVER_EMAIL = '{{ .Env.BACKEND_SERVER_FROM_EMAIL }}'
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
+{{ default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" }}
+DEFAULT_FROM_EMAIL = '{{ .Env.BACKEND_DEFAULT_FROM_EMAIL }}'
+
+# URL
+{{ default .Env.BACKEND_LISTEN_SSL "false" }}
+{{ if isTrue .Env.BACKEND_LISTEN_SSL }}
+SITES['api']['scheme'] = 'https'
+{{ else }}
+SITES['api']['scheme'] = 'http'
+{{ end }}
+{{ default .Env.BACKEND_LISTEN_HOST "localhost:8080" }}
+SITES['api']['domain'] = '{{ .Env.BACKEND_LISTEN_HOST }}'
+{{ default .Env.FRONTEND_LISTEN_SSL "false" }}
+{{ if isTrue .Env.FRONTEND_LISTEN_SSL }}
+SITES['front']['scheme'] = 'https'
+{{ else }}
+SITES['front']['scheme'] = 'http'
+{{ end }}
+{{ default .Env.FRONTEND_LISTEN_HOST "localhost:8080" }}
+SITES['front']['domain'] = '{{ .Env.FRONTEND_LISTEN_HOST }}'
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
+# https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
+{{ default .Env.BACKEND_MEDIA_URL_NAME "media" }}
+{{ default .Env.BACKEND_STATIC_URL_NAME "static" }}
+{{ if isTrue .Env.FRONTEND_LISTEN_SSL }}
+MEDIA_URL = 'https://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_STATIC_URL_NAME }}/'
+{{ else }}
+MEDIA_URL = 'http://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_STATIC_URL_NAME }}/'
+{{ end }}
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
+DATABASES['default']['USER'] = '{{ default .Env.POSTGRESQL_USER "taiga" }}'
+DATABASES['default']['PASSWORD'] = '{{ default .Env.POSTGRESQL_PASS "taiga" }}'
+DATABASES['default']['HOST'] = '{{ default .Env.POSTGRESQL_HOST "postgres" }}'
+DATABASES['default']['PORT'] = '{{ default .Env.POSTGRESQL_PORT "5432" }}'
+DATABASES['default']['NAME'] = '{{ default .Env.POSTGRESQL_NAME "taiga" }}'
+
+# Events
+{{ default .Env.RABBITMQ_USER "taiga" }}
+{{ default .Env.RABBITMQ_PASS "taiga" }}
+{{ default .Env.RABBITMQ_HOST "rabbitmq" }}
+{{ default .Env.RABBITMQ_PORT "5672" }}
+{{ default .Env.RABBITMQ_NAME "taiga" }}
+EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
+EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp//{{ .Env.RABBITMQ_USER }}:{{ .Env.RABBITMQ_PASS }}@{{ .Env.RABBITMQ_HOST }}:{{ .Env.RABBITMQ_PORT }}/{{ .Env.RABBITMQ_NAME }}'}
