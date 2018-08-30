@@ -56,7 +56,6 @@ RUN wget -O- https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_V
 
 COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
-RUN echo "django-environ==0.4.5" >> /usr/local/backend/requirements.txt
 RUN env PYTHONDONTWRITEBYTECODE=1 pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
 WORKDIR /usr/local/backend
@@ -66,8 +65,10 @@ RUN python3 -B manage.py collectstatic --noinput
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
-COPY ./local.py /usr/local/backend/settings/local.py
-COPY ./celery.py /usr/local/backend/settings/celery.py
+RUN rm -f /usr/local/backend/settings/*
+RUN echo '# -*- coding: utf-8 -*-' >  /usr/local/backend/settings/__init__.py
+RUN echo 'from .local import *' >> /usr/local/backend/settings/__init__.py
+
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
@@ -119,6 +120,9 @@ RUN echo "Deploy Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && mv /usr/local/backend /taiga-backend \
  && echo "Deploy Config Complete!"
+
+# Debug Configration
+COPY ./local.py /taiga-backend/settings/local.py
 
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]

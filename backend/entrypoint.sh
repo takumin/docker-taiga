@@ -15,12 +15,25 @@ if [ "$1" = 'default' ]; then
   # Wait
   ##############################################################################
 
-  dockerize -wait tcp://${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -timeout 10s
+  if [ -n "${POSTGRESQL_HOST}" -a -n "${POSTGRESQL_PORT}" ]; then
+    dockerize -wait tcp://${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -timeout 10s
+  else
+    echo "Require environment variable: POSTGRESQL_HOST, POSTGRESQL_PORT"
+    exit 1
+  fi
 
-  dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+  if [ -n "${RABBITMQ_HOST}" -a -n "${RABBITMQ_PORT}" ]; then
+    dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+  else
+    echo "Require environment variable: RABBITMQ_HOST, RABBITMQ_PORT"
+    exit 1
+  fi
 
-  if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
-    dockerize -wait tcp://${REDIS_HOST}:${REDIS_PORT} -timeout 10s
+  if [ -n "${REDIS_HOST}" -a -n "${REDIS_PORT}" ]; then
+    dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+  else
+    echo "Require environment variable: REDIS_HOST, REDIS_PORT"
+    exit 1
   fi
 
   ##############################################################################

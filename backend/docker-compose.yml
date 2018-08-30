@@ -35,32 +35,21 @@ services:
       - taiga-backend-test-rabbitmq
       - taiga-backend-test-redis
     environment:
-      TZ: "Asia/Tokyo"
-      BACKEND_DEBUG: "True"
-      BACKEND_SECRET: "taiga"
-      BACKEND_SCHEME: "http"
-      BACKEND_HOSTNAME: "localhost"
-      BACKEND_ADMIN_NAME: "Admin"
-      BACKEND_ADMIN_EMAIL: "admin@example.com"
-      BACKEND_CELERY_ENABLED: "True"
-      BACKEND_GUNICORN_WORKER: "1"
-      BACKEND_GUNICORN_TIMEOUT: "3"
-      BACKEND_CELERY_CHILD: "1"
-      BACKEND_CELERY_TIMELIMIT: "3"
-      FRONTEND_SCHEME: "http"
-      FRONTEND_HOSTNAME: "localhost"
-      FRONTEND_MEDIA_URL: "http://localhost:8000/media/"
-      FRONTEND_STATIC_URL: "http://localhost:8000/static/"
+      # Django
+      DJANGO_SECRET_KEY: "taiga"
+      # PostgreSQL
       POSTGRESQL_USER: "taiga"
       POSTGRESQL_PASS: "taiga"
       POSTGRESQL_HOST: "taiga-backend-test-postgres"
       POSTGRESQL_PORT: "5432"
       POSTGRESQL_NAME: "taiga"
+      # RabbitMQ
       RABBITMQ_USER: "taiga"
       RABBITMQ_PASS: "taiga"
       RABBITMQ_HOST: "taiga-backend-test-rabbitmq"
       RABBITMQ_PORT: "5672"
       RABBITMQ_NAME: "taiga"
+      # Redis
       REDIS_HOST: "taiga-backend-test-redis"
       REDIS_PORT: "6379"
 
