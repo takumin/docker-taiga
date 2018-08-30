@@ -56,7 +56,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-COPY ./upstream /usr/local/backend
+COPY ../upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
 RUN env PYTHONDONTWRITEBYTECODE=1 pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
@@ -67,10 +67,10 @@ RUN python3 -B manage.py collectstatic --noinput
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
-# COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
+COPY ../local.py.tmpl /usr/local/backend/settings/local.py.tmpl
 
-# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod 0755 /usr/local/bin/entrypoint.sh
+COPY ../entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 #
 # Deploy Container
@@ -122,9 +122,9 @@ RUN echo "Deploy Config Starting" \
  && echo "Deploy Config Complete!"
 
 # Debug Configration
-COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 0755 /usr/local/bin/entrypoint.sh
+# COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
+# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
+# RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]

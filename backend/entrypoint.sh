@@ -47,10 +47,6 @@ if [ "$1" = 'default' ]; then
     dockerize -template settings/local.py.tmpl:settings/local.py
   fi
 
-  echo "##############################################################################"
-  cat settings/local.py
-  echo "##############################################################################"
-
   ##############################################################################
   # Service Initialize
   ##############################################################################
@@ -71,9 +67,9 @@ if [ "$1" = 'default' ]; then
   chmod 0755 /taiga-backend/gunicorn/run
 
   mkdir /taiga-backend/celery
-  echo '#!/bin/sh'                                                                 >  /taiga-backend/celery/run
-  echo 'cd /taiga-backend'                                                         >> /taiga-backend/celery/run
-  echo 'exec 2>&1'                                                                 >> /taiga-backend/celery/run
+  echo '#!/bin/sh'                                                                >  /taiga-backend/celery/run
+  echo 'cd /taiga-backend'                                                        >> /taiga-backend/celery/run
+  echo 'exec 2>&1'                                                                >> /taiga-backend/celery/run
   echo 'exec celery worker -A taiga -c CELERY_WORKER --time-limit CELERY_TIMEOUT' >> /taiga-backend/celery/run
   chmod 0755 /taiga-backend/celery/run
 
