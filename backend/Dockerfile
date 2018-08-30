@@ -67,7 +67,8 @@ RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
 RUN rm -f /usr/local/backend/settings/*
 RUN echo '# -*- coding: utf-8 -*-' >  /usr/local/backend/settings/__init__.py
-RUN echo 'from .local import *' >> /usr/local/backend/settings/__init__.py
+RUN echo 'from .default import *' >> /usr/local/backend/settings/__init__.py
+RUN echo 'from .config import *' >> /usr/local/backend/settings/__init__.py
 
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
@@ -122,7 +123,9 @@ RUN echo "Deploy Config Starting" \
  && echo "Deploy Config Complete!"
 
 # Debug Configration
-COPY ./local.py /taiga-backend/settings/local.py
+COPY ./default.py /taiga-backend/settings/default.py
+COPY ./config.py /taiga-backend/settings/config.py
+COPY ./celery.py /taiga-backend/settings/celery.py
 
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]
