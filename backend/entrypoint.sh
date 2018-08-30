@@ -37,15 +37,6 @@ if [ "$1" = 'default' ]; then
   fi
 
   ##############################################################################
-  # Service Initialize
-  ##############################################################################
-
-  echo "Starting Initialize"
-  python3 manage.py migrate --noinput
-  python3 manage.py loaddata initial_user
-  python3 manage.py loaddata initial_project_templates
-
-  ##############################################################################
   # Service Configure
   ##############################################################################
 
@@ -59,6 +50,14 @@ if [ "$1" = 'default' ]; then
   echo "##############################################################################"
   cat settings/local.py
   echo "##############################################################################"
+
+  ##############################################################################
+  # Service Initialize
+  ##############################################################################
+
+  python3 manage.py migrate --noinput
+  python3 manage.py loaddata initial_user
+  python3 manage.py loaddata initial_project_templates
 
   ##############################################################################
   # Daemon Initialize

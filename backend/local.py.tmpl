@@ -1,79 +1,91 @@
+{{- $SITE_REGISTER              := default .Env.SITE_REGISTER "false" -}}
+{{- /* Backend */ -}}
+{{- $BACKEND_DEBUG              := default .Env.BACKEND_DEBUG "false" -}}
+{{- $BACKEND_SECRET_KEY         := default .Env.BACKEND_SECRET_KEY "taiga" -}}
+{{- $BACKEND_SERVER_FROM_EMAIL  := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
+{{- $BACKEND_DEFAULT_FROM_EMAIL := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
+{{- /* Listen */ -}}
+{{- $BACKEND_LISTEN_SSL         := default .Env.BACKEND_LISTEN_SSL "false" -}}
+{{- $BACKEND_LISTEN_HOST        := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- $FRONTEND_LISTEN_SSL        := default .Env.FRONTEND_LISTEN_SSL "false" -}}
+{{- $FRONTEND_LISTEN_HOST       := default .Env.FRONTEND_LISTEN_HOST "localhost:8080" -}}
+{{- /* URL Suffix */ -}}
+{{- $BACKEND_MEDIA_URL_NAME     := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
+{{- $BACKEND_STATIC_URL_NAME    := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
+{{- /* PostgreSQL */ -}}
+{{- $POSTGRESQL_USER            := default .Env.POSTGRESQL_USER "taiga" -}}
+{{- $POSTGRESQL_PASS            := default .Env.POSTGRESQL_PASS "taiga" -}}
+{{- $POSTGRESQL_HOST            := default .Env.POSTGRESQL_HOST "postgres" -}}
+{{- $POSTGRESQL_PORT            := default .Env.POSTGRESQL_PORT "5432" -}}
+{{- $POSTGRESQL_NAME            := default .Env.POSTGRESQL_NAME "taiga" -}}
+{{- /* RabbitMQ */ -}}
+{{- $RABBITMQ_USER              := default .Env.RABBITMQ_USER "taiga" -}}
+{{- $RABBITMQ_PASS              := default .Env.RABBITMQ_PASS "taiga" -}}
+{{- $RABBITMQ_HOST              := default .Env.RABBITMQ_HOST "rabbitmq" -}}
+{{- $RABBITMQ_PORT              := default .Env.RABBITMQ_PORT "5672" -}}
+{{- $RABBITMQ_NAME              := default .Env.RABBITMQ_NAME "taiga" -}}
 # -*- coding: utf-8 -*-
 
 # Load Default Configuration
 from .common import *
 
 # Register
-{{ default .Env.SITE_REGISTER "false" }}
-{{ if isTrue .Env.SITE_REGISTER }}
+{{- if isTrue $SITE_REGISTER }}
 PUBLIC_REGISTER_ENABLED = True
-{{ else }}
+{{- else }}
 PUBLIC_REGISTER_ENABLED = False
-{{ end }}
+{{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#debug
-{{ default .Env.BACKEND_DEBUG "false" }}
-{{ if isTrue .Env.BACKEND_DEBUG }}
+{{- if isTrue $BACKEND_DEBUG }}
 DEBUG = True
-{{ else }}
+{{- else }}
 DEBUG = False
-{{ end }}
+{{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
-{{ default .Env.BACKEND_SECRET_KEY "taiga" }}
-SECRET_KEY = '{{ .Env.BACKEND_SECRET_KEY }}'
+SECRET_KEY = '{{ $BACKEND_SECRET_KEY }}'
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#server-email
-{{ default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" }}
-SERVER_EMAIL = '{{ .Env.BACKEND_SERVER_FROM_EMAIL }}'
+SERVER_EMAIL = '{{ $BACKEND_SERVER_FROM_EMAIL }}'
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
-{{ default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" }}
-DEFAULT_FROM_EMAIL = '{{ .Env.BACKEND_DEFAULT_FROM_EMAIL }}'
+DEFAULT_FROM_EMAIL = '{{ $BACKEND_DEFAULT_FROM_EMAIL }}'
 
-# URL
-{{ default .Env.BACKEND_LISTEN_SSL "false" }}
-{{ if isTrue .Env.BACKEND_LISTEN_SSL }}
+# Backend
+{{- if isTrue $BACKEND_LISTEN_SSL }}
 SITES['api']['scheme'] = 'https'
-{{ else }}
+{{- else }}
 SITES['api']['scheme'] = 'http'
-{{ end }}
-{{ default .Env.BACKEND_LISTEN_HOST "localhost:8080" }}
-SITES['api']['domain'] = '{{ .Env.BACKEND_LISTEN_HOST }}'
-{{ default .Env.FRONTEND_LISTEN_SSL "false" }}
-{{ if isTrue .Env.FRONTEND_LISTEN_SSL }}
+{{- end }}
+SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}'
+
+# Frontend
+{{- if isTrue $FRONTEND_LISTEN_SSL }}
 SITES['front']['scheme'] = 'https'
-{{ else }}
+{{- else }}
 SITES['front']['scheme'] = 'http'
-{{ end }}
-{{ default .Env.FRONTEND_LISTEN_HOST "localhost:8080" }}
-SITES['front']['domain'] = '{{ .Env.FRONTEND_LISTEN_HOST }}'
+{{- end }}
+SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}'
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
 # https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
-{{ default .Env.BACKEND_MEDIA_URL_NAME "media" }}
-{{ default .Env.BACKEND_STATIC_URL_NAME "static" }}
-{{ if isTrue .Env.FRONTEND_LISTEN_SSL }}
-MEDIA_URL = 'https://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'https://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_STATIC_URL_NAME }}/'
-{{ else }}
-MEDIA_URL = 'http://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'http://{{ .Env.FRONTEND_LISTEN_HOST }}/{{ .Env.BACKEND_STATIC_URL_NAME }}/'
-{{ end }}
+{{- if isTrue $FRONTEND_LISTEN_SSL }}
+MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{- else }}
+MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql'
-DATABASES['default']['USER'] = '{{ default .Env.POSTGRESQL_USER "taiga" }}'
-DATABASES['default']['PASSWORD'] = '{{ default .Env.POSTGRESQL_PASS "taiga" }}'
-DATABASES['default']['HOST'] = '{{ default .Env.POSTGRESQL_HOST "postgres" }}'
-DATABASES['default']['PORT'] = '{{ default .Env.POSTGRESQL_PORT "5432" }}'
-DATABASES['default']['NAME'] = '{{ default .Env.POSTGRESQL_NAME "taiga" }}'
+DATABASES['default']['USER'] = '{{ $POSTGRESQL_USER }}'
+DATABASES['default']['PASSWORD'] = '{{ $POSTGRESQL_PASS }}'
+DATABASES['default']['HOST'] = '{{ $POSTGRESQL_HOST }}'
+DATABASES['default']['PORT'] = '{{ $POSTGRESQL_PORT }}'
+DATABASES['default']['NAME'] = '{{ $POSTGRESQL_NAME }}'
 
 # Events
-{{ default .Env.RABBITMQ_USER "taiga" }}
-{{ default .Env.RABBITMQ_PASS "taiga" }}
-{{ default .Env.RABBITMQ_HOST "rabbitmq" }}
-{{ default .Env.RABBITMQ_PORT "5672" }}
-{{ default .Env.RABBITMQ_NAME "taiga" }}
 EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
-EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp//{{ .Env.RABBITMQ_USER }}:{{ .Env.RABBITMQ_PASS }}@{{ .Env.RABBITMQ_HOST }}:{{ .Env.RABBITMQ_PORT }}/{{ .Env.RABBITMQ_NAME }}'}
+EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp//{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'}
