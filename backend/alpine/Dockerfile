@@ -4,7 +4,7 @@
 # Build Container
 #
 
-FROM alpine AS build
+FROM alpine:3.8 AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 RUN echo "Build Config Starting" \
@@ -88,7 +88,7 @@ RUN find /usr/local
 # Deploy Container
 #
 
-FROM alpine AS prod
+FROM alpine:3.8 AS prod
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 COPY --from=build /usr/local /usr/local
@@ -103,7 +103,6 @@ RUN echo "Deploy Config Starting" \
     libffi \
     libressl \
     libpq \
-    postgresql-libs \
     libzmq \
     libjpeg-turbo \
     libpng \
