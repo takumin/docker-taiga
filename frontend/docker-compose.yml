@@ -36,19 +36,16 @@ services:
       - taiga-frontend-test-events
       - taiga-frontend-test-backend
     environment:
+      SITE_REGISTER: "true"
+      FRONTEND_DEBUG: "true"
       FRONTEND_WORKER_PROC: "1"
       FRONTEND_WORKER_CONN: "1024"
-      FRONTEND_API_URL: "http://localhost:8000/api/v1"
-      FRONTEND_EVENTS_URL: "http://localhost:8000/events"
-      BACKEND_LISTEN_SCHEME: "http"
-      BACKEND_LISTEN_HOST: "taiga-frontend-test-backend"
-      BACKEND_LISTEN_PORT: "8080"
-      BACKEND_LISTEN_API_NAME: "api"
-      BACKEND_LISTEN_ADMIN_NAME: "admin"
-      EVENTS_LISTEN_SCHEME: "http"
-      EVENTS_LISTEN_HOST: "taiga-frontend-test-events"
-      EVENTS_LISTEN_PORT: "8888"
-      EVENTS_LISTEN_NAME: "events"
+      FRONTEND_LISTEN_SSL: "false"
+      FRONTEND_LISTEN_HOST: "localhost:8000"
+      BACKEND_LISTEN_SSL: "false"
+      BACKEND_LISTEN_HOST: "taiga-frontend-test-backend:8080"
+      EVENTS_LISTEN_SSL: "false"
+      EVENTS_LISTEN_HOST: "taiga-frontend-test-events:8888"
 
   #
   # events
