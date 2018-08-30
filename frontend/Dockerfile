@@ -7,6 +7,9 @@
 FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
+# COPY --from=takumi/taiga-backend:build-xenial /build/media /taiga-frontend
+# COPY --from=takumi/taiga-backend:build-xenial /build/static /taiga-frontend
+
 # COPY --from=takumi/taiga-backend:build-alpine /build/media /taiga-frontend
 COPY --from=takumi/taiga-backend:build-alpine /build/static /taiga-frontend
 
