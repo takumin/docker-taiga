@@ -60,7 +60,8 @@ COPY ./upstream /usr/local/backend
 RUN git config --global url."https://".insteadOf git://
 RUN env PYTHONDONTWRITEBYTECODE=1 pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
-WORKDIR /usr/local/backend
+COPY ./upstream /build
+WORKDIR /build
 RUN python3 -B manage.py compilemessages
 RUN python3 -B manage.py collectstatic --noinput
 
