@@ -7,8 +7,8 @@
 FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
-# COPY --from=takumi/taiga-backend:build /usr/local/backend/media /taiga-frontend
-COPY --from=takumi/taiga-backend:build /usr/local/backend/static /taiga-frontend
+# COPY --from=takumi/taiga-backend:build-alpine /build/media /taiga-frontend
+COPY --from=takumi/taiga-backend:build-alpine /build/static /taiga-frontend
 
 RUN apk --update add --no-cache wget
 ENV DOCKERIZE_VERSION v0.6.1

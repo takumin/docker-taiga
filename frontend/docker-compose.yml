@@ -36,7 +36,6 @@ services:
       - taiga-frontend-test-events
       - taiga-frontend-test-backend
     environment:
-      TZ: "Asia/Tokyo"
       FRONTEND_WORKER_PROC: "1"
       FRONTEND_WORKER_CONN: "1024"
       FRONTEND_API_URL: "http://localhost:8000/api/v1"
@@ -65,7 +64,6 @@ services:
     depends_on:
       - taiga-frontend-test-rabbitmq
     environment:
-      TZ: "Asia/Tokyo"
       EVENTS_SECRET: "taiga"
       RABBITMQ_USER: "taiga"
       RABBITMQ_PASS: "taiga"
@@ -77,7 +75,7 @@ services:
   # backend
   #
   taiga-frontend-test-backend:
-    image: takumi/taiga-backend:latest
+    image: takumi/taiga-backend:alpine
     hostname: taiga-frontend-test-backend
     container_name: taiga-frontend-test-backend
     cap_drop:
@@ -89,34 +87,37 @@ services:
       - taiga-frontend-test-rabbitmq
       - taiga-frontend-test-redis
     environment:
-      TZ: "Asia/Tokyo"
-      BACKEND_DEBUG: "True"
-      BACKEND_SECRET: "taiga"
-      BACKEND_SCHEME: "http"
-      BACKEND_HOSTNAME: "localhost"
-      BACKEND_ADMIN_NAME: "Admin"
-      BACKEND_ADMIN_EMAIL: "admin@example.com"
-      BACKEND_CELERY_ENABLED: "True"
-      BACKEND_GUNICORN_WORKER: "1"
-      BACKEND_GUNICORN_TIMEOUT: "3"
-      BACKEND_CELERY_CHILD: "1"
-      BACKEND_CELERY_TIMELIMIT: "3"
-      FRONTEND_SCHEME: "http"
-      FRONTEND_HOSTNAME: "localhost"
-      FRONTEND_MEDIA_URL: "http://localhost:8000/media/"
-      FRONTEND_STATIC_URL: "http://localhost:8000/static/"
-      POSTGRESQL_USER: "taiga"
-      POSTGRESQL_PASS: "taiga"
-      POSTGRESQL_HOST: "taiga-frontend-test-postgres"
-      POSTGRESQL_PORT: "5432"
-      POSTGRESQL_NAME: "taiga"
-      RABBITMQ_USER: "taiga"
-      RABBITMQ_PASS: "taiga"
-      RABBITMQ_HOST: "taiga-frontend-test-rabbitmq"
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_NAME: "taiga"
-      REDIS_HOST: "taiga-frontend-test-redis"
-      REDIS_PORT: "6379"
+      # Sites
+      - SITE_REGISTER=true
+      # Frontend - URL
+      - FRONTEND_LISTEN_SSL=false
+      - FRONTEND_LISTEN_HOST=localhost:8000
+      # Backend - URL
+      - BACKEND_LISTEN_SSL=false
+      - BACKEND_LISTEN_HOST=localhost:8080
+      - BACKEND_MEDIA_URL_NAME=media
+      - BACKEND_STATIC_URL_NAME=static
+      # Backend - Common
+      - BACKEND_DEBUG=true
+      - BACKEND_SECRET_KEY=taiga
+      - BACKEND_SERVER_FROM_EMAIL=taiga@localhost
+      - BACKEND_DEFAULT_FROM_EMAIL=noreply@localhost
+      - BACKEND_CELERY_ENABLED=true
+      # PostgreSQL
+      - POSTGRESQL_USER=taiga
+      - POSTGRESQL_PASS=taiga
+      - POSTGRESQL_HOST=taiga-frontend-test-postgres
+      - POSTGRESQL_PORT=5432
+      - POSTGRESQL_NAME=taiga
+      # RabbitMQ
+      - RABBITMQ_USER=taiga
+      - RABBITMQ_PASS=taiga
+      - RABBITMQ_HOST=taiga-frontend-test-rabbitmq
+      - RABBITMQ_PORT=5672
+      - RABBITMQ_NAME=taiga
+      # Redis
+      - REDIS_HOST=taiga-frontend-test-redis
+      - REDIS_PORT=6379
 
   #
   # postgres
@@ -135,7 +136,6 @@ services:
     networks:
       - taiga
     environment:
-      TZ: "Asia/Tokyo"
       POSTGRES_DB: "taiga"
       POSTGRES_USER: "taiga"
       POSTGRES_PASSWORD: "taiga"
@@ -159,7 +159,6 @@ services:
     networks:
       - taiga
     environment:
-      TZ: "Asia/Tokyo"
       RABBITMQ_DEFAULT_USER: "taiga"
       RABBITMQ_DEFAULT_PASS: "taiga"
       RABBITMQ_DEFAULT_VHOST: "taiga"
@@ -181,8 +180,6 @@ services:
       - ALL
     networks:
       - taiga
-    environment:
-      TZ: "Asia/Tokyo"
 
 networks:
   taiga:
