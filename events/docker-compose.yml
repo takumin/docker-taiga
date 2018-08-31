@@ -59,8 +59,6 @@ services:
       RABBITMQ_DEFAULT_USER: "taiga"
       RABBITMQ_DEFAULT_PASS: "taiga"
       RABBITMQ_DEFAULT_VHOST: "taiga"
-    tmpfs:
-      - /var/lib/rabbitmq/mnesia
 
 networks:
   taiga:
