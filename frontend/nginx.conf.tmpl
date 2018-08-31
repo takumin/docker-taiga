@@ -1,15 +1,19 @@
-{{- $FRONTEND_WORKER_PROC := default .Env.FRONTEND_WORKER_PROC "1" -}}
-{{- $FRONTEND_WORKER_CONN := default .Env.FRONTEND_WORKER_CONN "1024" -}}
-{{- $BACKEND_LISTEN_SSL   := default .Env.BACKEND_LISTEN_SSL "false" -}}
-{{- $BACKEND_LISTEN_HOST  := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
-{{- $EVENTS_LISTEN_SSL    := default .Env.EVENTS_LISTEN_SSL "false" -}}
-{{- $EVENTS_LISTEN_HOST   := default .Env.EVENTS_LISTEN_HOST "localhost:8888" -}}
-#user nginx;
+{{- $FRONTEND_WORKER_PROC        := default .Env.FRONTEND_WORKER_PROC "1" -}}
+{{- $FRONTEND_WORKER_CONN        := default .Env.FRONTEND_WORKER_CONN "1024" -}}
+{{- $FRONTEND_KEEPALIVE_REQUESTS := default .Env.FRONTEND_KEEPALIVE_REQUESTS "100" -}}
+{{- $FRONTEND_KEEPALIVE_TIMEOUT  := default .Env.FRONTEND_KEEPALIVE_TIMEOUT "10" -}}
+{{- $FRONTEND_MAX_BODY_SIZE      := default .Env.FRONTEND_MAX_BODY_SIZE "50m" -}}
+{{- $BACKEND_LISTEN_SSL          := default .Env.BACKEND_LISTEN_SSL "false" -}}
+{{- $BACKEND_LISTEN_HOST         := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- $EVENTS_LISTEN_SSL           := default .Env.EVENTS_LISTEN_SSL "false" -}}
+{{- $EVENTS_LISTEN_HOST          := default .Env.EVENTS_LISTEN_HOST "localhost:8888" -}}
+user nginx;
 error_log /dev/stderr warn;
 worker_processes {{ $FRONTEND_WORKER_PROC }};
 
 events {
   worker_connections  {{ $FRONTEND_WORKER_CONN }};
+  use epoll;
 }
 
 http {
@@ -28,17 +32,17 @@ http {
   }
 
   server {
-    listen 8000;
-    server_name _;
-
-    server_tokens off;
-    sendfile      on;
-    tcp_nopush    on;
-    tcp_nodelay   on;
-
+    listen                      8000;
+    server_name                 _;
+    charset                     utf-8;
+    server_tokens               off;
+    sendfile                    on;
+    tcp_nopush                  on;
+    tcp_nodelay                 on;
+    keepalive_requests          {{ $FRONTEND_KEEPALIVE_REQUESTS }};
+    keepalive_timeout           {{ $FRONTEND_KEEPALIVE_TIMEOUT }};
+    client_max_body_size        {{ $FRONTEND_MAX_BODY_SIZE }};
     large_client_header_buffers 4 32k;
-    client_max_body_size 50M;
-    charset utf-8;
 
     location / {
       root /taiga-frontend;
