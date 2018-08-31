@@ -33,7 +33,7 @@ services:
     depends_on:
       - taiga-test-rabbitmq
     environment:
-      EVENTS_SECRET_KEY: "taiga"
+      SITE_SECRET_KEY: "taiga"
       RABBITMQ_USER: "taiga"
       RABBITMQ_PASS: "taiga"
       RABBITMQ_HOST: "taiga-test-rabbitmq"

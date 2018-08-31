@@ -1,3 +1,5 @@
+{{- /* Sites */ -}}
+{{- $SITE_SECRET_KEY            := default .Env.SITE_SECRET_KEY "taiga" -}}
 {{- $SITE_REGISTER_ENABLED      := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- /* Listen */ -}}
 {{- $FRONTEND_LISTEN_SSL        := default .Env.FRONTEND_LISTEN_SSL "false" -}}
@@ -9,7 +11,6 @@
 {{- $BACKEND_STATIC_URL_NAME    := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
 {{- /* Backend */ -}}
 {{- $BACKEND_DEBUG_ENABLED      := default .Env.BACKEND_DEBUG_ENABLED "false" -}}
-{{- $BACKEND_SECRET_KEY         := default .Env.BACKEND_SECRET_KEY "taiga" -}}
 {{- $BACKEND_SERVER_FROM_EMAIL  := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
 {{- $BACKEND_DEFAULT_FROM_EMAIL := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
 {{- /* PostgreSQL */ -}}
@@ -44,7 +45,7 @@ DEBUG = False
 {{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
-SECRET_KEY = '{{ $BACKEND_SECRET_KEY }}'
+SECRET_KEY = '{{ $SITE_SECRET_KEY }}'
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#server-email
 SERVER_EMAIL = '{{ $BACKEND_SERVER_FROM_EMAIL }}'

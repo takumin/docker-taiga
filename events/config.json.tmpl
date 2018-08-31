@@ -1,6 +1,14 @@
+{{- /* Sites */ -}}
+{{- $SITE_SECRET_KEY            := default .Env.SITE_SECRET_KEY "taiga" -}}
+{{- /* RabbitMQ */ -}}
+{{- $RABBITMQ_USER              := default .Env.RABBITMQ_USER "taiga" -}}
+{{- $RABBITMQ_PASS              := default .Env.RABBITMQ_PASS "taiga" -}}
+{{- $RABBITMQ_HOST              := default .Env.RABBITMQ_HOST "rabbitmq" -}}
+{{- $RABBITMQ_PORT              := default .Env.RABBITMQ_PORT "5672" -}}
+{{- $RABBITMQ_NAME              := default .Env.RABBITMQ_NAME "taiga" -}}
 {
-  "url": "amqp://{{ .Env.RABBITMQ_USER }}:{{ .Env.RABBITMQ_PASS }}@{{ .Env.RABBITMQ_HOST }}:{{ .Env.RABBITMQ_PORT }}/{{ .Env.RABBITMQ_NAME }}",
-  "secret": "{{ .Env.EVENTS_SECRET_KEY }}",
+  "url": "amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}",
+  "secret": "{{ $SITE_SECRET_KEY }}",
   "webSocketServer": {
     "port": 8888
   }
