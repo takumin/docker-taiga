@@ -87,7 +87,7 @@ services:
       - taiga-frontend-test-redis
     environment:
       # Sites
-      - SITE_REGISTER=true
+      - SITE_REGISTER_ENABLED=true
       # Frontend - URL
       - FRONTEND_LISTEN_SSL=false
       - FRONTEND_LISTEN_HOST=localhost:8000
@@ -97,7 +97,7 @@ services:
       - BACKEND_MEDIA_URL_NAME=media
       - BACKEND_STATIC_URL_NAME=static
       # Backend - Common
-      - BACKEND_DEBUG=true
+      - BACKEND_DEBUG_ENABLED=true
       - BACKEND_SECRET_KEY=taiga
       - BACKEND_SERVER_FROM_EMAIL=taiga@localhost
       - BACKEND_DEFAULT_FROM_EMAIL=noreply@localhost

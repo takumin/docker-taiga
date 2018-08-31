@@ -1,6 +1,6 @@
-{{- $SITE_REGISTER              := default .Env.SITE_REGISTER "false" -}}
+{{- $SITE_REGISTER_ENABLED      := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- /* Backend */ -}}
-{{- $BACKEND_DEBUG              := default .Env.BACKEND_DEBUG "false" -}}
+{{- $BACKEND_DEBUG_ENABLED      := default .Env.BACKEND_DEBUG "false" -}}
 {{- $BACKEND_SECRET_KEY         := default .Env.BACKEND_SECRET_KEY "taiga" -}}
 {{- $BACKEND_SERVER_FROM_EMAIL  := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
 {{- $BACKEND_DEFAULT_FROM_EMAIL := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
@@ -30,14 +30,14 @@
 from .common import *
 
 # Register
-{{- if isTrue $SITE_REGISTER }}
+{{- if isTrue $SITE_REGISTER_ENABLED }}
 PUBLIC_REGISTER_ENABLED = True
 {{- else }}
 PUBLIC_REGISTER_ENABLED = False
 {{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#debug
-{{- if isTrue $BACKEND_DEBUG }}
+{{- if isTrue $BACKEND_DEBUG_ENABLED }}
 DEBUG = True
 {{- else }}
 DEBUG = False
