@@ -122,7 +122,7 @@ if [ "$1" = 'default' ]; then
 
   ln -s ../gunicorn service/gunicorn
 
-  if [ "x${BACKEND_CELERY_ENABLED}" = 'xTrue' ]; then
+  if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     ln -s ../celery service/celery
   fi
 
