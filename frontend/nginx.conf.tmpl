@@ -49,6 +49,10 @@ http {
       try_files $uri $uri/ /index.html;
     }
 
+    location /static {
+      alias /taiga-frontend/static;
+    }
+
     location /media {
 {{- if isTrue $BACKEND_LISTEN_SSL }}
       proxy_pass https://{{ $BACKEND_LISTEN_HOST }}/media;
