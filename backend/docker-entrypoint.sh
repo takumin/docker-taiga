@@ -118,12 +118,14 @@ if [ "$1" = 'default' ]; then
   # Daemon Enabled
   ##############################################################################
 
-  mkdir service
+  mkdir -p service
 
-  ln -s ../gunicorn service/gunicorn
+  ln -fs ../gunicorn service/gunicorn
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     ln -s ../celery service/celery
+  else
+    rm -f service/celery
   fi
 
   ##############################################################################
