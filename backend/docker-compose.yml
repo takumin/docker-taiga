@@ -32,7 +32,7 @@ services:
   #
   # alpine service
   #
-  taiga-test-backend-xenial:
+  taiga-test-backend-alpine:
     build:
       context: .
       dockerfile: alpine/Dockerfile
