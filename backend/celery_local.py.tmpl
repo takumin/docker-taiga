@@ -12,11 +12,13 @@
 {{- $REDIS_DB_INDEX_ID        := default .Env.REDIS_DB_INDEX_ID "0" -}}
 from .celery import *
 
-# Server address
+# http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#broker-url
 broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'
+
+# http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#result-backend
 result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/{{ $REDIS_DB_INDEX_ID }}'
 
-# Celery in memory
+# http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#task-always-eager
 {{- if isTrue $BACKEND_CELERY_IN_MEMORY }}
 task_always_eager = True
 {{- else }}
