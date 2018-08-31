@@ -23,8 +23,8 @@ services:
     depends_on:
       - taiga-events
       - taiga-backend
-    secrets:
-      - SITE_LISTEN_HOST
+    environment:
+      - SITE_LISTEN_HOST:${SITE_LISTEN_HOST}
     env_file:
       - ./prod.env
 
@@ -42,8 +42,8 @@ services:
       - taiga
     depends_on:
       - taiga-rabbitmq
-    secrets:
-      - SITE_LISTEN_HOST
+    environment:
+      - SITE_LISTEN_HOST:${SITE_LISTEN_HOST}
     env_file:
       - ./prod.env
 
@@ -63,12 +63,12 @@ services:
       - taiga-postgres
       - taiga-rabbitmq
       - taiga-redis
-    secrets:
-      - SITE_LISTEN_HOST
+    environment:
+      - SITE_LISTEN_HOST:${SITE_LISTEN_HOST}
     env_file:
       - ./prod.env
     volumes:
-      - taiga-backend:/taiga-backend/media
+      - taiga-backend-data:/taiga-backend/media
 
   #
   # postgres
@@ -90,7 +90,7 @@ services:
     env_file:
       - ./prod.env
     volumes:
-      - taiga-postgres:/var/lib/postgresql/data
+      - taiga-postgres-data:/var/lib/postgresql/data
 
   #
   # rabbitmq
@@ -111,7 +111,7 @@ services:
     env_file:
       - ./prod.env
     volumes:
-      - taiga-rabbitmq:/var/lib/rabbitmq
+      - taiga-rabbitmq-data:/var/lib/rabbitmq
 
   #
   # redis
@@ -133,9 +133,6 @@ services:
 networks:
   taiga:
 volumes:
-  taiga-backend:
-  taiga-postgres:
-  taiga-rabbitmq:
-secrets:
-  SITE_LISTEN_HOST:
-    file: ./SITE_LISTEN_HOST.secret.env
+  taiga-backend-data:
+  taiga-postgres-data:
+  taiga-rabbitmq-data:
