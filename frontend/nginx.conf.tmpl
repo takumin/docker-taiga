@@ -45,7 +45,7 @@ http {
     large_client_header_buffers 4 32k;
 
     location / {
-      root /taiga-frontend;
+      root /taiga-frontend/webroot;
       try_files $uri $uri/ /index.html;
     }
 

@@ -17,9 +17,12 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
     && tar -C /taiga-frontend -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-COPY ./upstream/dist /taiga-frontend
-COPY ./conf.json.tmpl /taiga-frontend
+COPY ./upstream/dist /taiga-frontend/webroot
+RUN rm /taiga-frontend/root/conf.example.json
+
+COPY ./conf.json.tmpl /taiga-frontend/webroot
 COPY ./nginx.conf.tmpl /taiga-frontend
+
 COPY ./entrypoint.sh /taiga-frontend/entrypoint.sh
 RUN chmod 0755 /taiga-frontend/entrypoint.sh
 
