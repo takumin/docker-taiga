@@ -81,9 +81,6 @@ COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
-# Check Copy Files
-RUN find /usr/local
-
 #
 # Deploy Container
 #
@@ -111,11 +108,6 @@ RUN echo "Deploy Config Starting" \
     libxslt \
  && mv /usr/local/backend /taiga-backend \
  && echo "Deploy Config Complete!"
-
-# Debug Configration
-# COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
-# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]
