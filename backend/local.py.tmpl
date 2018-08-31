@@ -13,6 +13,7 @@
 {{- $BACKEND_DEBUG_ENABLED      := default .Env.BACKEND_DEBUG_ENABLED "false" -}}
 {{- $BACKEND_SERVER_FROM_EMAIL  := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
 {{- $BACKEND_DEFAULT_FROM_EMAIL := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
+{{- $BACKEND_CELERY_ENABLED     := default .Env.BACKEND_CELERY_ENABLED "false" -}}
 {{- /* PostgreSQL */ -}}
 {{- $POSTGRESQL_USER            := default .Env.POSTGRESQL_USER "taiga" -}}
 {{- $POSTGRESQL_PASS            := default .Env.POSTGRESQL_PASS "taiga" -}}
@@ -90,3 +91,12 @@ DATABASES['default']['NAME'] = '{{ $POSTGRESQL_NAME }}'
 # Events
 EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
 EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp//{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'}
+
+# Async
+{{- if isTrue $BACKEND_CELERY_ENABLED }}
+CELERY_ENABLED = True
+{{- else }}
+CELERY_ENABLED = False
+{{- end }}
+broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}//'
+result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/0'
