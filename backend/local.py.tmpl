@@ -90,7 +90,7 @@ DATABASES['default']['NAME'] = '{{ $POSTGRESQL_NAME }}'
 
 # Events
 EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
-EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp//{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'}
+EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'}
 
 # Async
 {{- if isTrue $BACKEND_CELERY_ENABLED }}
