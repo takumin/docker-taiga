@@ -53,18 +53,21 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 # Copy Source Code
 COPY ./upstream /usr/local/backend
 
-# Workaround Alpine Linux Python Prefix Install
+# Require Proxy Environment
+RUN git config --global url."https://".insteadOf git://
+
+# Workaround Minimum Install
 RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
 
 # Workaround Alpine Linux 3.8 & LibreSSL 2.7
 RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
 
-# Require Proxy Environment
-RUN git config --global url."https://".insteadOf git://
-
 # Install Require Python Module
 RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+
+# Require Daemon
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" circus
 
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
@@ -95,7 +98,6 @@ COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
-    runit \
     python3 \
     zlib \
     ncurses-libs \

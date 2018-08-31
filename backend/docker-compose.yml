@@ -98,9 +98,6 @@ services:
       POSTGRES_USER: "taiga"
       POSTGRES_PASSWORD: "taiga"
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
-    volumes:
-      - type: tmpfs
-        target: /var/lib/postgresql/data
 
   #
   # rabbitmq
@@ -121,9 +118,6 @@ services:
       RABBITMQ_DEFAULT_USER: "taiga"
       RABBITMQ_DEFAULT_PASS: "taiga"
       RABBITMQ_DEFAULT_VHOST: "taiga"
-    volumes:
-      - type: tmpfs
-        target: /var/lib/rabbitmq
 
   #
   # redis

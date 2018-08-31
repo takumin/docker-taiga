@@ -24,7 +24,6 @@ RUN echo "Build Config Starting" \
     wget \
     git \
     python3 \
-    python3-six \
     python3-setuptools \
     python3-pip \
     python3-dev \
@@ -63,8 +62,15 @@ COPY ./upstream /usr/local/backend
 # Require Proxy Environment
 RUN git config --global url."https://".insteadOf git://
 
+# Workaround Minimum Install
+RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
+RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
+
 # Install Require Python Module
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+
+# Require Daemon
+RUN pip3 install --install-option="--prefix=/usr/local" circus
 
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
@@ -105,9 +111,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
-    runit \
     python3 \
-    python3-six \
     python3-pkg-resources \
     zlib1g \
     libssl1.0.0 \

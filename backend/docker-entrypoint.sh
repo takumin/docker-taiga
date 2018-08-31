@@ -70,62 +70,62 @@ if [ "$1" = 'default' ]; then
   # Daemon Initialize
   ##############################################################################
 
-  mkdir -p /taiga-backend/gunicorn
-  echo '#!/bin/sh'                                                                                >  /taiga-backend/gunicorn/run
-  echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/gunicorn/run
-  echo 'cd /taiga-backend'                                                                        >> /taiga-backend/gunicorn/run
-  echo 'exec 2>&1'                                                                                >> /taiga-backend/gunicorn/run
-  echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8080 taiga.wsgi'          >> /taiga-backend/gunicorn/run
-  chmod 0755 /taiga-backend/gunicorn/run
+  echo "" > taiga.ini
 
-  mkdir -p /taiga-backend/celery
-  echo '#!/bin/sh'                                                                                >  /taiga-backend/celery/run
-  echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/celery/run
-  echo 'cd /taiga-backend'                                                                        >> /taiga-backend/celery/run
-  echo 'exec 2>&1'                                                                                >> /taiga-backend/celery/run
-  echo 'exec celery -A taiga worker -c CELERY_WORKER --time-limit CELERY_TIMEOUT'                 >> /taiga-backend/celery/run
-  chmod 0755 /taiga-backend/celery/run
+  echo "[watcher:taiga]"                                                                 >> taiga.ini
+  echo "working_dir = /taiga-backend"                                                    >> taiga.ini
+  echo "cmd = gunicorn"                                                                  >> taiga.ini
+  echo "args = -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8080 taiga.wsgi"        >> taiga.ini
+  echo "numprocesses = 1"                                                                >> taiga.ini
+  echo "autostart = true"                                                                >> taiga.ini
+  echo "send_hup = true"                                                                 >> taiga.ini
+  echo ""                                                                                >> taiga.ini
+  echo "[env:taiga]"                                                                     >> taiga.ini
+  echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"               >> taiga.ini
+  echo "PYTHONPATH=.:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages" >> taiga.ini
+
+  if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
+    echo "[watcher:taiga-celery]"                                                          >> taiga.ini
+    echo "working_dir = /taiga-backend"                                                    >> taiga.ini
+    echo "cmd = celery"                                                                    >> taiga.ini
+    echo "args = -A taiga worker -c CELERY_WORKER --time-limit CELERY_TIMEOUT"             >> taiga.ini
+    echo "numprocesses = 1"                                                                >> taiga.ini
+    echo "autostart = true"                                                                >> taiga.ini
+    echo "send_hup = true"                                                                 >> taiga.ini
+    echo ""                                                                                >> taiga.ini
+    echo "[env:taiga-celery]"                                                              >> taiga.ini
+    echo "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"               >> taiga.ini
+    echo "PYTHONPATH=.:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages" >> taiga.ini
+  fi
 
   ##############################################################################
   # Daemon Parameter
   ##############################################################################
 
   if [ -n "${BACKEND_GUNICORN_WORKER}" ]; then
-    sed -i -e "s/GUNICORN_WORKER/${BACKEND_GUNICORN_WORKER}/" gunicorn/run
+    sed -i -e "s/GUNICORN_WORKER/${BACKEND_GUNICORN_WORKER}/" taiga.ini
   else
-    sed -i -e "s/GUNICORN_WORKER/1/" gunicorn/run
+    sed -i -e "s/GUNICORN_WORKER/1/" taiga.ini
   fi
 
   if [ -n "${BACKEND_GUNICORN_TIMEOUT}" ]; then
-    sed -i -e "s/GUNICORN_TIMEOUT/${BACKEND_GUNICORN_TIMEOUT}/" gunicorn/run
+    sed -i -e "s/GUNICORN_TIMEOUT/${BACKEND_GUNICORN_TIMEOUT}/" taiga.ini
   else
-    sed -i -e "s/GUNICORN_TIMEOUT/3/" gunicorn/run
+    sed -i -e "s/GUNICORN_TIMEOUT/3/" taiga.ini
   fi
-
-  if [ -n "${BACKEND_CELERY_WORKER}" ]; then
-    sed -i -e "s/CELERY_WORKER/${BACKEND_CELERY_WORKER}/" celery/run
-  else
-    sed -i -e 's/CELERY_WORKER/1/' celery/run
-  fi
-
-  if [ -n "${BACKEND_CELERY_TIMEOUT}" ]; then
-    sed -i -e "s/CELERY_TIMEOUT/${BACKEND_CELERY_TIMEOUT}/" celery/run
-  else
-    sed -i -e 's/CELERY_TIMEOUT/3/' celery/run
-  fi
-
-  ##############################################################################
-  # Daemon Enabled
-  ##############################################################################
-
-  mkdir -p service
-
-  ln -fs ../gunicorn service/gunicorn
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
-    ln -s ../celery service/celery
-  else
-    rm -f service/celery
+    if [ -n "${BACKEND_CELERY_WORKER}" ]; then
+      sed -i -e "s/CELERY_WORKER/${BACKEND_CELERY_WORKER}/" taiga.ini
+    else
+      sed -i -e 's/CELERY_WORKER/1/' taiga.ini
+    fi
+
+    if [ -n "${BACKEND_CELERY_TIMEOUT}" ]; then
+      sed -i -e "s/CELERY_TIMEOUT/${BACKEND_CELERY_TIMEOUT}/" taiga.ini
+    else
+      sed -i -e 's/CELERY_TIMEOUT/3/' taiga.ini
+    fi
   fi
 
   ##############################################################################
@@ -133,7 +133,7 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
 
   echo "Starting Server"
-  exec runsvdir service
+  exec circusd taiga.ini
 fi
 
 exec "$@"
