@@ -23,8 +23,8 @@ RUN rm /taiga-frontend/webroot/conf.example.json
 COPY ./conf.json.tmpl /taiga-frontend/webroot
 COPY ./nginx.conf.tmpl /taiga-frontend
 
-COPY ./entrypoint.sh /taiga-frontend/entrypoint.sh
-RUN chmod 0755 /taiga-frontend/entrypoint.sh
+COPY ./docker-entrypoint.sh /taiga-frontend/docker-entrypoint.sh
+RUN chmod 0755 /taiga-frontend/docker-entrypoint.sh
 
 #
 # Deploy Container
@@ -38,11 +38,11 @@ COPY --from=build /taiga-frontend /taiga-frontend
 RUN echo Start! \
  && set -ex \
  && mv /taiga-frontend/dockerize /usr/local/bin/dockerize \
- && mv /taiga-frontend/entrypoint.sh /usr/local/bin/entrypoint.sh \
+ && mv /taiga-frontend/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh \
  && apk --update add --no-cache runit \
  && echo Complete!
 
 WORKDIR /taiga-frontend
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["default"]
 EXPOSE 8000

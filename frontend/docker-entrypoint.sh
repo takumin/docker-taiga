@@ -7,21 +7,43 @@ if [ "$1" = 'default' ]; then
   # Wait
   ##############################################################################
 
-  dockerize -wait tcp://${EVENTS_LISTEN_HOST} -timeout 30s
-  dockerize -wait tcp://${BACKEND_LISTEN_HOST} -timeout 60s
+  if [ -n "${EVENTS_LISTEN_HOST}" ]; then
+    dockerize -wait tcp://${EVENTS_LISTEN_HOST} -timeout 30s
+  else
+    echo "Require environment variable: EVENTS_LISTEN_HOST"
+    exit 1
+  fi
+
+  if [ -n "${BACKEND_LISTEN_HOST}" ]; then
+    dockerize -wait tcp://${BACKEND_LISTEN_HOST} -timeout 60s
+  else
+    echo "Require environment variable: BACKEND_LISTEN_HOST"
+    exit 1
+  fi
 
   ##############################################################################
   # Service Initialized
   ##############################################################################
 
-  dockerize -template nginx.conf.tmpl:/etc/nginx/nginx.conf
-  dockerize -template webroot/conf.json.tmpl:webroot/conf.json
+  if [ -f "nginx.conf.tmpl" ]; then
+    dockerize -template nginx.conf.tmpl:/etc/nginx/nginx.conf
+  else
+    echo "Require nginx.conf.tmpl"
+    exit 1
+  fi
+
+  if [ -f "webroot/conf.json.tmpl" ]; then
+    dockerize -template webroot/conf.json.tmpl:webroot/conf.json
+  else
+    echo "Require nginx.conf.tmpl"
+    exit 1
+  fi
 
   ##############################################################################
   # Daemon Initialized
   ##############################################################################
 
-  mkdir nginx
+  mkdir -p nginx
   echo '#!/bin/sh'                   >  nginx/run
   echo 'cd /taiga-frontend'          >> nginx/run
   echo 'exec 2>&1'                   >> nginx/run
@@ -32,8 +54,8 @@ if [ "$1" = 'default' ]; then
   # Daemon Enabled
   ##############################################################################
 
-  mkdir service
-  ln -s ../nginx service/nginx
+  mkdir -p service
+  ln -fs ../nginx service/nginx
 
   ##############################################################################
   # Daemon Running
