@@ -81,8 +81,8 @@ COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
 COPY ./celery_local.py.tmpl /usr/local/backend/settings/celery_local.py.tmpl
 
 # Copy Entrypoint Script
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 0755 /usr/local/bin/entrypoint.sh
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 0755 /usr/local/bin/docker-entrypoint.sh
 
 #
 # Deploy Container
@@ -113,6 +113,6 @@ RUN echo "Deploy Config Starting" \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-backend
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["default"]
 EXPOSE 8080

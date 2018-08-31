@@ -70,7 +70,7 @@ if [ "$1" = 'default' ]; then
   # Daemon Initialize
   ##############################################################################
 
-  mkdir /taiga-backend/gunicorn
+  mkdir -p /taiga-backend/gunicorn
   echo '#!/bin/sh'                                                                                >  /taiga-backend/gunicorn/run
   echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/gunicorn/run
   echo 'cd /taiga-backend'                                                                        >> /taiga-backend/gunicorn/run
@@ -78,7 +78,7 @@ if [ "$1" = 'default' ]; then
   echo 'exec gunicorn -w GUNICORN_WORKER -t GUNICORN_TIMEOUT -b 0.0.0.0:8080 taiga.wsgi'          >> /taiga-backend/gunicorn/run
   chmod 0755 /taiga-backend/gunicorn/run
 
-  mkdir /taiga-backend/celery
+  mkdir -p /taiga-backend/celery
   echo '#!/bin/sh'                                                                                >  /taiga-backend/celery/run
   echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/celery/run
   echo 'cd /taiga-backend'                                                                        >> /taiga-backend/celery/run
