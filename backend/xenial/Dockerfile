@@ -19,7 +19,6 @@ RUN echo "Build Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
-    gettext \
     build-essential \
     wget \
     git \
@@ -51,25 +50,29 @@ RUN echo "Build Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "Build Config Complete!"
 
+# Installed Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
+# Copy Source Code
 COPY ./upstream /usr/local/backend
+
+# Require Proxy Environment
 RUN git config --global url."https://".insteadOf git://
-RUN env PYTHONDONTWRITEBYTECODE=1 pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
-COPY ./upstream /build
-WORKDIR /build
-RUN python3 -B manage.py compilemessages
-RUN python3 -B manage.py collectstatic --noinput
+# Install Require Python Module
+RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
+# Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
+# Copy Config File
 COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
 
+# Copy Entrypoint Script
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 0755 /usr/local/bin/entrypoint.sh
 
@@ -95,6 +98,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
     runit \
+    gettext \
     python3 \
     python3-six \
     python3-pkg-resources \

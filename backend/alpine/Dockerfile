@@ -9,7 +9,6 @@ LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 RUN echo "Build Config Starting" \
  && apk --update add \
-    gettext \
     gcc \
     musl-dev \
     wget \
@@ -44,7 +43,7 @@ RUN echo "Build Config Starting" \
     libxslt-dev \
  && echo "Build Config Complete!"
 
-# Dockerize
+# Installed Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
@@ -52,23 +51,19 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 
 # Copy Source Code
 COPY ./upstream /usr/local/backend
-RUN cp -r /usr/local/backend /build
 
-# Workaround Python Prefix Install
-RUN grep '^six==.*' /build/requirements.txt > six.txt
+# Workaround Alpine Linux Python Prefix Install
+RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
 
 # Workaround Alpine Linux 3.8 & LibreSSL 2.7
-RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /build/requirements.txt
+RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
+
+# Require Proxy Environment
+RUN git config --global url."https://".insteadOf git://
 
 # Install Require Python Module
-RUN git config --global url."https://".insteadOf git://
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /build/requirements.txt
-
-# Buiild Static Files
-WORKDIR /build
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py compilemessages
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py collectstatic --noinput
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
 # Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
@@ -93,6 +88,7 @@ COPY --from=build /usr/local /usr/local
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
     runit \
+    gettext \
     python3 \
     zlib \
     ncurses-libs \
