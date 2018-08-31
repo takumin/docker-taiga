@@ -36,8 +36,8 @@ services:
     hostname: taiga-events
     container_name: taiga-events
     restart: always
-    cap_drop:
-      - ALL
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     depends_on:
@@ -55,8 +55,8 @@ services:
     hostname: taiga-backend
     container_name: taiga-backend
     restart: always
-    cap_drop:
-      - ALL
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     depends_on:
@@ -78,13 +78,13 @@ services:
     hostname: taiga-postgres
     container_name: taiga-postgres
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-      - FOWNER
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    #   - FOWNER
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     env_file:
@@ -100,12 +100,12 @@ services:
     hostname: taiga-rabbitmq
     container_name: taiga-rabbitmq
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     env_file:
@@ -121,12 +121,12 @@ services:
     hostname: taiga-redis
     container_name: taiga-redis
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
 
