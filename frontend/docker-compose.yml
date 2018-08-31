@@ -25,6 +25,9 @@ services:
     hostname: taiga-test-frontend
     container_name: taiga-test-frontend
     # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
     #   - FOWNER
     # cap_drop:
     #   - ALL
