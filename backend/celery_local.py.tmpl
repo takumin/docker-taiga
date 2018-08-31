@@ -9,11 +9,12 @@
 {{- /* Redis */ -}}
 {{- $REDIS_HOST               := default .Env.REDIS_HOST "redis" -}}
 {{- $REDIS_PORT               := default .Env.REDIS_PORT "6379" -}}
+{{- $REDIS_DB_INDEX_ID        := default .Env.REDIS_DB_INDEX_ID "0" -}}
 from .celery import *
 
 # Server address
 broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'
-result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/0'
+result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/{{ $REDIS_DB_INDEX_ID }}'
 
 # Celery in memory
 {{- if isTrue $BACKEND_CELERY_IN_MEMORY }}
