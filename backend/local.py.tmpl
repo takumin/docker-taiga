@@ -1,17 +1,17 @@
 {{- $SITE_REGISTER_ENABLED      := default .Env.SITE_REGISTER_ENABLED "false" -}}
+{{- /* Listen */ -}}
+{{- $FRONTEND_LISTEN_SSL        := default .Env.FRONTEND_LISTEN_SSL "false" -}}
+{{- $FRONTEND_LISTEN_HOST       := default .Env.FRONTEND_LISTEN_HOST "localhost:8000" -}}
+{{- $BACKEND_LISTEN_SSL         := default .Env.BACKEND_LISTEN_SSL "false" -}}
+{{- $BACKEND_LISTEN_HOST        := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- /* URL Suffix */ -}}
+{{- $BACKEND_MEDIA_URL_NAME     := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
+{{- $BACKEND_STATIC_URL_NAME    := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
 {{- /* Backend */ -}}
 {{- $BACKEND_DEBUG_ENABLED      := default .Env.BACKEND_DEBUG "false" -}}
 {{- $BACKEND_SECRET_KEY         := default .Env.BACKEND_SECRET_KEY "taiga" -}}
 {{- $BACKEND_SERVER_FROM_EMAIL  := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
 {{- $BACKEND_DEFAULT_FROM_EMAIL := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
-{{- /* Listen */ -}}
-{{- $BACKEND_LISTEN_SSL         := default .Env.BACKEND_LISTEN_SSL "false" -}}
-{{- $BACKEND_LISTEN_HOST        := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
-{{- $FRONTEND_LISTEN_SSL        := default .Env.FRONTEND_LISTEN_SSL "false" -}}
-{{- $FRONTEND_LISTEN_HOST       := default .Env.FRONTEND_LISTEN_HOST "localhost:8080" -}}
-{{- /* URL Suffix */ -}}
-{{- $BACKEND_MEDIA_URL_NAME     := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
-{{- $BACKEND_STATIC_URL_NAME    := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
 {{- /* PostgreSQL */ -}}
 {{- $POSTGRESQL_USER            := default .Env.POSTGRESQL_USER "taiga" -}}
 {{- $POSTGRESQL_PASS            := default .Env.POSTGRESQL_PASS "taiga" -}}
