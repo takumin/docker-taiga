@@ -1,0 +1,23 @@
+{{- /* Backend */ -}}
+{{- $BACKEND_CELERY_IN_MEMORY := default .Env.BACKEND_CELERY_IN_MEMORY "false" -}}
+{{- /* RabbitMQ */ -}}
+{{- $RABBITMQ_USER            := default .Env.RABBITMQ_USER "taiga" -}}
+{{- $RABBITMQ_PASS            := default .Env.RABBITMQ_PASS "taiga" -}}
+{{- $RABBITMQ_HOST            := default .Env.RABBITMQ_HOST "rabbitmq" -}}
+{{- $RABBITMQ_PORT            := default .Env.RABBITMQ_PORT "5672" -}}
+{{- $RABBITMQ_NAME            := default .Env.RABBITMQ_NAME "taiga" -}}
+{{- /* Redis */ -}}
+{{- $REDIS_HOST               := default .Env.REDIS_HOST "redis" -}}
+{{- $REDIS_PORT               := default .Env.REDIS_PORT "6379" -}}
+from .celery import *
+
+# Server address
+broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'
+result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/0'
+
+# Celery in memory
+{{- if isTrue $BACKEND_CELERY_IN_MEMORY }}
+task_always_eager = True
+{{- else }}
+task_always_eager = False
+{{- end }}

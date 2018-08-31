@@ -78,6 +78,7 @@ RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
 
 # Copy Config File
 COPY ./local.py.tmpl /usr/local/backend/settings/local.py.tmpl
+COPY ./celery_local.py.tmpl /usr/local/backend/settings/celery_local.py.tmpl
 
 # Copy Entrypoint Script
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh

@@ -47,6 +47,13 @@ if [ "$1" = 'default' ]; then
     dockerize -template settings/local.py.tmpl:settings/local.py
   fi
 
+  if [ ! -f "settings/celery_local.py.tmpl" ]; then
+    echo "Require settings/celery_local.py.tmpl"
+    exit 1
+  else
+    dockerize -template settings/celery_local.py.tmpl:settings/celery_local.py
+  fi
+
   ##############################################################################
   # Service Initialize
   ##############################################################################

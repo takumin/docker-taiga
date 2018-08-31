@@ -26,9 +26,6 @@
 {{- $RABBITMQ_HOST              := default .Env.RABBITMQ_HOST "rabbitmq" -}}
 {{- $RABBITMQ_PORT              := default .Env.RABBITMQ_PORT "5672" -}}
 {{- $RABBITMQ_NAME              := default .Env.RABBITMQ_NAME "taiga" -}}
-{{- /* Redis */ -}}
-{{- $REDIS_HOST                 := default .Env.REDIS_HOST "redis" -}}
-{{- $REDIS_PORT                 := default .Env.REDIS_PORT "6379" -}}
 # -*- coding: utf-8 -*-
 
 # Load Default Configuration
@@ -101,5 +98,3 @@ CELERY_ENABLED = True
 {{- else }}
 CELERY_ENABLED = False
 {{- end }}
-broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}//'
-result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/0'
