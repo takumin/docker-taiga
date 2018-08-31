@@ -8,7 +8,7 @@ FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 # COPY --from=takumi/taiga-backend:build-xenial /build/static /taiga-frontend
-COPY --from=takumi/taiga-backend:build-alpine /build/static /taiga-frontend
+COPY --from=takumi/taiga-backend:build-alpine /build/static /taiga-frontend/static
 
 RUN apk --update add --no-cache wget
 
