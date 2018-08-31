@@ -83,7 +83,7 @@ if [ "$1" = 'default' ]; then
   echo "export PYTHONPATH=\"/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /taiga-backend/celery/run
   echo 'cd /taiga-backend'                                                                        >> /taiga-backend/celery/run
   echo 'exec 2>&1'                                                                                >> /taiga-backend/celery/run
-  echo 'exec celery worker -A taiga -c CELERY_WORKER --time-limit CELERY_TIMEOUT'                 >> /taiga-backend/celery/run
+  echo 'exec celery -A taiga worker -c CELERY_WORKER --time-limit CELERY_TIMEOUT'                 >> /taiga-backend/celery/run
   chmod 0755 /taiga-backend/celery/run
 
   ##############################################################################
