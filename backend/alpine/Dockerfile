@@ -54,7 +54,7 @@ RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSI
 COPY ./upstream /usr/local/backend
 RUN cp -r /usr/local/backend /build
 
-# Workaround Alpine Linux 3.8
+# Workaround Python Prefix Install
 RUN grep '^six==.*' /build/requirements.txt > six.txt
 RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
 
