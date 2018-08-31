@@ -60,7 +60,7 @@ if [ "$1" = 'default' ]; then
 
   PYTHON_MEJOR="$(python3 -c 'import sys; print(sys.version_info.major)')"
   PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
-  export PYTHONPATH="/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages"
+  export PYTHONPATH=".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages"
 
   python3 manage.py migrate --noinput
   python3 manage.py loaddata initial_user
