@@ -4,66 +4,42 @@ services:
   #
   # alpine build
   #
-  # taiga-build-backend-alpine:
-  #   build:
-  #     context: .
-  #     dockerfile: alpine/Dockerfile
-  #     target: build
-  #   image: takumi/taiga-backend:build-alpine
-  #   hostname: taiga-build-backend-alpine
-  #   container_name: taiga-build-backend-alpine
-  #   networks:
-  #     - taiga
-
-  #
-  # xenial build
-  #
-  taiga-build-backend-xenial:
+  taiga-build-backend-alpine:
     build:
       context: .
-      dockerfile: xenial/Dockerfile
+      dockerfile: alpine/Dockerfile
       target: build
-    image: takumi/taiga-backend:build-xenial
-    hostname: taiga-build-backend-xenial
-    container_name: taiga-build-backend-xenial
+    image: takumi/taiga-backend:build-alpine
+    hostname: taiga-build-backend-alpine
+    container_name: taiga-build-backend-alpine
     networks:
       - taiga
 
   #
-  # alpine service
+  # xenial build
   #
-  # taiga-test-backend-alpine:
+  # taiga-build-backend-xenial:
   #   build:
   #     context: .
-  #     dockerfile: alpine/Dockerfile
-  #     target: prod
-  #   image: takumi/taiga-backend:alpine
-  #   hostname: taiga-test-backend-alpine
-  #   container_name: taiga-test-backend-alpine
-  #   cap_drop:
-  #     - ALL
+  #     dockerfile: xenial/Dockerfile
+  #     target: build
+  #   image: takumi/taiga-backend:build-xenial
+  #   hostname: taiga-build-backend-xenial
+  #   container_name: taiga-build-backend-xenial
   #   networks:
   #     - taiga
-  #   ports:
-  #     - 8000:8080
-  #   depends_on:
-  #     - taiga-test-postgres
-  #     - taiga-test-rabbitmq
-  #     - taiga-test-redis
-  #   env_file:
-  #     - ./test.env
 
   #
-  # xenial service
+  # alpine service
   #
-  taiga-test-backend-xenial:
+  taiga-test-backend-alpine:
     build:
       context: .
-      dockerfile: xenial/Dockerfile
+      dockerfile: alpine/Dockerfile
       target: prod
-    image: takumi/taiga-backend:latest
-    hostname: taiga-test-backend-xenial
-    container_name: taiga-test-backend-xenial
+    image: takumi/taiga-backend:alpine
+    hostname: taiga-test-backend-alpine
+    container_name: taiga-test-backend-alpine
     cap_drop:
       - ALL
     networks:
@@ -76,6 +52,30 @@ services:
       - taiga-test-redis
     env_file:
       - ./test.env
+
+  #
+  # xenial service
+  #
+  # taiga-test-backend-xenial:
+  #   build:
+  #     context: .
+  #     dockerfile: xenial/Dockerfile
+  #     target: prod
+  #   image: takumi/taiga-backend:latest
+  #   hostname: taiga-test-backend-xenial
+  #   container_name: taiga-test-backend-xenial
+  #   cap_drop:
+  #     - ALL
+  #   networks:
+  #     - taiga
+  #   ports:
+  #     - 8000:8080
+  #   depends_on:
+  #     - taiga-test-postgres
+  #     - taiga-test-rabbitmq
+  #     - taiga-test-redis
+  #   env_file:
+  #     - ./test.env
 
   #
   # postgres
@@ -93,11 +93,8 @@ services:
       - ALL
     networks:
       - taiga
-    environment:
-      POSTGRES_DB: "taiga"
-      POSTGRES_USER: "taiga"
-      POSTGRES_PASSWORD: "taiga"
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    env_file:
+      - ./test.env
 
   #
   # rabbitmq
@@ -114,10 +111,8 @@ services:
       - ALL
     networks:
       - taiga
-    environment:
-      RABBITMQ_DEFAULT_USER: "taiga"
-      RABBITMQ_DEFAULT_PASS: "taiga"
-      RABBITMQ_DEFAULT_VHOST: "taiga"
+    env_file:
+      - ./test.env
 
   #
   # redis
