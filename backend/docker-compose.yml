@@ -18,16 +18,16 @@ services:
   #
   # xenial build
   #
-  # taiga-build-backend-xenial:
-  #   build:
-  #     context: .
-  #     dockerfile: xenial/Dockerfile
-  #     target: build
-  #   image: takumi/taiga-backend:build-xenial
-  #   hostname: taiga-build-backend-xenial
-  #   container_name: taiga-build-backend-xenial
-  #   networks:
-  #     - taiga
+  taiga-build-backend-xenial:
+    build:
+      context: .
+      dockerfile: xenial/Dockerfile
+      target: build
+    image: takumi/taiga-backend:build-xenial
+    hostname: taiga-build-backend-xenial
+    container_name: taiga-build-backend-xenial
+    networks:
+      - taiga
 
   #
   # alpine service
@@ -56,26 +56,26 @@ services:
   #
   # xenial service
   #
-  # taiga-test-backend-xenial:
-  #   build:
-  #     context: .
-  #     dockerfile: xenial/Dockerfile
-  #     target: prod
-  #   image: takumi/taiga-backend:latest
-  #   hostname: taiga-test-backend-xenial
-  #   container_name: taiga-test-backend-xenial
-  #   cap_drop:
-  #     - ALL
-  #   networks:
-  #     - taiga
-  #   ports:
-  #     - 8001:8080
-  #   depends_on:
-  #     - taiga-test-postgres
-  #     - taiga-test-rabbitmq
-  #     - taiga-test-redis
-  #   env_file:
-  #     - ./test.env
+  taiga-test-backend-xenial:
+    build:
+      context: .
+      dockerfile: xenial/Dockerfile
+      target: prod
+    image: takumi/taiga-backend:latest
+    hostname: taiga-test-backend-xenial
+    container_name: taiga-test-backend-xenial
+    cap_drop:
+      - ALL
+    networks:
+      - taiga
+    ports:
+      - 8001:8080
+    depends_on:
+      - taiga-test-postgres
+      - taiga-test-rabbitmq
+      - taiga-test-redis
+    env_file:
+      - ./test.env
 
   #
   # postgres

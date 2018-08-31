@@ -133,11 +133,6 @@ RUN echo "Deploy Config Starting" \
  && mv /usr/local/backend /taiga-backend \
  && echo "Deploy Config Complete!"
 
-# Debug Configration
-# COPY ./local.py.tmpl /taiga-backend/settings/local.py.tmpl
-# COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-# RUN chmod 0755 /usr/local/bin/entrypoint.sh
-
 WORKDIR /taiga-backend
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["default"]
