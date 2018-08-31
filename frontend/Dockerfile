@@ -7,13 +7,15 @@
 FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
-RUN apk --update add --no-cache wget
-ENV DOCKERIZE_VERSION v0.6.1
-RUN wget -O- https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz | tar -C /taiga-frontend -xzvf -
-RUN chmod 0755 /taiga-frontend/dockerize
-
 # COPY --from=takumi/taiga-backend:build-xenial /build/static /taiga-frontend
 COPY --from=takumi/taiga-backend:build-alpine /build/static /taiga-frontend
+
+RUN apk --update add --no-cache wget
+
+ENV DOCKERIZE_VERSION v0.6.1
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /taiga-frontend -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
 COPY ./upstream/dist /taiga-frontend
 COPY ./conf.json.tmpl /taiga-frontend
