@@ -61,7 +61,7 @@ services:
   # backend
   #
   taiga-test-backend:
-    image: takumi/taiga-backend:latest
+    image: takumi/taiga-backend:alpine
     hostname: taiga-test-backend
     container_name: taiga-test-backend
     cap_drop:
