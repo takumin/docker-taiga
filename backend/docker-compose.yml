@@ -51,7 +51,7 @@ services:
       - taiga-backend-test-rabbitmq
       - taiga-backend-test-redis
     env_file:
-      - ./backend_test.env
+      - ./test.env
 
   #
   # xenial service
@@ -75,7 +75,7 @@ services:
   #     - taiga-backend-test-rabbitmq
   #     - taiga-backend-test-redis
   #   env_file:
-  #     - ./backend_test.env
+  #     - ./test.env
 
   #
   # postgres
