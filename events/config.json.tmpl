@@ -1,6 +1,6 @@
 {
   "url": "amqp://{{ .Env.RABBITMQ_USER }}:{{ .Env.RABBITMQ_PASS }}@{{ .Env.RABBITMQ_HOST }}:{{ .Env.RABBITMQ_PORT }}/{{ .Env.RABBITMQ_NAME }}",
-  "secret": "{{ .Env.EVENTS_SECRET }}",
+  "secret": "{{ .Env.EVENTS_SECRET_KEY }}",
   "webSocketServer": {
     "port": 8888
   }
