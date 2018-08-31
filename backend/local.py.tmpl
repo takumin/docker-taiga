@@ -1,9 +1,9 @@
 {{- /* Sites */ -}}
+{{- $SITE_LISTEN_SSL            := default .Env.SITE_LISTEN_SSL "false" -}}
+{{- $SITE_LISTEN_HOST           := default .Env.SITE_LISTEN_HOST "localhost" -}}
 {{- $SITE_SECRET_KEY            := default .Env.SITE_SECRET_KEY "taiga" -}}
 {{- $SITE_REGISTER_ENABLED      := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- /* Listen */ -}}
-{{- $FRONTEND_LISTEN_SSL        := default .Env.FRONTEND_LISTEN_SSL "false" -}}
-{{- $FRONTEND_LISTEN_HOST       := default .Env.FRONTEND_LISTEN_HOST "localhost:8000" -}}
 {{- $BACKEND_LISTEN_SSL         := default .Env.BACKEND_LISTEN_SSL "false" -}}
 {{- $BACKEND_LISTEN_HOST        := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
 {{- /* URL Suffix */ -}}
@@ -63,21 +63,21 @@ SITES['api']['scheme'] = 'http'
 SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}'
 
 # Frontend
-{{- if isTrue $FRONTEND_LISTEN_SSL }}
+{{- if isTrue $SITE_LISTEN_SSL }}
 SITES['front']['scheme'] = 'https'
 {{- else }}
 SITES['front']['scheme'] = 'http'
 {{- end }}
-SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}'
+SITES['front']['domain'] = '{{ $SITE_LISTEN_HOST }}'
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
 # https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
-{{- if isTrue $FRONTEND_LISTEN_SSL }}
-MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{- if isTrue $SITE_LISTEN_SSL }}
+MEDIA_URL = 'https://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
 {{- else }}
-MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+MEDIA_URL = 'http://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
 {{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
