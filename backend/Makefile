@@ -73,3 +73,4 @@ endif
 .PHONY: clean
 clean: down
 	@docker system prune -f
+	@docker volume prune -f
