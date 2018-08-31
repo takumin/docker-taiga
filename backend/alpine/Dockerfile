@@ -12,6 +12,7 @@ RUN echo "Build Config Starting" \
     gettext \
     gcc \
     musl-dev \
+    linux-headers \
     wget \
     ca-certificates \
     git \
