@@ -7,10 +7,10 @@
 {
 {{- if isTrue $FRONTEND_LISTEN_SSL }}
   "api": "https://{{ $FRONTEND_LISTEN_HOST }}/api/v1",
-  "eventsUrl": "https://{{ $FRONTEND_LISTEN_HOST }}/events",
+  "eventsUrl": "wss://{{ $FRONTEND_LISTEN_HOST }}/events",
 {{- else }}
   "api": "http://{{ $FRONTEND_LISTEN_HOST }}/api/v1",
-  "eventsUrl": "http://{{ $FRONTEND_LISTEN_HOST }}/events",
+  "eventsUrl": "ws://{{ $FRONTEND_LISTEN_HOST }}/events",
 {{- end }}
   "eventsMaxMissedHeartbeats": 5,
   "eventsHeartbeatIntervalTime": 60000,
