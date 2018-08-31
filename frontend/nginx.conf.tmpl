@@ -31,6 +31,11 @@ http {
     listen 8000;
     server_name _;
 
+    server_tokens off;
+    sendfile      on;
+    tcp_nopush    on;
+    tcp_nodelay   on;
+
     large_client_header_buffers 4 32k;
     client_max_body_size 50M;
     charset utf-8;
@@ -38,20 +43,6 @@ http {
     location / {
       root /taiga-frontend;
       try_files $uri $uri/ /index.html;
-    }
-
-    location /static {
-      proxy_set_header Host $http_host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Scheme $scheme;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-{{- if isTrue $BACKEND_LISTEN_SSL }}
-      proxy_pass https://{{ $BACKEND_LISTEN_HOST }}/static;
-{{- else }}
-      proxy_pass http://{{ $BACKEND_LISTEN_HOST }}/static;
-{{- end }}
-      proxy_redirect off;
     }
 
     location /media {
