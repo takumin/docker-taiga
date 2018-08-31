@@ -4,16 +4,16 @@ services:
   #
   # alpine build
   #
-  taiga-build-backend-alpine:
-    build:
-      context: .
-      dockerfile: alpine/Dockerfile
-      target: build
-    image: takumi/taiga-backend:build-alpine
-    hostname: taiga-build-backend-alpine
-    container_name: taiga-build-backend-alpine
-    networks:
-      - taiga
+  # taiga-build-backend-alpine:
+  #   build:
+  #     context: .
+  #     dockerfile: alpine/Dockerfile
+  #     target: build
+  #   image: takumi/taiga-backend:build-alpine
+  #   hostname: taiga-build-backend-alpine
+  #   container_name: taiga-build-backend-alpine
+  #   networks:
+  #     - taiga
 
   #
   # xenial build
@@ -32,26 +32,26 @@ services:
   #
   # alpine service
   #
-  taiga-test-backend-alpine:
-    build:
-      context: .
-      dockerfile: alpine/Dockerfile
-      target: prod
-    image: takumi/taiga-backend:alpine
-    hostname: taiga-test-backend-alpine
-    container_name: taiga-test-backend-alpine
-    cap_drop:
-      - ALL
-    networks:
-      - taiga
-    ports:
-      - 8000:8080
-    depends_on:
-      - taiga-test-postgres
-      - taiga-test-rabbitmq
-      - taiga-test-redis
-    env_file:
-      - ./test.env
+  # taiga-test-backend-alpine:
+  #   build:
+  #     context: .
+  #     dockerfile: alpine/Dockerfile
+  #     target: prod
+  #   image: takumi/taiga-backend:alpine
+  #   hostname: taiga-test-backend-alpine
+  #   container_name: taiga-test-backend-alpine
+  #   cap_drop:
+  #     - ALL
+  #   networks:
+  #     - taiga
+  #   ports:
+  #     - 8000:8080
+  #   depends_on:
+  #     - taiga-test-postgres
+  #     - taiga-test-rabbitmq
+  #     - taiga-test-redis
+  #   env_file:
+  #     - ./test.env
 
   #
   # xenial service
@@ -98,8 +98,6 @@ services:
       POSTGRES_USER: "taiga"
       POSTGRES_PASSWORD: "taiga"
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
-    tmpfs:
-      - /var/lib/postgresql/data
 
   #
   # rabbitmq
@@ -120,8 +118,6 @@ services:
       RABBITMQ_DEFAULT_USER: "taiga"
       RABBITMQ_DEFAULT_PASS: "taiga"
       RABBITMQ_DEFAULT_VHOST: "taiga"
-    tmpfs:
-      - /var/lib/rabbitmq/mnesia
 
   #
   # redis
