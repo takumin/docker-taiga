@@ -69,14 +69,14 @@ http {
     }
 
     location /events {
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection $connection_upgrade;
 {{- if isTrue $EVENTS_LISTEN_SSL }}
       proxy_pass https://{{ $EVENTS_LISTEN_HOST }}/events;
 {{- else }}
       proxy_pass http://{{ $EVENTS_LISTEN_HOST }}/events;
 {{- end }}
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection $connection_upgrade;
       proxy_connect_timeout 7d;
       proxy_send_timeout 7d;
       proxy_read_timeout 7d;
