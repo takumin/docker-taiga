@@ -4,26 +4,26 @@ services:
   #
   # build
   #
-  taiga-events-build:
+  taiga-build-events:
     build:
       context: .
       target: build
     image: takumi/taiga-events:build
-    hostname: taiga-events-build
-    container_name: taiga-events-build
+    hostname: taiga-build-events
+    container_name: taiga-build-events
     networks:
       - taiga
 
   #
   # service
   #
-  taiga-events-test:
+  taiga-test-events:
     build:
       context: .
       target: prod
     image: takumi/taiga-events:latest
-    hostname: taiga-events-test
-    container_name: taiga-events-test
+    hostname: taiga-test-events
+    container_name: taiga-test-events
     cap_drop:
       - ALL
     networks:
@@ -31,22 +31,22 @@ services:
     ports:
       - 8888:8888
     depends_on:
-      - taiga-events-test-rabbitmq
+      - taiga-test-rabbitmq
     environment:
       EVENTS_SECRET_KEY: "taiga"
       RABBITMQ_USER: "taiga"
       RABBITMQ_PASS: "taiga"
-      RABBITMQ_HOST: "taiga-events-test-rabbitmq"
+      RABBITMQ_HOST: "taiga-test-rabbitmq"
       RABBITMQ_PORT: "5672"
       RABBITMQ_NAME: "taiga"
 
   #
   # rabbitmq
   #
-  taiga-events-test-rabbitmq:
+  taiga-test-rabbitmq:
     image: rabbitmq:alpine
-    hostname: taiga-events-test-rabbitmq
-    container_name: taiga-events-test-rabbitmq
+    hostname: taiga-test-rabbitmq
+    container_name: taiga-test-rabbitmq
     cap_add:
       - CHOWN
       - SETUID

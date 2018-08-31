@@ -4,26 +4,26 @@ services:
   #
   # build
   #
-  taiga-frontend-build:
+  taiga-build-frontend:
     build:
       context: .
       target: build
     image: takumi/taiga-frontend:build
-    hostname: taiga-frontend-build
-    container_name: taiga-frontend-build
+    hostname: taiga-build-frontend
+    container_name: taiga-build-frontend
     networks:
       - taiga
 
   #
   # service
   #
-  taiga-frontend-test:
+  taiga-test-frontend:
     build:
       context: .
       target: prod
     image: takumi/taiga-frontend:latest
-    hostname: taiga-frontend-test
-    container_name: taiga-frontend-test
+    hostname: taiga-test-frontend
+    container_name: taiga-test-frontend
     # cap_add:
     #   - FOWNER
     # cap_drop:
@@ -33,52 +33,52 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - taiga-frontend-test-events
-      - taiga-frontend-test-backend
+      - taiga-test-events
+      - taiga-test-backend
     env_file:
       - ./test.env
 
   #
   # events
   #
-  taiga-frontend-test-events:
+  taiga-test-events:
     image: takumi/taiga-events:latest
-    hostname: taiga-frontend-test-events
-    container_name: taiga-frontend-test-events
+    hostname: taiga-test-events
+    container_name: taiga-test-events
     cap_drop:
       - ALL
     networks:
       - taiga
     depends_on:
-      - taiga-frontend-test-rabbitmq
+      - taiga-test-rabbitmq
     env_file:
       - ./test.env
 
   #
   # backend
   #
-  taiga-frontend-test-backend:
+  taiga-test-backend:
     image: takumi/taiga-backend:alpine
-    hostname: taiga-frontend-test-backend
-    container_name: taiga-frontend-test-backend
+    hostname: taiga-test-backend
+    container_name: taiga-test-backend
     cap_drop:
       - ALL
     networks:
       - taiga
     depends_on:
-      - taiga-frontend-test-postgres
-      - taiga-frontend-test-rabbitmq
-      - taiga-frontend-test-redis
+      - taiga-test-postgres
+      - taiga-test-rabbitmq
+      - taiga-test-redis
     env_file:
       - ./test.env
 
   #
   # postgres
   #
-  taiga-frontend-test-postgres:
+  taiga-test-postgres:
     image: postgres:9.5-alpine
-    hostname: taiga-frontend-test-postgres
-    container_name: taiga-frontend-test-postgres
+    hostname: taiga-test-postgres
+    container_name: taiga-test-postgres
     cap_add:
       - CHOWN
       - SETUID
@@ -99,10 +99,10 @@ services:
   #
   # rabbitmq
   #
-  taiga-frontend-test-rabbitmq:
+  taiga-test-rabbitmq:
     image: rabbitmq:alpine
-    hostname: taiga-frontend-test-rabbitmq
-    container_name: taiga-frontend-test-rabbitmq
+    hostname: taiga-test-rabbitmq
+    container_name: taiga-test-rabbitmq
     cap_add:
       - CHOWN
       - SETUID
@@ -121,10 +121,10 @@ services:
   #
   # redis
   #
-  taiga-frontend-test-redis:
+  taiga-test-redis:
     image: redis:alpine
-    hostname: taiga-frontend-test-redis
-    container_name: taiga-frontend-test-redis
+    hostname: taiga-test-redis
+    container_name: taiga-test-redis
     cap_add:
       - CHOWN
       - SETUID
