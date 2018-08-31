@@ -22,6 +22,8 @@ services:
     depends_on:
       - taiga-events
       - taiga-backend
+    secrets:
+      - SITE_LISTEN_HOST
     env_file:
       - ./prod.env
 
@@ -38,6 +40,8 @@ services:
       - taiga
     depends_on:
       - taiga-rabbitmq
+    secrets:
+      - SITE_LISTEN_HOST
     env_file:
       - ./prod.env
 
@@ -56,6 +60,8 @@ services:
       - taiga-postgres
       - taiga-rabbitmq
       - taiga-redis
+    secrets:
+      - SITE_LISTEN_HOST
     env_file:
       - ./prod.env
     volumes:
@@ -77,11 +83,8 @@ services:
       - ALL
     networks:
       - taiga
-    environment:
-      POSTGRES_DB: "taiga"
-      POSTGRES_USER: "taiga"
-      POSTGRES_PASSWORD: "taiga"
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    env_file:
+      - ./prod.env
     volumes:
       - taiga-postgres:/var/lib/postgresql/data
 
@@ -100,10 +103,8 @@ services:
       - ALL
     networks:
       - taiga
-    environment:
-      RABBITMQ_DEFAULT_USER: "taiga"
-      RABBITMQ_DEFAULT_PASS: "taiga"
-      RABBITMQ_DEFAULT_VHOST: "taiga"
+    env_file:
+      - ./prod.env
     volumes:
       - taiga-rabbitmq:/var/lib/rabbitmq
 
@@ -129,3 +130,6 @@ volumes:
   taiga-backend:
   taiga-postgres:
   taiga-rabbitmq:
+secrets:
+  SITE_LISTEN_HOST:
+    file: ./SITE_LISTEN_HOST.secret.env
