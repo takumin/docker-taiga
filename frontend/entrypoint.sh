@@ -15,7 +15,7 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
 
   dockerize -template nginx.conf.tmpl:/etc/nginx/nginx.conf
-  dockerize -template conf.json.tmpl:conf.json
+  dockerize -template webroot/conf.json.tmpl:webroot/conf.json
 
   ##############################################################################
   # Daemon Initialized
