@@ -1,7 +1,9 @@
-{{- $SITE_REGISTER        := default .Env.SITE_REGISTER "false" -}}
-{{- $FRONTEND_LISTEN_SSL  := default .Env.FRONTEND_LISTEN_SSL "false" -}}
-{{- $FRONTEND_LISTEN_HOST := default .Env.FRONTEND_LISTEN_HOST "localhost:8000" -}}
-{{- $FRONTEND_DEBUG       := default .Env.FRONTEND_DEBUG "false" -}}
+{{- $SITE_REGISTER_ENABLED  := default .Env.SITE_REGISTER_ENABLED "false" -}}
+{{- $SITE_FEEDBACK_ENABLED  := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
+{{- $SITE_GRAVATAR_ENABLED  := default .Env.SITE_GRAVATAR_ENABLED "false" -}}
+{{- $FRONTEND_DEBUG_ENABLED := default .Env.FRONTEND_DEBUG "false" -}}
+{{- $FRONTEND_LISTEN_SSL    := default .Env.FRONTEND_LISTEN_SSL "false" -}}
+{{- $FRONTEND_LISTEN_HOST   := default .Env.FRONTEND_LISTEN_HOST "localhost:8000" -}}
 {
 {{- if isTrue $FRONTEND_LISTEN_SSL }}
   "api": "https://{{ $FRONTEND_LISTEN_HOST }}/api/v1",
@@ -13,7 +15,7 @@
   "eventsMaxMissedHeartbeats": 5,
   "eventsHeartbeatIntervalTime": 60000,
   "eventsReconnectTryInterval": 10000,
-{{- if isTrue $FRONTEND_DEBUG }}
+{{- if isTrue $FRONTEND_DEBUG_ENABLED }}
   "debug": true,
   "debugInfo": true,
 {{- else }}
@@ -23,12 +25,16 @@
   "defaultLanguage": "ja",
   "themes": ["taiga"],
   "defaultTheme": "taiga",
-{{- if isTrue $SITE_REGISTER }}
+{{- if isTrue $SITE_REGISTER_ENABLED }}
   "publicRegisterEnabled": true,
 {{- else }}
   "publicRegisterEnabled": false,
 {{- end }}
+{{- if isTrue $SITE_FEEDBACK_ENABLED }}
+  "feedbackEnabled": true,
+{{- else }}
   "feedbackEnabled": false,
+{{- end }}
   "supportUrl": null,
   "privacyPolicyUrl": null,
   "termsOfServiceUrl": null,
@@ -37,6 +43,10 @@
   "contribPlugins": [],
   "tribeHost": null,
   "importers": [],
+{{- if isTrue $SITE_GRAVATAR_ENABLED }}
+  "gravatar": true,
+{{- else }}
   "gravatar": false,
-  "rtlLanguages": []
+{{- end }}
+  "rtlLanguages": ["fa"]
 }

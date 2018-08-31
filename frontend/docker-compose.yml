@@ -36,8 +36,10 @@ services:
       - taiga-frontend-test-events
       - taiga-frontend-test-backend
     environment:
-      SITE_REGISTER: "true"
-      FRONTEND_DEBUG: "true"
+      SITE_REGISTER_ENABLED: "true"
+      SITE_FEEDBACK_ENABLED: "false"
+      SITE_GRAVATAR_ENABLED: "false"
+      FRONTEND_DEBUG_ENABLED: "true"
       FRONTEND_WORKER_PROC: "1"
       FRONTEND_WORKER_CONN: "1024"
       FRONTEND_LISTEN_SSL: "false"
