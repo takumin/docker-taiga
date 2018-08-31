@@ -13,6 +13,9 @@
 {{- $REDIS_DB_INDEX_ID        := default .Env.REDIS_DB_INDEX_ID "0" -}}
 from .celery import *
 
+# Celery 4.0.2 Documentation
+# http://docs.celeryproject.org/en/v4.0.2/index.html
+
 # http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#timezone
 timezone = '{{ $BACKEND_CELERY_TIMEZONE }}'
 
