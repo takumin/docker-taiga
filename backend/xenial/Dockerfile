@@ -19,6 +19,7 @@ RUN echo "Build Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
+    gettext \
     build-essential \
     wget \
     git \
@@ -65,6 +66,12 @@ RUN git config --global url."https://".insteadOf git://
 # Install Require Python Module
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
+# Compile Static Files
+RUN cp -r /usr/local/backend /build
+WORKDIR /build
+RUN python3 manage.py compilemessages
+RUN python3 manage.py collectstatic --noinput
+
 # Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
@@ -98,7 +105,6 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
     runit \
-    gettext \
     python3 \
     python3-six \
     python3-pkg-resources \

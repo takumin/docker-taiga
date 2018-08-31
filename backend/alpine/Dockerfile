@@ -9,6 +9,7 @@ LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 RUN echo "Build Config Starting" \
  && apk --update add \
+    gettext \
     gcc \
     musl-dev \
     wget \
@@ -65,6 +66,12 @@ RUN git config --global url."https://".insteadOf git://
 # Install Require Python Module
 RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
+# Compile Static Files
+RUN cp -r /usr/local/backend /build
+WORKDIR /build
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py compilemessages
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py collectstatic --noinput
+
 # Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
 RUN find /usr/local/lib -type d -name '__pycache__' | xargs rm -fr
@@ -88,7 +95,6 @@ COPY --from=build /usr/local /usr/local
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
     runit \
-    gettext \
     python3 \
     zlib \
     ncurses-libs \

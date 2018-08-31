@@ -59,9 +59,6 @@ if [ "$1" = 'default' ]; then
   python3 manage.py loaddata initial_user
   python3 manage.py loaddata initial_project_templates
 
-  python3 manage.py compilemessages
-  python3 manage.py collectstatic --noinput
-
   ##############################################################################
   # Daemon Initialize
   ##############################################################################
