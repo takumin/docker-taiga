@@ -103,7 +103,6 @@ if [ "$1" = 'taiga-backend' ]; then
   echo 'http = 0.0.0.0:8000'                      >> main.ini
   echo 'stats = 0.0.0.0:8888'                     >> main.ini
   echo 'chdir = /taiga-backend'                   >> main.ini
-  # echo 'wsgi-file = taiga/wsgi.py'                >> main.ini
   echo 'module = taiga.wsgi:application'          >> main.ini
   echo 'master = true'                            >> main.ini
   echo "processes = ${BACKEND_UWSGI_PROCESS}"     >> main.ini
@@ -123,7 +122,6 @@ if [ "$1" = 'taiga-backend' ]; then
     mkdir -p async
     echo '#!/bin/sh'                                                                                              >  async/run
     echo 'cd /taiga-backend'                                                                                      >> async/run
-    echo 'export C_FORCE_ROOT="true"'                                                                             >> async/run
     echo 'exec 2>&1'                                                                                              >> async/run
     echo "exec celery -A taiga worker -l INFO -c ${BACKEND_CELERY_WORKER} --time-limit ${BACKEND_CELERY_TIMEOUT}" >> async/run
     chmod 0755 async/run
