@@ -69,9 +69,6 @@ RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
 # Install Require Python Module
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
-# Require Daemon
-RUN pip3 install --install-option="--prefix=/usr/local" circus
-
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
 WORKDIR /build
@@ -111,6 +108,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
+    runit \
     python3 \
     python3-pkg-resources \
     zlib1g \

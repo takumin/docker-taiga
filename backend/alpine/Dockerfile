@@ -67,9 +67,6 @@ RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requ
 # Install Require Python Module
 RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
-# Require Daemon
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" circus
-
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
 WORKDIR /build
@@ -99,6 +96,7 @@ COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
+    runit \
     python3 \
     zlib \
     ncurses-libs \
