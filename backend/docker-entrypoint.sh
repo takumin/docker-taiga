@@ -74,16 +74,32 @@ if [ "$1" = 'taiga-backend' ]; then
   # Running
   ##############################################################################
 
-  if [ -z "${BACKEND_UWSGI_PROCESS}" ]; then
-    BACKEND_UWSGI_PROCESS=1
+  if [ -z "${BACKEND_UWSGI_LISTEN}" ]; then
+    BACKEND_UWSGI_LISTEN=128
+  fi
+
+  if [ -z "${BACKEND_UWSGI_LIMIT_AS}" ]; then
+    BACKEND_UWSGI_LIMIT_AS=1024
+  fi
+
+  if [ -z "${BACKEND_UWSGI_PROCESSES}" ]; then
+    BACKEND_UWSGI_PROCESSES=1
   fi
 
   if [ -z "${BACKEND_UWSGI_THREADS}" ]; then
-    BACKEND_UWSGI_THREADS=2
+    BACKEND_UWSGI_THREADS=1
   fi
 
-  if [ -z "${BACKEND_UWSGI_MAX_REQUEST}" ]; then
-    BACKEND_UWSGI_MAX_REQUEST=1024
+  if [ -z "${BACKEND_UWSGI_MAX_REQUESTS}" ]; then
+    BACKEND_UWSGI_MAX_REQUESTS=4096
+  fi
+
+  if [ -z "${BACKEND_UWSGI_MAX_REQUESTS_DELTA}" ]; then
+    BACKEND_UWSGI_MAX_REQUESTS_DELTA=512
+  fi
+
+  if [ -z "${BACKEND_UWSGI_BUFFER_SIZE}" ]; then
+    BACKEND_UWSGI_BUFFER_SIZE=4096
   fi
 
   if [ -z "${BACKEND_UWSGI_HARAKIRI}" ]; then
@@ -98,19 +114,28 @@ if [ "$1" = 'taiga-backend' ]; then
     BACKEND_CELERY_TIMEOUT=10
   fi
 
-  echo '[uwsgi]'                                  >  main.ini
-  echo 'socket = 0.0.0.0:8080'                    >> main.ini
-  echo 'http = 0.0.0.0:8000'                      >> main.ini
-  echo 'stats = 0.0.0.0:8888'                     >> main.ini
-  echo 'chdir = /taiga-backend'                   >> main.ini
-  echo 'module = taiga.wsgi:application'          >> main.ini
-  echo 'master = true'                            >> main.ini
-  echo "processes = ${BACKEND_UWSGI_PROCESS}"     >> main.ini
-  echo "threads = ${BACKEND_UWSGI_THREADS}"       >> main.ini
-  echo "harakiri = ${BACKEND_UWSGI_HARAKIRI}"     >> main.ini
-  echo 'harakiri-verbose = true'                  >> main.ini
-  echo 'vacuum = true'                            >> main.ini
-  echo 'pidfile = /run/uwsgi.%(project_name).pid' >> main.ini
+  echo '[uwsgi]'                                                  >  main.ini
+  echo 'http = 0.0.0.0:8000'                                      >> main.ini
+  echo 'socket = 0.0.0.0:8080'                                    >> main.ini
+  echo 'stats = 0.0.0.0:8888'                                     >> main.ini
+  echo 'stats-min = true'                                         >> main.ini
+  echo 'stats-http = true'                                        >> main.ini
+  echo 'chdir = /taiga-backend'                                   >> main.ini
+  echo 'module = taiga.wsgi:application'                          >> main.ini
+  echo 'master = true'                                            >> main.ini
+  echo "listen = ${BACKEND_UWSGI_LISTEN}"                         >> main.ini
+  echo "limit-as = ${BACKEND_UWSGI_LIMIT_AS}"                     >> main.ini
+  echo "processes = ${BACKEND_UWSGI_PROCESSES}"                   >> main.ini
+  echo "threads = ${BACKEND_UWSGI_THREADS}"                       >> main.ini
+  echo "max-requests = ${BACKEND_UWSGI_MAX_REQUESTS}"             >> main.ini
+  echo "max-requests-delta = ${BACKEND_UWSGI_MAX_REQUESTS_DELTA}" >> main.ini
+  echo "buffer-size = ${BACKEND_UWSGI_BUFFER_SIZE}"               >> main.ini
+  echo "harakiri = ${BACKEND_UWSGI_HARAKIRI}"                     >> main.ini
+  echo 'harakiri-verbose = true'                                  >> main.ini
+  echo 'thunder-lock = true'                                      >> main.ini
+  echo 'lazy-apps = true'                                         >> main.ini
+  echo 'vacuum = true'                                            >> main.ini
+  echo 'touch-reload = /taiga-backend/taiga/wsgi.py'              >> main.ini
 
   mkdir -p main
   echo '#!/bin/sh'                  >  main/run
@@ -121,9 +146,10 @@ if [ "$1" = 'taiga-backend' ]; then
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     mkdir -p async
     echo '#!/bin/sh'                                                                                              >  async/run
+    echo 'export C_FORCE_ROOT="true"'                                                                             >> async/run
     echo 'cd /taiga-backend'                                                                                      >> async/run
     echo 'exec 2>&1'                                                                                              >> async/run
-    echo "exec celery -A taiga worker -l INFO -c ${BACKEND_CELERY_WORKER} --time-limit ${BACKEND_CELERY_TIMEOUT}" >> async/run
+    echo "exec celery worker -A taiga -l INFO -c ${BACKEND_CELERY_WORKER} --time-limit ${BACKEND_CELERY_TIMEOUT}" >> async/run
     chmod 0755 async/run
   fi
 
