@@ -210,8 +210,8 @@ if [ "$1" = 'taiga-backend' ]; then
   echo '#!/bin/sh'                                  >  main/run
   echo 'set -e'                                     >> main/run
   echo 'OPTS=""'                                    >> main/run
-  echo 'OPTS="--uid taiga ${OPTS}"'                 >> main/run
-  echo 'OPTS="--gid taiga ${OPTS}"'                 >> main/run
+  echo 'OPTS="${OPTS} --uid taiga"'                 >> main/run
+  echo 'OPTS="${OPTS} --gid taiga"'                 >> main/run
   echo "OPTS=\"\${OPTS} ${BACKEND_UWSGI_OPTIONS}\"" >> main/run
   echo 'exec 2>&1'                                  >> main/run
   echo "exec uwsgi \${OPTS} \"$(pwd)/main.ini\""    >> main/run
@@ -219,11 +219,17 @@ if [ "$1" = 'taiga-backend' ]; then
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     mkdir -p async
-    echo '#!/bin/sh'                                                                                              >  async/run
-    echo 'export C_FORCE_ROOT="true"'                                                                             >> async/run
-    echo 'cd /taiga-backend'                                                                                      >> async/run
-    echo 'exec 2>&1'                                                                                              >> async/run
-    echo "exec celery worker -A taiga -l INFO -c ${BACKEND_CELERY_WORKER} --time-limit ${BACKEND_CELERY_TIMEOUT}" >> async/run
+    echo '#!/bin/sh'                                                >  async/run
+    echo 'OPTS=""'                                                  >> async/run
+    echo 'OPTS="${OPTS} -A taiga"'                                  >> async/run
+    echo 'OPTS="${OPTS} -l INFO"'                                   >> async/run
+    echo 'OPTS="${OPTS} --uid taiga"'                               >> async/run
+    echo 'OPTS="${OPTS} --gid taiga"'                               >> async/run
+    echo "OPTS=\"\${OPTS} --workdir /taiga-backend\""               >> async/run
+    echo "OPTS=\"\${OPTS} -c ${BACKEND_CELERY_WORKER}\""            >> async/run
+    echo "OPTS=\"\${OPTS} --time-limit ${BACKEND_CELERY_TIMEOUT}\"" >> async/run
+    echo 'exec 2>&1'                                                >> async/run
+    echo 'exec celery worker ${OPTS}'                               >> async/run
     chmod 0755 async/run
   fi
 
