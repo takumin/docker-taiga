@@ -220,6 +220,7 @@ if [ "$1" = 'taiga-backend' ]; then
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     mkdir -p async
     echo '#!/bin/sh'                                                >  async/run
+    echo 'set -e'                                                   >> async/run
     echo 'OPTS=""'                                                  >> async/run
     echo 'OPTS="${OPTS} -A taiga"'                                  >> async/run
     echo 'OPTS="${OPTS} -l INFO"'                                   >> async/run
