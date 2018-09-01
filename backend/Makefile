@@ -33,9 +33,9 @@ BUILD_ARGS += --build-arg HTTPS_PROXY=${HTTPS_PROXY}
 endif
 
 # For ubuntu:xenial
-ifneq (x${UBUNTU_MIRROR}x,xx)
-BUILD_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
-endif
+# ifneq (x${UBUNTU_MIRROR}x,xx)
+# BUILD_ARGS += --build-arg UBUNTU_MIRROR=${UBUNTU_MIRROR}
+# endif
 
 #
 # Default Rules
