@@ -74,7 +74,7 @@ services:
   # postgres
   #
   taiga-postgres:
-    image: postgres:9.5-alpine
+    image: postgres:9-alpine
     hostname: taiga-postgres
     container_name: taiga-postgres
     restart: always

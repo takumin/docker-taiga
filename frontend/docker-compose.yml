@@ -79,7 +79,7 @@ services:
   # postgres
   #
   taiga-test-postgres:
-    image: postgres:9.5-alpine
+    image: postgres:9-alpine
     hostname: taiga-test-postgres
     container_name: taiga-test-postgres
     cap_add:
