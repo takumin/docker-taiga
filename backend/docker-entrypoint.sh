@@ -147,19 +147,7 @@ if [ "$1" = 'taiga-backend' ]; then
   fi
 
   ##############################################################################
-  # Group
-  ##############################################################################
-
-  if getent group | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
-    delgroup 'taiga'
-  fi
-  if getent group | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_GID}$"; then
-    delgroup "${BACKEND_GID}"
-  fi
-  addgroup -g "${BACKEND_GID}" 'taiga'
-
-  ##############################################################################
-  # User
+  # Pre User/Group
   ##############################################################################
 
   if getent passwd | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
@@ -168,6 +156,23 @@ if [ "$1" = 'taiga-backend' ]; then
   if getent passwd | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_UID}$"; then
     deluser "${BACKEND_UID}"
   fi
+  if getent group | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
+    delgroup 'taiga'
+  fi
+  if getent group | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_GID}$"; then
+    delgroup "${BACKEND_GID}"
+  fi
+
+  ##############################################################################
+  # Group
+  ##############################################################################
+
+  addgroup -g "${BACKEND_GID}" 'taiga'
+
+  ##############################################################################
+  # User
+  ##############################################################################
+
   adduser -h '/nonexistent' \
           -g 'Taiga Backend,,,' \
           -s '/usr/sbin/nologin' \
