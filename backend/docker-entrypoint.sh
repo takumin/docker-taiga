@@ -182,8 +182,6 @@ if [ "$1" = 'taiga-backend' ]; then
   ##############################################################################
 
   echo '[uwsgi]'                                                  >  main.ini
-  # echo "uid = ${BACKEND_UID}"                                     >> main.ini
-  # echo "gid = ${BACKEND_GID}"                                     >> main.ini
   echo 'http = 0.0.0.0:8000'                                      >> main.ini
   echo 'socket = 0.0.0.0:8080'                                    >> main.ini
   echo 'stats = 0.0.0.0:8888'                                     >> main.ini
