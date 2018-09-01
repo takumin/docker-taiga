@@ -126,4 +126,4 @@ RUN echo "Deploy Config Starting" \
 WORKDIR /taiga-backend
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["taiga-backend"]
-EXPOSE 8080
+EXPOSE 8000 8080 8888
