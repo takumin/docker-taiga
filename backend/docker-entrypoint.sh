@@ -71,8 +71,40 @@ if [ "$1" = 'taiga-backend' ]; then
   python3 manage.py loaddata initial_project_templates
 
   ##############################################################################
-  # Running
+  # Environment Variables
   ##############################################################################
+
+  if [ -z "${BACKEND_UID}" ]; then
+    BACKEND_UID=1001
+  fi
+  if echo -n "${BACKEND_UID}" | grep -Eqsv '^[0-9]+$'; then
+    echo 'Please numric value: BACKEND_UID'
+    exit 1
+  fi
+  if [ "${BACKEND_UID}" -le 0 ]; then
+    echo 'Please 0 or more: BACKEND_UID'
+    exit 1
+  fi
+  if [ "${BACKEND_UID}" -ge 60000 ]; then
+    echo 'Please 60000 or less: BACKEND_UID'
+    exit 1
+  fi
+
+  if [ -z "${BACKEND_GID}" ]; then
+    BACKEND_GID=1001
+  fi
+  if echo -n "${BACKEND_GID}" | grep -Eqsv '^[0-9]+$'; then
+    echo 'Please numric value: BACKEND_GID'
+    exit 1
+  fi
+  if [ "${BACKEND_GID}" -le 0 ]; then
+    echo 'Please 0 or more: BACKEND_GID'
+    exit 1
+  fi
+  if [ "${BACKEND_GID}" -ge 60000 ]; then
+    echo 'Please 60000 or less: BACKEND_GID'
+    exit 1
+  fi
 
   if [ -z "${BACKEND_UWSGI_LISTEN}" ]; then
     BACKEND_UWSGI_LISTEN=128
@@ -114,7 +146,46 @@ if [ "$1" = 'taiga-backend' ]; then
     BACKEND_CELERY_TIMEOUT=10
   fi
 
+  ##############################################################################
+  # Group
+  ##############################################################################
+
+  if getent group | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
+    delgroup 'taiga'
+  fi
+  if getent group | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_GID}$"; then
+    delgroup "${BACKEND_GID}"
+  fi
+  addgroup -g "${BACKEND_GID}" 'taiga'
+
+  ##############################################################################
+  # User
+  ##############################################################################
+
+  if getent passwd | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
+    deluser 'taiga'
+  fi
+  if getent passwd | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_UID}$"; then
+    deluser "${BACKEND_UID}"
+  fi
+  if getent passwd | grep -Eqsv "^taiga:x:${BACKEND_UID}:${BACKEND_GID}:.*"; then
+    adduser -h '/nonexistent' \
+            -g 'Taiga Backend,,,' \
+            -s '/usr/sbin/nologin' \
+            -G 'taiga' \
+            -D \
+            -H \
+            -u "${BACKEND_UID}" \
+            'taiga'
+  fi
+
+  ##############################################################################
+  # Daemon
+  ##############################################################################
+
   echo '[uwsgi]'                                                  >  main.ini
+  echo "uid = ${BACKEND_UID}"                                     >> main.ini
+  echo "gid = ${BACKEND_GID}"                                     >> main.ini
   echo 'http = 0.0.0.0:8000'                                      >> main.ini
   echo 'socket = 0.0.0.0:8080'                                    >> main.ini
   echo 'stats = 0.0.0.0:8888'                                     >> main.ini
@@ -153,12 +224,20 @@ if [ "$1" = 'taiga-backend' ]; then
     chmod 0755 async/run
   fi
 
+  ##############################################################################
+  # Service
+  ##############################################################################
+
   mkdir -p service
   ln -fs ../main service/main
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     ln -fs ../async service/async
   fi
+
+  ##############################################################################
+  # Running
+  ##############################################################################
 
   echo 'Starting Server'
   exec runsvdir service
