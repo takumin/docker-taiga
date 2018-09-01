@@ -108,7 +108,6 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
-    runit \
     python3 \
     python3-pkg-resources \
     zlib1g \

@@ -96,7 +96,6 @@ COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
-    runit \
     python3 \
     zlib \
     ncurses-libs \
