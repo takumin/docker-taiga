@@ -92,13 +92,10 @@ services:
     networks:
       - taiga
     environment:
-      POSTGRES_DB: "taiga"
-      POSTGRES_USER: "taiga"
-      POSTGRES_PASSWORD: "taiga"
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
-    volumes:
-      - type: tmpfs
-        target: /var/lib/postgresql/data
+      - POSTGRES_DB=taiga
+      - POSTGRES_USER=taiga
+      - POSTGRES_PASSWORD=taiga
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
 
   #
   # rabbitmq
@@ -116,12 +113,9 @@ services:
     networks:
       - taiga
     environment:
-      RABBITMQ_DEFAULT_USER: "taiga"
-      RABBITMQ_DEFAULT_PASS: "taiga"
-      RABBITMQ_DEFAULT_VHOST: "taiga"
-    volumes:
-      - type: tmpfs
-        target: /var/lib/rabbitmq
+      - RABBITMQ_DEFAULT_USER=taiga
+      - RABBITMQ_DEFAULT_PASS=taiga
+      - RABBITMQ_DEFAULT_VHOST=taiga
 
   #
   # redis
