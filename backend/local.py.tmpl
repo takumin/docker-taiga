@@ -20,12 +20,12 @@
 {{- $POSTGRESQL_HOST            := default .Env.POSTGRESQL_HOST "postgres" -}}
 {{- $POSTGRESQL_PORT            := default .Env.POSTGRESQL_PORT "5432" -}}
 {{- $POSTGRESQL_NAME            := default .Env.POSTGRESQL_NAME "taiga" -}}
-{{- /* RabbitMQ */ -}}
-{{- $RABBITMQ_USER              := default .Env.RABBITMQ_USER "taiga" -}}
-{{- $RABBITMQ_PASS              := default .Env.RABBITMQ_PASS "taiga" -}}
-{{- $RABBITMQ_HOST              := default .Env.RABBITMQ_HOST "rabbitmq" -}}
-{{- $RABBITMQ_PORT              := default .Env.RABBITMQ_PORT "5672" -}}
-{{- $RABBITMQ_NAME              := default .Env.RABBITMQ_NAME "taiga" -}}
+{{- /* RabbitMQ - Events */ -}}
+{{- $RABBITMQ_EVENTS_USER       := default .Env.RABBITMQ_EVENTS_USER "taiga" -}}
+{{- $RABBITMQ_EVENTS_PASS       := default .Env.RABBITMQ_EVENTS_PASS "taiga" -}}
+{{- $RABBITMQ_EVENTS_HOST       := default .Env.RABBITMQ_EVENTS_HOST "rabbitmq-events" -}}
+{{- $RABBITMQ_EVENTS_PORT       := default .Env.RABBITMQ_EVENTS_PORT "5672" -}}
+{{- $RABBITMQ_EVENTS_NAME       := default .Env.RABBITMQ_EVENTS_NAME "taiga-events" -}}
 # -*- coding: utf-8 -*-
 
 # Load Default Configuration
@@ -90,7 +90,7 @@ DATABASES['default']['NAME'] = '{{ $POSTGRESQL_NAME }}'
 
 # Events
 EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
-EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'}
+EVENTS_PUSH_BACKEND_OPTIONS = {'url': 'amqp://{{ $RABBITMQ_EVENTS_USER }}:{{ $RABBITMQ_EVENTS_PASS }}@{{ $RABBITMQ_EVENTS_HOST }}:{{ $RABBITMQ_EVENTS_PORT }}/{{ $RABBITMQ_EVENTS_NAME }}'}
 
 # Async
 {{- if isTrue $BACKEND_CELERY_ENABLED }}

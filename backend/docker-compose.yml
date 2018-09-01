@@ -95,14 +95,19 @@ services:
       - taiga
     env_file:
       - ./test.env
+    environment:
+      - POSTGRES_DB=taiga
+      - POSTGRES_USER=taiga
+      - POSTGRES_PASSWORD=taiga
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
 
   #
   # rabbitmq
   #
-  taiga-test-rabbitmq:
+  taiga-test-rabbitmq-events:
     image: rabbitmq:alpine
-    hostname: taiga-test-rabbitmq
-    container_name: taiga-test-rabbitmq
+    hostname: taiga-test-rabbitmq-events
+    container_name: taiga-test-rabbitmq-events
     cap_add:
       - CHOWN
       - SETUID
@@ -111,8 +116,30 @@ services:
       - ALL
     networks:
       - taiga
-    env_file:
-      - ./test.env
+    environment:
+      - RABBITMQ_DEFAULT_USER=taiga
+      - RABBITMQ_DEFAULT_PASS=taiga
+      - RABBITMQ_DEFAULT_VHOST=taiga-events
+
+  #
+  # async rabbitmq
+  #
+  taiga-test-rabbitmq-async:
+    image: rabbitmq:alpine
+    hostname: taiga-test-rabbitmq-async
+    container_name: taiga-test-rabbitmq-async
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    cap_drop:
+      - ALL
+    networks:
+      - taiga
+    environment:
+      - RABBITMQ_DEFAULT_USER=taiga
+      - RABBITMQ_DEFAULT_PASS=taiga
+      - RABBITMQ_DEFAULT_VHOST=taiga-async
 
   #
   # redis

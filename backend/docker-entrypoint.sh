@@ -42,14 +42,21 @@ if [ "$1" = 'taiga-backend' ]; then
     exit 1
   fi
 
-  if [ -n "${RABBITMQ_HOST}" -a -n "${RABBITMQ_PORT}" ]; then
-    dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+  if [ -n "${RABBITMQ_EVENTS_HOST}" -a -n "${RABBITMQ_EVENTS_PORT}" ]; then
+    dockerize -wait tcp://${RABBITMQ_EVENTS_HOST}:${RABBITMQ_EVENTS_PORT} -timeout 10s
   else
-    echo 'Require environment variable: RABBITMQ_HOST, RABBITMQ_PORT'
+    echo 'Require environment variable: RABBITMQ_EVENTS_HOST, RABBITMQ_EVENTS_PORT'
     exit 1
   fi
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
+    if [ -n "${RABBITMQ_ASYNC_HOST}" -a -n "${RABBITMQ_ASYNC_PORT}" ]; then
+      dockerize -wait tcp://${RABBITMQ_ASYNC_HOST}:${RABBITMQ_ASYNC_PORT} -timeout 10s
+    else
+      echo 'Require environment variable: RABBITMQ_ASYNC_HOST, RABBITMQ_ASYNC_PORT'
+      exit 1
+    fi
+
     if [ -n "${REDIS_HOST}" -a -n "${REDIS_PORT}" ]; then
       dockerize -wait tcp://${REDIS_HOST}:${REDIS_PORT} -timeout 10s
     else
