@@ -24,7 +24,7 @@ if [ "$1" = 'default' ]; then
   # Daemon Initialized
   ##############################################################################
 
-  mkdir coffee
+  mkdir -p coffee
   echo '#!/bin/sh'              >  coffee/run
   echo 'cd /taiga-events'       >> coffee/run
   echo 'exec 2>&1'              >> coffee/run
@@ -35,7 +35,7 @@ if [ "$1" = 'default' ]; then
   # Daemon Enabled
   ##############################################################################
 
-  mkdir service
+  mkdir -p service
   ln -s ../coffee service/coffee
 
   ##############################################################################
