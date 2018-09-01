@@ -48,7 +48,8 @@ services:
       - 8000:8080
     depends_on:
       - taiga-test-postgres
-      - taiga-test-rabbitmq
+      - taiga-test-rabbitmq-events
+      - taiga-test-rabbitmq-async
       - taiga-test-redis
     env_file:
       - ./test.env
