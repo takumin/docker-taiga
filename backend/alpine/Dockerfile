@@ -61,6 +61,10 @@ RUN git config --global url."https://".insteadOf git://
 RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
 
+# Workaround Running Celery
+RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^kombu==.*/kombu==4.2.1/' /usr/local/backend/requirements.txt
+
 # Workaround Alpine Linux 3.8 & LibreSSL 2.7
 RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
 
@@ -96,6 +100,7 @@ COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
+    runit \
     python3 \
     zlib \
     ncurses-libs \

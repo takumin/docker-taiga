@@ -66,6 +66,10 @@ RUN git config --global url."https://".insteadOf git://
 RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
 
+# Workaround Running Celery
+RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^kombu==.*/kombu==4.2.1/' /usr/local/backend/requirements.txt
+
 # Install Require Python Module
 RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
@@ -108,6 +112,7 @@ RUN echo "Deploy Config Starting" \
  && apt-get -y update \
  && apt-get -y dist-upgrade \
  && apt-get -y install --no-install-recommends \
+    runit \
     python3 \
     python3-pkg-resources \
     zlib1g \

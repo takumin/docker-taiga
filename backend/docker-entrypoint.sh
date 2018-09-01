@@ -89,8 +89,40 @@ if [ "$1" = 'taiga-backend' ]; then
     BACKEND_GUNICORN_TIMEOUT=10
   fi
 
+  if [ -z "${BACKEND_CELERY_WORKER}" ]; then
+    BACKEND_CELERY_WORKER=1
+  fi
+
+  if [ -z "${BACKEND_CELERY_TIMEOUT}" ]; then
+    BACKEND_CELERY_TIMEOUT=10
+  fi
+
+  mkdir -p main
+  echo '#!/bin/sh'                                                                                                 >  main/run
+  echo 'cd /taiga-backend'                                                                                         >> main/run
+  echo 'exec 2>&1'                                                                                                 >> main/run
+  echo "exec gunicorn -w "${BACKEND_GUNICORN_WORKER}" -t "${BACKEND_GUNICORN_TIMEOUT}" -b 0.0.0.0:8080 taiga.wsgi" >> main/run
+  chmod 0755 main/run
+
+  if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
+    mkdir -p async
+    echo '#!/bin/sh'                                                                                              >  async/run
+    echo 'cd /taiga-backend'                                                                                      >> async/run
+    echo 'export C_FORCE_ROOT="true"'                                                                             >> async/run
+    echo 'exec 2>&1'                                                                                              >> async/run
+    echo "exec celery -A taiga worker -l INFO -c ${BACKEND_CELERY_WORKER} --time-limit ${BACKEND_CELERY_TIMEOUT}" >> async/run
+    chmod 0755 async/run
+  fi
+
+  mkdir -p service
+  ln -fs ../main service/main
+
+  if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
+    ln -fs ../async service/async
+  fi
+
   echo 'Starting Server'
-  exec gunicorn -w "${BACKEND_GUNICORN_WORKER}" -t "${BACKEND_GUNICORN_TIMEOUT}" -b 0.0.0.0:8080 taiga.wsgi
+  exec runsvdir service
 fi
 
 exec "$@"
