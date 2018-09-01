@@ -8,25 +8,25 @@ python3 -B -m compileall .
 python3 -B -m compileall /usr/lib
 python3 -B -m compileall /usr/local/lib
 
-if [ "$1" = 'default' ]; then
+if [ "$1" = 'taiga-backend' ]; then
   set -e
 
   ##############################################################################
   # Configure
   ##############################################################################
 
-  if [ -f "settings/local.py.tmpl" ]; then
+  if [ -f 'settings/local.py.tmpl' ]; then
     dockerize -template settings/local.py.tmpl:settings/local.py
   else
-    echo "Require settings/local.py.tmpl"
+    echo 'Require settings/local.py.tmpl'
     exit 1
   fi
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
-    if [ -f "settings/celery_local.py.tmpl" ]; then
+    if [ -f 'settings/celery_local.py.tmpl' ]; then
       dockerize -template settings/celery_local.py.tmpl:settings/celery_local.py
     else
-      echo "Require settings/celery_local.py.tmpl"
+      echo 'Require settings/celery_local.py.tmpl'
       exit 1
     fi
   fi
@@ -38,14 +38,14 @@ if [ "$1" = 'default' ]; then
   if [ -n "${POSTGRESQL_HOST}" -a -n "${POSTGRESQL_PORT}" ]; then
     dockerize -wait tcp://${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -timeout 10s
   else
-    echo "Require environment variable: POSTGRESQL_HOST, POSTGRESQL_PORT"
+    echo 'Require environment variable: POSTGRESQL_HOST, POSTGRESQL_PORT'
     exit 1
   fi
 
   if [ -n "${RABBITMQ_HOST}" -a -n "${RABBITMQ_PORT}" ]; then
     dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
   else
-    echo "Require environment variable: RABBITMQ_HOST, RABBITMQ_PORT"
+    echo 'Require environment variable: RABBITMQ_HOST, RABBITMQ_PORT'
     exit 1
   fi
 
@@ -53,7 +53,7 @@ if [ "$1" = 'default' ]; then
     if [ -n "${REDIS_HOST}" -a -n "${REDIS_PORT}" ]; then
       dockerize -wait tcp://${REDIS_HOST}:${REDIS_PORT} -timeout 10s
     else
-      echo "Require environment variable: REDIS_HOST, REDIS_PORT"
+      echo 'Require environment variable: REDIS_HOST, REDIS_PORT'
       exit 1
     fi
   fi
@@ -82,8 +82,8 @@ if [ "$1" = 'default' ]; then
     BACKEND_GUNICORN_TIMEOUT=10
   fi
 
-  echo "Starting Server"
-  exec gunicorn -w ${BACKEND_GUNICORN_WORKER} -t ${BACKEND_GUNICORN_TIMEOUT} -b 0.0.0.0:8080 taiga.wsgi
+  echo 'Starting Server'
+  exec gunicorn -w "${BACKEND_GUNICORN_WORKER}" -t "${BACKEND_GUNICORN_TIMEOUT}" -b 0.0.0.0:8080 taiga.wsgi
 fi
 
 exec "$@"
