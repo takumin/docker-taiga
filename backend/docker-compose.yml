@@ -48,8 +48,7 @@ services:
       - 8000:8080
     depends_on:
       - taiga-test-postgres
-      - taiga-test-rabbitmq-events
-      - taiga-test-rabbitmq-async
+      - taiga-test-rabbitmq
       - taiga-test-redis
     env_file:
       - ./test.env
@@ -105,10 +104,10 @@ services:
   #
   # rabbitmq
   #
-  taiga-test-rabbitmq-events:
+  taiga-test-rabbitmq:
     image: rabbitmq:alpine
-    hostname: taiga-test-rabbitmq-events
-    container_name: taiga-test-rabbitmq-events
+    hostname: taiga-test-rabbitmq
+    container_name: taiga-test-rabbitmq
     cap_add:
       - CHOWN
       - SETUID
@@ -120,27 +119,7 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=taiga
       - RABBITMQ_DEFAULT_PASS=taiga
-      - RABBITMQ_DEFAULT_VHOST=taiga-events
-
-  #
-  # async rabbitmq
-  #
-  taiga-test-rabbitmq-async:
-    image: rabbitmq:alpine
-    hostname: taiga-test-rabbitmq-async
-    container_name: taiga-test-rabbitmq-async
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-    cap_drop:
-      - ALL
-    networks:
-      - taiga
-    environment:
-      - RABBITMQ_DEFAULT_USER=taiga
-      - RABBITMQ_DEFAULT_PASS=taiga
-      - RABBITMQ_DEFAULT_VHOST=taiga-async
+      - RABBITMQ_DEFAULT_VHOST=taiga
 
   #
   # redis

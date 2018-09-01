@@ -2,11 +2,11 @@
 {{- $BACKEND_CELERY_IN_MEMORY := default .Env.BACKEND_CELERY_IN_MEMORY "false" -}}
 {{- $BACKEND_CELERY_TIMEZONE  := default .Env.BACKEND_CELERY_TIMEZONE "UTC" -}}
 {{- /* RabbitMQ */ -}}
-{{- $RABBITMQ_ASYNC_USER      := default .Env.RABBITMQ_ASYNC_USER "taiga" -}}
-{{- $RABBITMQ_ASYNC_PASS      := default .Env.RABBITMQ_ASYNC_PASS "taiga" -}}
-{{- $RABBITMQ_ASYNC_HOST      := default .Env.RABBITMQ_ASYNC_HOST "rabbitmq-async" -}}
-{{- $RABBITMQ_ASYNC_PORT      := default .Env.RABBITMQ_ASYNC_PORT "5672" -}}
-{{- $RABBITMQ_ASYNC_NAME      := default .Env.RABBITMQ_ASYNC_NAME "taiga-async" -}}
+{{- $RABBITMQ_USER            := default .Env.RABBITMQ_USER "taiga" -}}
+{{- $RABBITMQ_PASS            := default .Env.RABBITMQ_PASS "taiga" -}}
+{{- $RABBITMQ_HOST            := default .Env.RABBITMQ_HOST "rabbitmq" -}}
+{{- $RABBITMQ_PORT            := default .Env.RABBITMQ_PORT "5672" -}}
+{{- $RABBITMQ_NAME            := default .Env.RABBITMQ_NAME "taiga" -}}
 {{- /* Redis */ -}}
 {{- $REDIS_HOST               := default .Env.REDIS_HOST "redis" -}}
 {{- $REDIS_PORT               := default .Env.REDIS_PORT "6379" -}}
@@ -20,7 +20,7 @@ from .celery import *
 timezone = '{{ $BACKEND_CELERY_TIMEZONE }}'
 
 # http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#broker-url
-broker_url = 'amqp://{{ $RABBITMQ_ASYNC_USER }}:{{ $RABBITMQ_ASYNC_PASS }}@{{ $RABBITMQ_ASYNC_HOST }}:{{ $RABBITMQ_ASYNC_PORT }}/{{ $RABBITMQ_ASYNC_NAME }}'
+broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'
 # http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#result-backend
 result_backend = 'redis://{{ $REDIS_HOST }}:{{ $REDIS_PORT }}/{{ $REDIS_DBID }}'
 
