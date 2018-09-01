@@ -168,24 +168,22 @@ if [ "$1" = 'taiga-backend' ]; then
   if getent passwd | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_UID}$"; then
     deluser "${BACKEND_UID}"
   fi
-  if getent passwd | grep -Eqsv "^taiga:x:${BACKEND_UID}:${BACKEND_GID}:.*"; then
-    adduser -h '/nonexistent' \
-            -g 'Taiga Backend,,,' \
-            -s '/usr/sbin/nologin' \
-            -G 'taiga' \
-            -D \
-            -H \
-            -u "${BACKEND_UID}" \
-            'taiga'
-  fi
+  adduser -h '/nonexistent' \
+          -g 'Taiga Backend,,,' \
+          -s '/usr/sbin/nologin' \
+          -G 'taiga' \
+          -D \
+          -H \
+          -u "${BACKEND_UID}" \
+          'taiga'
 
   ##############################################################################
   # Daemon
   ##############################################################################
 
   echo '[uwsgi]'                                                  >  main.ini
-  echo "uid = ${BACKEND_UID}"                                     >> main.ini
-  echo "gid = ${BACKEND_GID}"                                     >> main.ini
+  # echo "uid = ${BACKEND_UID}"                                     >> main.ini
+  # echo "gid = ${BACKEND_GID}"                                     >> main.ini
   echo 'http = 0.0.0.0:8000'                                      >> main.ini
   echo 'socket = 0.0.0.0:8080'                                    >> main.ini
   echo 'stats = 0.0.0.0:8888'                                     >> main.ini
@@ -209,9 +207,14 @@ if [ "$1" = 'taiga-backend' ]; then
   echo 'touch-reload = /taiga-backend/taiga/wsgi.py'              >> main.ini
 
   mkdir -p main
-  echo '#!/bin/sh'                  >  main/run
-  echo 'exec 2>&1'                  >> main/run
-  echo "exec uwsgi $(pwd)/main.ini" >> main/run
+  echo '#!/bin/sh'                                  >  main/run
+  echo 'set -e'                                     >> main/run
+  echo 'OPTS=""'                                    >> main/run
+  echo 'OPTS="--uid taiga ${OPTS}"'                 >> main/run
+  echo 'OPTS="--gid taiga ${OPTS}"'                 >> main/run
+  echo "OPTS=\"\${OPTS} ${BACKEND_UWSGI_OPTIONS}\"" >> main/run
+  echo 'exec 2>&1'                                  >> main/run
+  echo "exec uwsgi \${OPTS} \"$(pwd)/main.ini\""    >> main/run
   chmod 0755 main/run
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
