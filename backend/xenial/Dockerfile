@@ -71,13 +71,13 @@ RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requireme
 RUN sed -i -e 's/^kombu==.*/kombu==4.2.1/' /usr/local/backend/requirements.txt
 
 # Install Require Python Module
-RUN pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
 WORKDIR /build
-RUN python3 manage.py compilemessages
-RUN python3 manage.py collectstatic --noinput
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py compilemessages
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py collectstatic --noinput
 
 # Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
