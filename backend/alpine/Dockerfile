@@ -25,6 +25,7 @@ RUN echo "Build Config Starting" \
     pcre \
     libpcre-16 \
     libpcre-32 \
+    libpcrecpp \
     pcre-dev \
     gdbm \
     gdbm-dev \
@@ -117,6 +118,7 @@ RUN echo "Deploy Config Starting" \
     pcre \
     libpcre-16 \
     libpcre-32 \
+    libpcrecpp \
     gdbm \
     libffi \
     libressl \
