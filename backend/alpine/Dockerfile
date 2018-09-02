@@ -83,6 +83,7 @@ RUN sed -i -e 's/^CairoSVG==.*/CairoSVG==2.1.3/' /usr/local/backend/requirements
 RUN sed -i -e 's/^PyJWT==.*/PyJWT==1.6.4/' /usr/local/backend/requirements.txt
 RUN sed -i -e 's/^amqp==.*/amqp==2.3.2/' /usr/local/backend/requirements.txt
 RUN sed -i -e 's/^lxml==.*/lxml==4.2.4/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^serpy==.*/serpy==0.3.1/' /usr/local/backend/requirements.txt
 
 # Workaround Alpine Linux 3.8 & LibreSSL 2.7
 RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
