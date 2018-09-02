@@ -1,5 +1,6 @@
 {{- /* Sites */ -}}
 {{- $SITE_SECRET_KEY               := default .Env.SITE_SECRET_KEY "taiga" -}}
+{{- $SITE_DEBUG_ENABLED            := default .Env.SITE_DEBUG_ENABLED "false" -}}
 {{- $SITE_REGISTER_ENABLED         := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- $SITE_FEEDBACK_ENABLED         := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
 {{- $SITE_SITEMAP_ENABLED          := default .Env.SITE_SITEMAP_ENABLED "false" -}}
@@ -14,7 +15,7 @@
 {{- $BACKEND_MEDIA_URL_NAME        := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
 {{- $BACKEND_STATIC_URL_NAME       := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
 {{- /* Backend */ -}}
-{{- $BACKEND_DEBUG_ENABLED         := default .Env.BACKEND_DEBUG_ENABLED "false" -}}
+{{- $BACKEND_DEBUG_ENABLED         := default .Env.BACKEND_DEBUG_ENABLED $SITE_DEBUG_ENABLED -}}
 {{- $BACKEND_CELERY_ENABLED        := default .Env.BACKEND_CELERY_ENABLED "false" -}}
 {{- $BACKEND_SERVER_FROM_EMAIL     := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
 {{- $BACKEND_DEFAULT_FROM_EMAIL    := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}

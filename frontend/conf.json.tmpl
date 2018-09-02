@@ -3,7 +3,8 @@
 {{- $SITE_REGISTER_ENABLED  := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- $SITE_FEEDBACK_ENABLED  := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
 {{- $SITE_GRAVATAR_ENABLED  := default .Env.SITE_GRAVATAR_ENABLED "false" -}}
-{{- $FRONTEND_DEBUG_ENABLED := default .Env.FRONTEND_DEBUG "false" -}}
+{{- $SITE_DEBUG_ENABLED     := default .Env.SITE_DEBUG_ENABLED "false" -}}
+{{- $FRONTEND_DEBUG_ENABLED := default .Env.FRONTEND_DEBUG $SITE_DEBUG_ENABLED -}}
 {
 {{- if isTrue $SITE_LISTEN_SSL }}
   "api": "https://{{ $SITE_LISTEN_HOST }}/api/v1",
