@@ -49,15 +49,15 @@ http {
       try_files $uri $uri/ /index.html;
     }
 
-    location ^- /media {
+    location ^~ /media {
       alias /taiga-frontend/media;
     }
 
-    location ^- /static {
+    location ^~ /static {
       alias /taiga-frontend/static;
     }
 
-    location ^- /api {
+    location ^~ /api {
       include uwsgi_params;
       uwsgi_pass {{ $BACKEND_LISTEN_HOST }};
 {{- if isTrue $BACKEND_LISTEN_SSL }}
@@ -71,7 +71,7 @@ http {
       uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
-    location ^- /admin {
+    location ^~ /admin {
       include uwsgi_params;
       uwsgi_pass {{ $BACKEND_LISTEN_HOST }};
 {{- if isTrue $BACKEND_LISTEN_SSL }}
@@ -85,7 +85,7 @@ http {
       uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
-    location ^- /events {
+    location ^~ /events {
 {{- if isTrue $EVENTS_LISTEN_SSL }}
       proxy_pass https://{{ $EVENTS_LISTEN_HOST }}/events;
 {{- else }}
