@@ -34,7 +34,7 @@ services:
     networks:
       - taiga
     ports:
-      - 8000:8000
+      - 8000:80
     depends_on:
       - taiga-test-events
       - taiga-test-backend
