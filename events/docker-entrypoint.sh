@@ -36,7 +36,7 @@ if [ "$1" = 'taiga-events' ]; then
   ##############################################################################
 
   mkdir -p service
-  ln -s ../coffee service/coffee
+  ln -fs ../coffee service/coffee
 
   ##############################################################################
   # Daemon Running
