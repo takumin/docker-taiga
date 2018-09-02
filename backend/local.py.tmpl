@@ -91,6 +91,11 @@ MEDIA_URL = 'http://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
 STATIC_URL = 'http://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
 {{- end }}
 
+# https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
+# https://docs.djangoproject.com/en/1.11/ref/settings/#static-root
+MEDIA_ROOT = os.path.join(BASE_DIR, 'volume', 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'volume', 'static')
+
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
   'default': {

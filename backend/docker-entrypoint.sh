@@ -32,6 +32,40 @@ if [ "$1" = 'taiga-backend' ]; then
   fi
 
   ##############################################################################
+  # Waiting
+  ##############################################################################
+
+  if [ -n "${POSTGRESQL_HOST}" -a -n "${POSTGRESQL_PORT}" ]; then
+    dockerize -wait tcp://${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -timeout 10s
+  else
+    echo 'Require environment variable: POSTGRESQL_HOST, POSTGRESQL_PORT'
+    exit 1
+  fi
+
+  if [ -n "${MEMCACHED_LOCATION}" ]; then
+    dockerize -wait tcp://${MEMCACHED_LOCATION} -timeout 10s
+  else
+    echo 'Require environment variable: MEMCACHED_LOCATION'
+    exit 1
+  fi
+
+  if [ -n "${RABBITMQ_HOST}" -a -n "${RABBITMQ_PORT}" ]; then
+    dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
+  else
+    echo 'Require environment variable: RABBITMQ_HOST, RABBITMQ_PORT'
+    exit 1
+  fi
+
+  if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
+    if [ -n "${REDIS_HOST}" -a -n "${REDIS_PORT}" ]; then
+      dockerize -wait tcp://${REDIS_HOST}:${REDIS_PORT} -timeout 10s
+    else
+      echo 'Require environment variable: REDIS_HOST, REDIS_PORT'
+      exit 1
+    fi
+  fi
+
+  ##############################################################################
   # Check UID/GID
   ##############################################################################
 
@@ -107,44 +141,10 @@ if [ "$1" = 'taiga-backend' ]; then
   # Volumes
   ##############################################################################
 
-  mkdir -m 0755 -p media
-  mkdir -m 0755 -p static
-  chown -R taiga:taiga media
-  chown -R taiga:taiga static
-
-  ##############################################################################
-  # Waiting
-  ##############################################################################
-
-  if [ -n "${POSTGRESQL_HOST}" -a -n "${POSTGRESQL_PORT}" ]; then
-    dockerize -wait tcp://${POSTGRESQL_HOST}:${POSTGRESQL_PORT} -timeout 10s
-  else
-    echo 'Require environment variable: POSTGRESQL_HOST, POSTGRESQL_PORT'
-    exit 1
-  fi
-
-  if [ -n "${MEMCACHED_LOCATION}" ]; then
-    dockerize -wait tcp://${MEMCACHED_LOCATION} -timeout 10s
-  else
-    echo 'Require environment variable: MEMCACHED_LOCATION'
-    exit 1
-  fi
-
-  if [ -n "${RABBITMQ_HOST}" -a -n "${RABBITMQ_PORT}" ]; then
-    dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
-  else
-    echo 'Require environment variable: RABBITMQ_HOST, RABBITMQ_PORT'
-    exit 1
-  fi
-
-  if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
-    if [ -n "${REDIS_HOST}" -a -n "${REDIS_PORT}" ]; then
-      dockerize -wait tcp://${REDIS_HOST}:${REDIS_PORT} -timeout 10s
-    else
-      echo 'Require environment variable: REDIS_HOST, REDIS_PORT'
-      exit 1
-    fi
-  fi
+  mkdir -m 0755 -p volume/media
+  mkdir -m 0755 -p volume/static
+  chown -R taiga:taiga volume/media
+  chown -R taiga:taiga volume/static
 
   ##############################################################################
   # Initialize
@@ -154,10 +154,10 @@ if [ "$1" = 'taiga-backend' ]; then
   PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
   export PYTHONPATH=".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages"
 
-  python3 manage.py check --deploy
-  python3 manage.py migrate --noinput
-  python3 manage.py loaddata initial_user
-  python3 manage.py loaddata initial_project_templates
+  su-exec taiga:taiga python3 manage.py check --deploy
+  su-exec taiga:taiga python3 manage.py migrate --noinput
+  su-exec taiga:taiga python3 manage.py loaddata initial_user
+  su-exec taiga:taiga python3 manage.py loaddata initial_project_templates
 
   ##############################################################################
   # Create Static Files

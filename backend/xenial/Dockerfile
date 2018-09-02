@@ -163,6 +163,7 @@ RUN echo "Deploy Config Starting" \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-backend
+VOLUME ["/taiga-backend/volume"]
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["taiga-backend"]
 EXPOSE 8000 8080 8888
