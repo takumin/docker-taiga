@@ -63,6 +63,12 @@ http {
 {{- if isTrue $BACKEND_LISTEN_SSL }}
 {{- else }}
 {{- end }}
+      uwsgi_param Host $http_host;
+      uwsgi_param X-Real-IP $remote_addr;
+      uwsgi_param X-Scheme $scheme;
+      uwsgi_param X-Forwarded-Proto $scheme;
+      uwsgi_param X-Forwarded-Server $host;
+      uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     location /admin {
@@ -71,6 +77,12 @@ http {
 {{- if isTrue $BACKEND_LISTEN_SSL }}
 {{- else }}
 {{- end }}
+      uwsgi_param Host $http_host;
+      uwsgi_param X-Real-IP $remote_addr;
+      uwsgi_param X-Scheme $scheme;
+      uwsgi_param X-Forwarded-Proto $scheme;
+      uwsgi_param X-Forwarded-Server $host;
+      uwsgi_param X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 
     location /events {
