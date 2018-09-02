@@ -105,6 +105,7 @@ services:
       - taiga
     volumes:
       - taiga-postgres-data:/var/lib/postgresql
+      - ./init.d:/docker-entrypoint-initdb.d:ro
     environment:
       - POSTGRES_DB=taiga
       - POSTGRES_USER=taiga
