@@ -21,8 +21,8 @@ RUN npm install --production
 RUN npm install --production --prefix=/usr/local -g coffee-script
 
 COPY ./config.json.tmpl /usr/local/events/config.json.tmpl
-COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 0755 /usr/local/bin/entrypoint.sh
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 0755 /usr/local/bin/docker-entrypoint.sh
 
 #
 # Deploy Container
@@ -39,6 +39,6 @@ RUN echo "Deploy Config Starting" \
  && echo "Deploy Config Complete!"
 
 WORKDIR /taiga-events
-ENTRYPOINT ["entrypoint.sh"]
-CMD ["default"]
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["taiga-events"]
 EXPOSE 8888
