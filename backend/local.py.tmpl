@@ -21,7 +21,6 @@
 {{- $POSTGRESQL_PORT            := default .Env.POSTGRESQL_PORT "5432" -}}
 {{- $POSTGRESQL_NAME            := default .Env.POSTGRESQL_NAME "taiga" -}}
 {{- /* Memcached */ -}}
-{{- $MEMCACHED_ENABLED          := default .Env.MEMCACHED_ENABLED "false" -}}
 {{- $MEMCACHED_BACKEND          := default .Env.MEMCACHED_BACKEND "python-memcached" -}}
 {{- $MEMCACHED_HOST             := default .Env.MEMCACHED_HOST "memcached" -}}
 {{- /* RabbitMQ */ -}}
@@ -99,7 +98,6 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#caches
 CACHES = {
   'default': {
-{{- if isTrue $MEMCACHED_ENABLED }}
 {{-   if $MEMCACHED_BACKEND == 'python-memcached' }}
     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 {{-   else if $MEMCACHED_BACKEND == 'pylibmc' }}
@@ -108,10 +106,6 @@ CACHES = {
     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 {{-   end }}
     'LOCATION': '{{ $MEMCACHED_HOST }}'
-{{- else }}{{- /* Disable Memcached */}}
-    'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-    'LOCATION': 'unique-snowflake',
-{{- end }}
   }
 }
 
