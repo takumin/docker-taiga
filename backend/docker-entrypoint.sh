@@ -32,6 +32,78 @@ if [ "$1" = 'taiga-backend' ]; then
   fi
 
   ##############################################################################
+  # Check UID/GID
+  ##############################################################################
+
+  if [ -z "${BACKEND_UID}" ]; then
+    BACKEND_UID=1001
+  fi
+  if echo -n "${BACKEND_UID}" | grep -Eqsv '^[0-9]+$'; then
+    echo 'Please numric value: BACKEND_UID'
+    exit 1
+  fi
+  if [ "${BACKEND_UID}" -le 0 ]; then
+    echo 'Please 0 or more: BACKEND_UID'
+    exit 1
+  fi
+  if [ "${BACKEND_UID}" -ge 60000 ]; then
+    echo 'Please 60000 or less: BACKEND_UID'
+    exit 1
+  fi
+
+  if [ -z "${BACKEND_GID}" ]; then
+    BACKEND_GID=1001
+  fi
+  if echo -n "${BACKEND_GID}" | grep -Eqsv '^[0-9]+$'; then
+    echo 'Please numric value: BACKEND_GID'
+    exit 1
+  fi
+  if [ "${BACKEND_GID}" -le 0 ]; then
+    echo 'Please 0 or more: BACKEND_GID'
+    exit 1
+  fi
+  if [ "${BACKEND_GID}" -ge 60000 ]; then
+    echo 'Please 60000 or less: BACKEND_GID'
+    exit 1
+  fi
+
+  ##############################################################################
+  # Clear User/Group
+  ##############################################################################
+
+  if getent passwd | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
+    deluser 'taiga'
+  fi
+  if getent passwd | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_UID}$"; then
+    deluser "${BACKEND_UID}"
+  fi
+  if getent group | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
+    delgroup 'taiga'
+  fi
+  if getent group | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_GID}$"; then
+    delgroup "${BACKEND_GID}"
+  fi
+
+  ##############################################################################
+  # Group
+  ##############################################################################
+
+  addgroup -g "${BACKEND_GID}" 'taiga'
+
+  ##############################################################################
+  # User
+  ##############################################################################
+
+  adduser -h '/nonexistent' \
+          -g 'Taiga Backend,,,' \
+          -s '/usr/sbin/nologin' \
+          -G 'taiga' \
+          -D \
+          -H \
+          -u "${BACKEND_UID}" \
+          'taiga'
+
+  ##############################################################################
   # Waiting
   ##############################################################################
 
@@ -79,40 +151,19 @@ if [ "$1" = 'taiga-backend' ]; then
   python3 manage.py loaddata initial_project_templates
 
   ##############################################################################
-  # Environment Variables
+  # Create Static Files
   ##############################################################################
 
-  if [ -z "${BACKEND_UID}" ]; then
-    BACKEND_UID=1001
-  fi
-  if echo -n "${BACKEND_UID}" | grep -Eqsv '^[0-9]+$'; then
-    echo 'Please numric value: BACKEND_UID'
-    exit 1
-  fi
-  if [ "${BACKEND_UID}" -le 0 ]; then
-    echo 'Please 0 or more: BACKEND_UID'
-    exit 1
-  fi
-  if [ "${BACKEND_UID}" -ge 60000 ]; then
-    echo 'Please 60000 or less: BACKEND_UID'
-    exit 1
-  fi
+  mkdir -m 0755 -p media
+  mkdir -m 0755 -p static
+  chown -R taiga:taiga media
+  chown -R taiga:taiga static
+  su-exec taiga:taiga python3 manage.py compilemessages
+  su-exec taiga:taiga python3 manage.py collectstatic --noinput
 
-  if [ -z "${BACKEND_GID}" ]; then
-    BACKEND_GID=1001
-  fi
-  if echo -n "${BACKEND_GID}" | grep -Eqsv '^[0-9]+$'; then
-    echo 'Please numric value: BACKEND_GID'
-    exit 1
-  fi
-  if [ "${BACKEND_GID}" -le 0 ]; then
-    echo 'Please 0 or more: BACKEND_GID'
-    exit 1
-  fi
-  if [ "${BACKEND_GID}" -ge 60000 ]; then
-    echo 'Please 60000 or less: BACKEND_GID'
-    exit 1
-  fi
+  ##############################################################################
+  # Environment Variables
+  ##############################################################################
 
   if [ -z "${BACKEND_UWSGI_LISTEN}" ]; then
     BACKEND_UWSGI_LISTEN=$(cat /proc/sys/net/core/somaxconn)
@@ -169,42 +220,6 @@ if [ "$1" = 'taiga-backend' ]; then
   if [ -z "${BACKEND_CELERY_TIMEOUT}" ]; then
     BACKEND_CELERY_TIMEOUT=10
   fi
-
-  ##############################################################################
-  # Pre User/Group
-  ##############################################################################
-
-  if getent passwd | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
-    deluser 'taiga'
-  fi
-  if getent passwd | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_UID}$"; then
-    deluser "${BACKEND_UID}"
-  fi
-  if getent group | awk -F ':' -- '{print $1}' | grep -Eqs '^taiga$'; then
-    delgroup 'taiga'
-  fi
-  if getent group | awk -F ':' -- '{print $3}' | grep -Eqs "^${BACKEND_GID}$"; then
-    delgroup "${BACKEND_GID}"
-  fi
-
-  ##############################################################################
-  # Group
-  ##############################################################################
-
-  addgroup -g "${BACKEND_GID}" 'taiga'
-
-  ##############################################################################
-  # User
-  ##############################################################################
-
-  adduser -h '/nonexistent' \
-          -g 'Taiga Backend,,,' \
-          -s '/usr/sbin/nologin' \
-          -G 'taiga' \
-          -D \
-          -H \
-          -u "${BACKEND_UID}" \
-          'taiga'
 
   ##############################################################################
   # Daemon

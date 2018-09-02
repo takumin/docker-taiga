@@ -52,7 +52,7 @@ RUN echo "Build Config Starting" \
  && echo "deb http://archive.ubuntu.com/ubuntu xenial-security main restricted universe multiverse" >> /etc/apt/sources.list \
  && echo "Build Config Complete!"
 
-# Installed Dockerize
+# Install Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
     && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
@@ -83,12 +83,6 @@ RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir 
 
 # Workaround Database Cache
 RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" python-memcached
-
-# Compile Static Files
-RUN cp -r /usr/local/backend /build
-WORKDIR /build
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py compilemessages
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" python3 manage.py collectstatic --noinput
 
 # Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr
