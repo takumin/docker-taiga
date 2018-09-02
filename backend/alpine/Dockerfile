@@ -63,7 +63,7 @@ RUN git config --global url."https://".insteadOf git://
 
 # Workaround Minimum Install
 RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
-RUN pip3 install --install-option="--prefix=/usr/local" -r six.txt
+RUN pip3 install --no-cache-dir --install-option="--prefix=/usr/local" -r six.txt
 
 # Workaround Running Celery
 RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
@@ -76,10 +76,10 @@ RUN sed -i -e '/^gunicorn==.*/d' /usr/local/backend/requirements.txt
 RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
 
 # Install Require Python Module
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
 # Workaround Running uWSGI
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 install --install-option="--prefix=/usr/local" uwsgi
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" uwsgi
 
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
