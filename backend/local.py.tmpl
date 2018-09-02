@@ -20,7 +20,7 @@
 {{- $POSTGRESQL_HOST            := default .Env.POSTGRESQL_HOST "postgres" -}}
 {{- $POSTGRESQL_PORT            := default .Env.POSTGRESQL_PORT "5432" -}}
 {{- $POSTGRESQL_NAME            := default .Env.POSTGRESQL_NAME "taiga" -}}
-{{- /* RabbitMQ - Events */ -}}
+{{- /* RabbitMQ */ -}}
 {{- $RABBITMQ_USER              := default .Env.RABBITMQ_USER "taiga" -}}
 {{- $RABBITMQ_PASS              := default .Env.RABBITMQ_PASS "taiga" -}}
 {{- $RABBITMQ_HOST              := default .Env.RABBITMQ_HOST "rabbitmq" -}}
