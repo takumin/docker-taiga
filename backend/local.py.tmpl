@@ -1,34 +1,41 @@
 {{- /* Sites */ -}}
-{{- $SITE_LISTEN_SSL            := default .Env.SITE_LISTEN_SSL "false" -}}
-{{- $SITE_LISTEN_HOST           := default .Env.SITE_LISTEN_HOST "localhost" -}}
-{{- $SITE_SECRET_KEY            := default .Env.SITE_SECRET_KEY "taiga" -}}
-{{- $SITE_REGISTER_ENABLED      := default .Env.SITE_REGISTER_ENABLED "false" -}}
+{{- $SITE_SECRET_KEY               := default .Env.SITE_SECRET_KEY "taiga" -}}
+{{- $SITE_REGISTER_ENABLED         := default .Env.SITE_REGISTER_ENABLED "false" -}}
+{{- $SITE_FEEDBACK_ENABLED         := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
+{{- $SITE_SITEMAP_ENABLED          := default .Env.SITE_SITEMAP_ENABLED "false" -}}
+{{- $SITE_WEBHOOKS_ENABLED         := default .Env.SITE_WEBHOOKS_ENABLED "false" -}}
+{{- $SITE_STATS_ENABLED            := default .Env.SITE_STATS_ENABLED "false" -}}
 {{- /* Listen */ -}}
-{{- $BACKEND_LISTEN_SSL         := default .Env.BACKEND_LISTEN_SSL "false" -}}
-{{- $BACKEND_LISTEN_HOST        := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- $SITE_LISTEN_SSL               := default .Env.SITE_LISTEN_SSL "false" -}}
+{{- $SITE_LISTEN_HOST              := default .Env.SITE_LISTEN_HOST "localhost" -}}
+{{- $BACKEND_LISTEN_SSL            := default .Env.BACKEND_LISTEN_SSL "false" -}}
+{{- $BACKEND_LISTEN_HOST           := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
 {{- /* URL Suffix */ -}}
-{{- $BACKEND_MEDIA_URL_NAME     := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
-{{- $BACKEND_STATIC_URL_NAME    := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
+{{- $BACKEND_MEDIA_URL_NAME        := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
+{{- $BACKEND_STATIC_URL_NAME       := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
 {{- /* Backend */ -}}
-{{- $BACKEND_DEBUG_ENABLED      := default .Env.BACKEND_DEBUG_ENABLED "false" -}}
-{{- $BACKEND_SERVER_FROM_EMAIL  := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
-{{- $BACKEND_DEFAULT_FROM_EMAIL := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
-{{- $BACKEND_CELERY_ENABLED     := default .Env.BACKEND_CELERY_ENABLED "false" -}}
+{{- $BACKEND_DEBUG_ENABLED         := default .Env.BACKEND_DEBUG_ENABLED "false" -}}
+{{- $BACKEND_CELERY_ENABLED        := default .Env.BACKEND_CELERY_ENABLED "false" -}}
+{{- $BACKEND_SERVER_FROM_EMAIL     := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
+{{- $BACKEND_DEFAULT_FROM_EMAIL    := default .Env.BACKEND_DEFAULT_FROM_EMAIL "noreply@localhost" -}}
+{{- $BACKEND_FEEDBACK_FROM_EMAIL   := default .Env.BACKEND_FEEDBACK_FROM_EMAIL "support@localhost" -}}
+{{- $BACKEND_SITEMAP_CACHE_TIMEOUT := default .Env.BACKEND_SITEMAP_CACHE_TIMEOUT "24*60*60" -}}
+{{- $BACKEND_STATS_CACHE_TIMEOUT   := default .Env.BACKEND_STATS_CACHE_TIMEOUT "60*60" -}}
 {{- /* PostgreSQL */ -}}
-{{- $POSTGRESQL_USER            := default .Env.POSTGRESQL_USER "taiga" -}}
-{{- $POSTGRESQL_PASS            := default .Env.POSTGRESQL_PASS "taiga" -}}
-{{- $POSTGRESQL_HOST            := default .Env.POSTGRESQL_HOST "postgres" -}}
-{{- $POSTGRESQL_PORT            := default .Env.POSTGRESQL_PORT "5432" -}}
-{{- $POSTGRESQL_NAME            := default .Env.POSTGRESQL_NAME "taiga" -}}
+{{- $POSTGRESQL_USER               := default .Env.POSTGRESQL_USER "taiga" -}}
+{{- $POSTGRESQL_PASS               := default .Env.POSTGRESQL_PASS "taiga" -}}
+{{- $POSTGRESQL_HOST               := default .Env.POSTGRESQL_HOST "postgres" -}}
+{{- $POSTGRESQL_PORT               := default .Env.POSTGRESQL_PORT "5432" -}}
+{{- $POSTGRESQL_NAME               := default .Env.POSTGRESQL_NAME "taiga" -}}
 {{- /* Memcached */ -}}
-{{- $MEMCACHED_BACKEND          := default .Env.MEMCACHED_BACKEND "python-memcached" -}}
-{{- $MEMCACHED_LOCATION         := default .Env.MEMCACHED_LOCATION "memcached:11211" -}}
+{{- $MEMCACHED_BACKEND             := default .Env.MEMCACHED_BACKEND "python-memcached" -}}
+{{- $MEMCACHED_LOCATION            := default .Env.MEMCACHED_LOCATION "memcached:11211" -}}
 {{- /* RabbitMQ */ -}}
-{{- $RABBITMQ_USER              := default .Env.RABBITMQ_USER "taiga" -}}
-{{- $RABBITMQ_PASS              := default .Env.RABBITMQ_PASS "taiga" -}}
-{{- $RABBITMQ_HOST              := default .Env.RABBITMQ_HOST "rabbitmq" -}}
-{{- $RABBITMQ_PORT              := default .Env.RABBITMQ_PORT "5672" -}}
-{{- $RABBITMQ_NAME              := default .Env.RABBITMQ_NAME "taiga" -}}
+{{- $RABBITMQ_USER                 := default .Env.RABBITMQ_USER "taiga" -}}
+{{- $RABBITMQ_PASS                 := default .Env.RABBITMQ_PASS "taiga" -}}
+{{- $RABBITMQ_HOST                 := default .Env.RABBITMQ_HOST "rabbitmq" -}}
+{{- $RABBITMQ_PORT                 := default .Env.RABBITMQ_PORT "5672" -}}
+{{- $RABBITMQ_NAME                 := default .Env.RABBITMQ_NAME "taiga" -}}
 # -*- coding: utf-8 -*-
 
 # Load Default Configuration
@@ -121,3 +128,34 @@ CELERY_ENABLED = True
 {{- else }}
 CELERY_ENABLED = False
 {{- end }}
+
+# Feedback
+{{- if isTrue $SITE_FEEDBACK_ENABLED }}
+FEEDBACK_ENABLED = True
+{{- else }}
+FEEDBACK_ENABLED = False
+{{- end }}
+FEEDBACK_EMAIL = '{{ $BACKEND_FEEDBACK_FROM_EMAIL }}'
+
+# Sitemap
+{{- if isTrue $SITE_SITEMAP_ENABLED }}
+FRONT_SITEMAP_ENABLED = True
+{{- else }}
+FRONT_SITEMAP_ENABLED = False
+{{- end }}
+FRONT_SITEMAP_CACHE_TIMEOUT = {{ $BACKEND_SITEMAP_CACHE_TIMEOUT }}
+
+# Webhooks
+{{- if isTrue $SITE_WEBHOOKS_ENABLED }}
+WEBHOOKS_ENABLED = True
+{{- else }}
+WEBHOOKS_ENABLED = False
+{{- end }}
+
+# Stats
+{{- if isTrue $SITE_STATS_ENABLED }}
+STATS_ENABLED = True
+{{- else }}
+STATS_ENABLED = False
+{{- end }}
+STATS_CACHE_TIMEOUT = {{ $BACKEND_STATS_CACHE_TIMEOUT }}
