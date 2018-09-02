@@ -9,7 +9,6 @@ LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 RUN echo "Build Config Starting" \
  && apk --update add \
-    gettext \
     build-base \
     linux-headers \
     wget \
@@ -107,6 +106,7 @@ COPY --from=build /usr/local /usr/local
 
 RUN echo "Deploy Config Starting" \
  && apk --no-cache --update add \
+    gettext \
     runit \
     su-exec \
     python3 \
