@@ -1,11 +1,11 @@
 {{- /* Sites */ -}}
 {{- $SITE_SECRET_KEY               := default .Env.SITE_SECRET_KEY "taiga" -}}
-{{- $SITE_DEBUG_ENABLED            := default .Env.SITE_DEBUG_ENABLED "false" -}}
 {{- $SITE_REGISTER_ENABLED         := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- $SITE_FEEDBACK_ENABLED         := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
 {{- $SITE_SITEMAP_ENABLED          := default .Env.SITE_SITEMAP_ENABLED "false" -}}
 {{- $SITE_WEBHOOKS_ENABLED         := default .Env.SITE_WEBHOOKS_ENABLED "false" -}}
 {{- $SITE_STATS_ENABLED            := default .Env.SITE_STATS_ENABLED "false" -}}
+{{- $SITE_DEBUG_ENABLED            := default .Env.SITE_DEBUG_ENABLED "false" -}}
 {{- /* Listen */ -}}
 {{- $SITE_LISTEN_SSL               := default .Env.SITE_LISTEN_SSL "false" -}}
 {{- $SITE_LISTEN_HOST              := default .Env.SITE_LISTEN_HOST "localhost" -}}
@@ -160,3 +160,6 @@ STATS_ENABLED = True
 STATS_ENABLED = False
 {{- end }}
 STATS_CACHE_TIMEOUT = {{ $BACKEND_STATS_CACHE_TIMEOUT }}
+
+# Language
+LANGUAGE_CODE = 'ja-jp'
