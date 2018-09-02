@@ -107,7 +107,7 @@ if [ "$1" = 'taiga-backend' ]; then
   fi
 
   if [ -z "${BACKEND_UWSGI_LISTEN}" ]; then
-    BACKEND_UWSGI_LISTEN=128
+    BACKEND_UWSGI_LISTEN=$(cat /proc/sys/net/core/somaxconn)
   fi
 
   if [ -z "${BACKEND_UWSGI_LIMIT_AS}" ]; then
