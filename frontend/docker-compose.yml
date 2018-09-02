@@ -64,12 +64,17 @@ services:
     image: takumi/taiga-backend:alpine
     hostname: taiga-test-backend
     container_name: taiga-test-backend
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
     cap_drop:
       - ALL
     networks:
       - taiga
     depends_on:
       - taiga-test-postgres
+      - taiga-test-memcached
       - taiga-test-rabbitmq
       - taiga-test-redis
     env_file:
@@ -96,6 +101,20 @@ services:
       - POSTGRES_USER=taiga
       - POSTGRES_PASSWORD=taiga
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+
+  #
+  # memcached
+  #
+  taiga-test-memcached:
+    image: memcached:alpine
+    hostname: taiga-test-memcached
+    container_name: taiga-test-memcached
+    cap_drop:
+      - ALL
+    networks:
+      - taiga
+    env_file:
+      - ./test.env
 
   #
   # rabbitmq
