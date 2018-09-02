@@ -41,6 +41,7 @@ services:
     hostname: taiga-test-backend-alpine
     container_name: taiga-test-backend-alpine
     cap_add:
+      - CHOWN
       - SETUID
       - SETGID
     cap_drop:
