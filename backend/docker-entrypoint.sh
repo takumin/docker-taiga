@@ -142,6 +142,10 @@ if [ "$1" = 'taiga-backend' ]; then
     BACKEND_UWSGI_HARAKIRI=10
   fi
 
+  if [ -z "${BACKEND_UWSGI_DISABLE_LOGGING}" ]; then
+    BACKEND_UWSGI_DISABLE_LOGGING=false
+  fi
+
   if [ -z "${BACKEND_CELERY_WORKER}" ]; then
     BACKEND_CELERY_WORKER=1
   fi
@@ -213,6 +217,7 @@ if [ "$1" = 'taiga-backend' ]; then
   echo 'lazy-apps = true'                                         >> main.ini
   echo 'pcre-jit = true'                                          >> main.ini
   echo 'vacuum = true'                                            >> main.ini
+  echo "disable-logging = ${BACKEND_UWSGI_DISABLE_LOGGING}"       >> main.ini
 
   mkdir -p main
   echo '#!/bin/sh'                                  >  main/run
