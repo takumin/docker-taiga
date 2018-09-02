@@ -104,6 +104,15 @@ if [ "$1" = 'taiga-backend' ]; then
           'taiga'
 
   ##############################################################################
+  # Volumes
+  ##############################################################################
+
+  mkdir -m 0755 -p media
+  mkdir -m 0755 -p static
+  chown -R taiga:taiga media
+  chown -R taiga:taiga static
+
+  ##############################################################################
   # Waiting
   ##############################################################################
 
@@ -154,10 +163,6 @@ if [ "$1" = 'taiga-backend' ]; then
   # Create Static Files
   ##############################################################################
 
-  mkdir -m 0755 -p media
-  mkdir -m 0755 -p static
-  chown -R taiga:taiga media
-  chown -R taiga:taiga static
   su-exec taiga:taiga python3 manage.py compilemessages
   su-exec taiga:taiga python3 manage.py collectstatic --noinput
 
