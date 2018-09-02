@@ -8,14 +8,14 @@ if [ "$1" = 'default' ]; then
   ##############################################################################
 
   if [ -n "${EVENTS_LISTEN_HOST}" ]; then
-    dockerize -wait tcp://${EVENTS_LISTEN_HOST} -timeout 30s
+    dockerize -wait tcp://${EVENTS_LISTEN_HOST} -timeout 60s
   else
     echo "Require environment variable: EVENTS_LISTEN_HOST"
     exit 1
   fi
 
   if [ -n "${BACKEND_LISTEN_HOST}" ]; then
-    dockerize -wait tcp://${BACKEND_LISTEN_HOST} -timeout 60s
+    dockerize -wait tcp://${BACKEND_LISTEN_HOST} -timeout 180s
   else
     echo "Require environment variable: BACKEND_LISTEN_HOST"
     exit 1
