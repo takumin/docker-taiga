@@ -65,7 +65,7 @@ RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --no-cache-dir --install-option="--prefix=/usr/local" -r six.txt
 
 # Workaround Security Update
-RUN sed -i -e 's/^Django==.*/Django==1.11.16/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^Django==.*/Django~=1.11.0/' /usr/local/backend/requirements.txt
 
 # Workaround Running Celery
 RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
