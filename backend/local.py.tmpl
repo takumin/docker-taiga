@@ -22,7 +22,7 @@
 {{- $POSTGRESQL_NAME            := default .Env.POSTGRESQL_NAME "taiga" -}}
 {{- /* Memcached */ -}}
 {{- $MEMCACHED_BACKEND          := default .Env.MEMCACHED_BACKEND "python-memcached" -}}
-{{- $MEMCACHED_HOST             := default .Env.MEMCACHED_HOST "memcached" -}}
+{{- $MEMCACHED_LOCATION         := default .Env.MEMCACHED_LOCATION "memcached:11211" -}}
 {{- /* RabbitMQ */ -}}
 {{- $RABBITMQ_USER              := default .Env.RABBITMQ_USER "taiga" -}}
 {{- $RABBITMQ_PASS              := default .Env.RABBITMQ_PASS "taiga" -}}
@@ -105,14 +105,14 @@ CACHES = {
 {{-   else }}{{- /* Fallback for python-memcached */}}
     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
 {{-   end }}
-    'LOCATION': '{{ $MEMCACHED_HOST }}'
+    'LOCATION': '{{ $MEMCACHED_LOCATION }}',
   }
 }
 
 # Events
 EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
 EVENTS_PUSH_BACKEND_OPTIONS = {
-  'url': 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'
+  'url': 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}',
 }
 
 # Async
