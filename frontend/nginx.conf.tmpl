@@ -58,33 +58,19 @@ http {
     }
 
     location /api {
+      include uwsgi_params;
+      uwsgi_pass {{ $BACKEND_LISTEN_HOST }};
 {{- if isTrue $BACKEND_LISTEN_SSL }}
-      proxy_pass https://{{ $BACKEND_LISTEN_HOST }}/api;
 {{- else }}
-      proxy_pass http://{{ $BACKEND_LISTEN_HOST }}/api;
 {{- end }}
-      proxy_set_header Host $http_host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Scheme $scheme;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-Server $host;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_redirect off;
     }
 
     location /admin {
+      include uwsgi_params;
+      uwsgi_pass {{ $BACKEND_LISTEN_HOST }};
 {{- if isTrue $BACKEND_LISTEN_SSL }}
-      proxy_pass https://{{ $BACKEND_LISTEN_HOST }}/admin;
 {{- else }}
-      proxy_pass http://{{ $BACKEND_LISTEN_HOST }}/admin;
 {{- end }}
-      proxy_set_header Host $http_host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Scheme $scheme;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_set_header X-Forwarded-Server $host;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_redirect off;
     }
 
     location /events {
