@@ -130,6 +130,14 @@ if [ "$1" = 'taiga-backend' ]; then
     BACKEND_UWSGI_MAX_REQUESTS_DELTA=512
   fi
 
+  if [ -z "${BACKEND_UWSGI_MIN_WORKER_LIFETIME}" ]; then
+    BACKEND_UWSGI_MIN_WORKER_LIFETIME=60
+  fi
+
+  if [ -z "${BACKEND_UWSGI_MAX_WORKER_LIFETIME}" ]; then
+    BACKEND_UWSGI_MAX_WORKER_LIFETIME=0
+  fi
+
   if [ -z "${BACKEND_UWSGI_BUFFER_SIZE}" ]; then
     BACKEND_UWSGI_BUFFER_SIZE=4096
   fi
@@ -194,30 +202,32 @@ if [ "$1" = 'taiga-backend' ]; then
   # Daemon
   ##############################################################################
 
-  echo '[uwsgi]'                                                  >  main.ini
-  echo 'http = 0.0.0.0:8000'                                      >> main.ini
-  echo 'socket = 0.0.0.0:8080'                                    >> main.ini
-  echo 'stats = 0.0.0.0:8888'                                     >> main.ini
-  echo 'stats-min = true'                                         >> main.ini
-  echo 'stats-http = true'                                        >> main.ini
-  echo 'chdir = /taiga-backend'                                   >> main.ini
-  echo 'module = taiga.wsgi:application'                          >> main.ini
-  echo 'master = true'                                            >> main.ini
-  echo "listen = ${BACKEND_UWSGI_LISTEN}"                         >> main.ini
-  echo "limit-as = ${BACKEND_UWSGI_LIMIT_AS}"                     >> main.ini
-  echo "processes = ${BACKEND_UWSGI_PROCESSES}"                   >> main.ini
-  echo "threads = ${BACKEND_UWSGI_THREADS}"                       >> main.ini
-  echo "max-requests = ${BACKEND_UWSGI_MAX_REQUESTS}"             >> main.ini
-  echo "max-requests-delta = ${BACKEND_UWSGI_MAX_REQUESTS_DELTA}" >> main.ini
-  echo "buffer-size = ${BACKEND_UWSGI_BUFFER_SIZE}"               >> main.ini
-  echo "post-buffering = ${BACKEND_UWSGI_POST_BUFFERING}"         >> main.ini
-  echo "harakiri = ${BACKEND_UWSGI_HARAKIRI}"                     >> main.ini
-  echo 'harakiri-verbose = true'                                  >> main.ini
-  echo 'thunder-lock = true'                                      >> main.ini
-  echo 'lazy-apps = true'                                         >> main.ini
-  echo 'pcre-jit = true'                                          >> main.ini
-  echo 'vacuum = true'                                            >> main.ini
-  echo "disable-logging = ${BACKEND_UWSGI_DISABLE_LOGGING}"       >> main.ini
+  echo '[uwsgi]'                                                    >  main.ini
+  echo 'http = 0.0.0.0:8000'                                        >> main.ini
+  echo 'socket = 0.0.0.0:8080'                                      >> main.ini
+  echo 'stats = 0.0.0.0:8888'                                       >> main.ini
+  echo 'stats-min = true'                                           >> main.ini
+  echo 'stats-http = true'                                          >> main.ini
+  echo 'chdir = /taiga-backend'                                     >> main.ini
+  echo 'module = taiga.wsgi:application'                            >> main.ini
+  echo 'master = true'                                              >> main.ini
+  echo "listen = ${BACKEND_UWSGI_LISTEN}"                           >> main.ini
+  echo "limit-as = ${BACKEND_UWSGI_LIMIT_AS}"                       >> main.ini
+  echo "processes = ${BACKEND_UWSGI_PROCESSES}"                     >> main.ini
+  echo "threads = ${BACKEND_UWSGI_THREADS}"                         >> main.ini
+  echo "max-requests = ${BACKEND_UWSGI_MAX_REQUESTS}"               >> main.ini
+  echo "max-requests-delta = ${BACKEND_UWSGI_MAX_REQUESTS_DELTA}"   >> main.ini
+  echo "min-worker-lifetime = ${BACKEND_UWSGI_MIN_WORKER_LIFETIME}" >> main.ini
+  echo "max-worker-lifetime = ${BACKEND_UWSGI_MAX_WORKER_LIFETIME}" >> main.ini
+  echo "buffer-size = ${BACKEND_UWSGI_BUFFER_SIZE}"                 >> main.ini
+  echo "post-buffering = ${BACKEND_UWSGI_POST_BUFFERING}"           >> main.ini
+  echo "harakiri = ${BACKEND_UWSGI_HARAKIRI}"                       >> main.ini
+  echo 'harakiri-verbose = true'                                    >> main.ini
+  echo 'thunder-lock = true'                                        >> main.ini
+  echo 'lazy-apps = true'                                           >> main.ini
+  echo 'pcre-jit = true'                                            >> main.ini
+  echo 'vacuum = true'                                              >> main.ini
+  echo "disable-logging = ${BACKEND_UWSGI_DISABLE_LOGGING}"         >> main.ini
 
   mkdir -p main
   echo '#!/bin/sh'                                  >  main/run
