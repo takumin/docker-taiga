@@ -121,3 +121,16 @@ CELERY_ENABLED = True
 {{- else }}
 CELERY_ENABLED = False
 {{- end }}
+
+# Site Cache
+MIDDLEWARE_CLASSES = [
+  'taiga.base.middleware.cors.CoorsMiddleware',
+  'taiga.events.middleware.SessionIDMiddleware',
+  'django.middleware.cache.UpdateCacheMiddleware',
+  'django.middleware.common.CommonMiddleware',
+  'django.middleware.cache.FetchFromCacheMiddleware',
+  'django.middleware.locale.LocaleMiddleware',
+  'django.contrib.sessions.middleware.SessionMiddleware',
+  'django.contrib.auth.middleware.AuthenticationMiddleware',
+  'django.contrib.messages.middleware.MessageMiddleware',
+]

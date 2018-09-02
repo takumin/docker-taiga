@@ -125,11 +125,6 @@ services:
     image: memcached:alpine
     hostname: taiga-test-memcached
     container_name: taiga-test-memcached
-    # cap_add:
-    #   - CHOWN
-    #   - SETUID
-    #   - SETGID
-    #   - FOWNER
     cap_drop:
       - ALL
     networks:
