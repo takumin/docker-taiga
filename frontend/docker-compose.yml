@@ -39,18 +39,7 @@ services:
       - taiga-test-events
       - taiga-test-backend
     volumes:
-      - type: volume
-        source: taiga-test-backend-media
-        target: /taiga-frontend/media
-        read_only: true
-        volume:
-          nocopy: true
-      - type: volume
-        source: taiga-test-backend-static
-        target: /taiga-frontend/static
-        read_only: true
-        volume:
-          nocopy: true
+      - taiga-test-backend-volume:/taiga-backend:ro
     env_file:
       - ./test.env
 
@@ -91,8 +80,7 @@ services:
       - taiga-test-rabbitmq
       - taiga-test-redis
     volumes:
-      - taiga-test-backend-media:/taiga-backend/media
-      - taiga-test-backend-static:/taiga-backend/static
+      - taiga-test-backend-volume:/taiga-backend/volume
     env_file:
       - ./test.env
 
@@ -171,5 +159,4 @@ services:
 networks:
   taiga:
 volumes:
-  taiga-test-backend-media:
-  taiga-test-backend-static:
+  taiga-test-backend-volume:
