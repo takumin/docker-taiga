@@ -134,6 +134,10 @@ if [ "$1" = 'taiga-backend' ]; then
     BACKEND_UWSGI_BUFFER_SIZE=4096
   fi
 
+  if [ -z "${BACKEND_UWSGI_POST_BUFFERING}" ]; then
+    BACKEND_UWSGI_POST_BUFFERING=4096
+  fi
+
   if [ -z "${BACKEND_UWSGI_HARAKIRI}" ]; then
     BACKEND_UWSGI_HARAKIRI=10
   fi
@@ -202,12 +206,13 @@ if [ "$1" = 'taiga-backend' ]; then
   echo "max-requests = ${BACKEND_UWSGI_MAX_REQUESTS}"             >> main.ini
   echo "max-requests-delta = ${BACKEND_UWSGI_MAX_REQUESTS_DELTA}" >> main.ini
   echo "buffer-size = ${BACKEND_UWSGI_BUFFER_SIZE}"               >> main.ini
+  echo "post-buffering = ${BACKEND_UWSGI_POST_BUFFERING}"         >> main.ini
   echo "harakiri = ${BACKEND_UWSGI_HARAKIRI}"                     >> main.ini
   echo 'harakiri-verbose = true'                                  >> main.ini
   echo 'thunder-lock = true'                                      >> main.ini
   echo 'lazy-apps = true'                                         >> main.ini
+  echo 'pcre-jit = true'                                          >> main.ini
   echo 'vacuum = true'                                            >> main.ini
-  echo 'touch-reload = /taiga-backend/taiga/wsgi.py'              >> main.ini
 
   mkdir -p main
   echo '#!/bin/sh'                                  >  main/run
