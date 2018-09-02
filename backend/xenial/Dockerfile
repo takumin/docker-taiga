@@ -68,12 +68,18 @@ RUN git config --global url."https://".insteadOf git://
 RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --no-cache-dir --install-option="--prefix=/usr/local" -r six.txt
 
+# Workaround Security Update
+RUN sed -i -e 's/^Django==.*/Django==1.11.16/' /usr/local/backend/requirements.txt
+
 # Workaround Running Celery
 RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
 RUN sed -i -e 's/^kombu==.*/kombu==4.2.1/' /usr/local/backend/requirements.txt
 
 # Workaround Running uWSGI
 RUN sed -i -e '/^gunicorn==.*/d' /usr/local/backend/requirements.txt
+
+# Workaround Performance Tuning
+RUN sed -i -e 's/^lxml==.*/lxml==4.2.4/' /usr/local/backend/requirements.txt
 
 # Install Require Python Module
 RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt

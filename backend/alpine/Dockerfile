@@ -64,12 +64,18 @@ RUN git config --global url."https://".insteadOf git://
 RUN grep '^six==.*' /usr/local/backend/requirements.txt > six.txt
 RUN pip3 install --no-cache-dir --install-option="--prefix=/usr/local" -r six.txt
 
+# Workaround Security Update
+RUN sed -i -e 's/^Django==.*/Django==1.11.16/' /usr/local/backend/requirements.txt
+
 # Workaround Running Celery
 RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
 RUN sed -i -e 's/^kombu==.*/kombu==4.2.1/' /usr/local/backend/requirements.txt
 
 # Workaround Running uWSGI
 RUN sed -i -e '/^gunicorn==.*/d' /usr/local/backend/requirements.txt
+
+# Workaround Performance Tuning
+RUN sed -i -e 's/^lxml==.*/lxml==4.2.4/' /usr/local/backend/requirements.txt
 
 # Workaround Alpine Linux 3.8 & LibreSSL 2.7
 RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
