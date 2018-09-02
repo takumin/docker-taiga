@@ -94,18 +94,19 @@ services:
     hostname: taiga-postgres
     container_name: taiga-postgres
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-      - FOWNER
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    #   - FOWNER
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     volumes:
       - taiga-postgres-data:/var/lib/postgresql/data
-      - ./initdb.d:/docker-entrypoint-initdb.d:ro
+    security_opt:
+      - apparmor:unconfined
     environment:
       - POSTGRES_DB=taiga
       - POSTGRES_USER=taiga
