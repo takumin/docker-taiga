@@ -39,8 +39,6 @@ services:
       - taiga-test-events
       - taiga-test-backend
     volumes:
-      # - taiga-test-backend-media:/taiga-frontend/media:ro
-      # - taiga-test-backend-static:/taiga-frontend/static:ro
       - type: volume
         source: taiga-test-backend-media
         target: /taiga-frontend/media
