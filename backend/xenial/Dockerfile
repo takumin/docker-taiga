@@ -28,16 +28,18 @@ RUN echo "Build Config Starting" \
     python3-pip \
     python3-dev \
     zlib1g-dev \
+    libncurses5-dev \
+    libpcre3-dev \
+    libgdbm-dev \
+    libffi-dev \
     libssl-dev \
     libpq-dev \
-    libgdbm-dev \
     libzmq3-dev \
     libjpeg-turbo8-dev \
+    libpng12-dev \
     libfreetype6-dev \
     libxml2-dev \
     libxslt1-dev \
-    libncurses5-dev \
-    libffi-dev \
  && apt-get -y autoremove --purge \
  && apt-get -y clean \
  && rm -rf /var/cache/apt/archives/* \
@@ -122,16 +124,20 @@ RUN echo "Deploy Config Starting" \
     python3 \
     python3-pkg-resources \
     zlib1g \
+    libncurses5 \
+    libpcre3 \
+    libpcre16-3 \
+    libpcre32-3 \
+    libgdbm3 \
+    libffi6 \
     libssl1.0.0 \
     libpq5 \
-    libgdbm3 \
     libzmq5 \
     libjpeg-turbo8 \
+    libpng12-0 \
     libfreetype6 \
     libxml2 \
     libxslt1.1 \
-    libncurses5 \
-    libffi6 \
  && apt-get -y autoremove --purge \
  && apt-get -y clean \
  && rm -rf /var/cache/apt/archives/* \
