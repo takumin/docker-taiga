@@ -73,6 +73,7 @@ if [ "$1" = 'taiga-backend' ]; then
   PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
   export PYTHONPATH=".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages"
 
+  python3 manage.py check --deploy
   python3 manage.py migrate --noinput
   python3 manage.py loaddata initial_user
   python3 manage.py loaddata initial_project_templates
