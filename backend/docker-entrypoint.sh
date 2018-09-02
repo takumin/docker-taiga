@@ -42,6 +42,13 @@ if [ "$1" = 'taiga-backend' ]; then
     exit 1
   fi
 
+  if [ -n "${MEMCACHED_LOCATION}" ]; then
+    dockerize -wait tcp://${MEMCACHED_LOCATION} -timeout 10s
+  else
+    echo 'Require environment variable: MEMCACHED_LOCATION'
+    exit 1
+  fi
+
   if [ -n "${RABBITMQ_HOST}" -a -n "${RABBITMQ_PORT}" ]; then
     dockerize -wait tcp://${RABBITMQ_HOST}:${RABBITMQ_PORT} -timeout 10s
   else

@@ -53,6 +53,7 @@ services:
       - 8888:8888
     depends_on:
       - taiga-test-postgres
+      - taiga-test-memcached
       - taiga-test-rabbitmq
       - taiga-test-redis
     sysctls:

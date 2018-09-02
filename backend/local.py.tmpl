@@ -98,13 +98,13 @@ DATABASES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#caches
 CACHES = {
   'default': {
-{{-   if $MEMCACHED_BACKEND == 'python-memcached' }}
+{{- if $MEMCACHED_BACKEND eq 'python-memcached' }}
     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-{{-   else if $MEMCACHED_BACKEND == 'pylibmc' }}
+{{- else if $MEMCACHED_BACKEND eq 'pylibmc' }}
     'BACKEND': 'django.core.cache.backends.memcached.PyLibMCCache',
-{{-   else }}{{- /* Fallback for python-memcached */}}
+{{- else }}{{- /* Fallback for python-memcached */}}
     'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-{{-   end }}
+{{- end }}
     'LOCATION': '{{ $MEMCACHED_LOCATION }}',
   }
 }
