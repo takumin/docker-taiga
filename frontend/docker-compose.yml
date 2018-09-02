@@ -117,8 +117,6 @@ services:
       - ALL
     networks:
       - taiga
-    env_file:
-      - ./test.env
 
   #
   # rabbitmq

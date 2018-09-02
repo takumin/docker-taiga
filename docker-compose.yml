@@ -19,12 +19,17 @@ services:
     networks:
       - taiga
     ports:
-      - 8000:8000
+      - 8000:80
     depends_on:
       - taiga-events
       - taiga-backend
+    volumes:
+      - taiga-backend-data:/taiga-backend:ro
     environment:
-      - SITE_LISTEN_HOST:${SITE_LISTEN_HOST}
+      - SITE_LISTEN_HOST=${SITE_LISTEN_HOST}
+      - BACKEND_SERVER_FROM_EMAIL=${BACKEND_SERVER_FROM_EMAIL}
+      - BACKEND_DEFAULT_FROM_EMAIL=${BACKEND_DEFAULT_FROM_EMAIL}
+      - BACKEND_FEEDBACK_FROM_EMAIL=${BACKEND_FEEDBACK_FROM_EMAIL}
     env_file:
       - ./prod.env
 
@@ -36,14 +41,17 @@ services:
     hostname: taiga-events
     container_name: taiga-events
     restart: always
-    # cap_drop:
-    #   - ALL
+    cap_drop:
+      - ALL
     networks:
       - taiga
     depends_on:
       - taiga-rabbitmq
     environment:
-      - SITE_LISTEN_HOST:${SITE_LISTEN_HOST}
+      - SITE_LISTEN_HOST=${SITE_LISTEN_HOST}
+      - BACKEND_SERVER_FROM_EMAIL=${BACKEND_SERVER_FROM_EMAIL}
+      - BACKEND_DEFAULT_FROM_EMAIL=${BACKEND_DEFAULT_FROM_EMAIL}
+      - BACKEND_FEEDBACK_FROM_EMAIL=${BACKEND_FEEDBACK_FROM_EMAIL}
     env_file:
       - ./prod.env
 
@@ -55,20 +63,28 @@ services:
     hostname: taiga-backend
     container_name: taiga-backend
     restart: always
-    # cap_drop:
-    #   - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    cap_drop:
+      - ALL
     networks:
       - taiga
     depends_on:
       - taiga-postgres
+      - taiga-memcached
       - taiga-rabbitmq
       - taiga-redis
+    volumes:
+      - taiga-backend-data:/taiga-backend/volume
     environment:
-      - SITE_LISTEN_HOST:${SITE_LISTEN_HOST}
+      - SITE_LISTEN_HOST=${SITE_LISTEN_HOST}
+      - BACKEND_SERVER_FROM_EMAIL=${BACKEND_SERVER_FROM_EMAIL}
+      - BACKEND_DEFAULT_FROM_EMAIL=${BACKEND_DEFAULT_FROM_EMAIL}
+      - BACKEND_FEEDBACK_FROM_EMAIL=${BACKEND_FEEDBACK_FROM_EMAIL}
     env_file:
       - ./prod.env
-    volumes:
-      - taiga-backend-data:/taiga-backend/media
 
   #
   # postgres
@@ -78,19 +94,34 @@ services:
     hostname: taiga-postgres
     container_name: taiga-postgres
     restart: always
-    # cap_add:
-    #   - CHOWN
-    #   - SETUID
-    #   - SETGID
-    #   - FOWNER
-    # cap_drop:
-    #   - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+      - FOWNER
+    cap_drop:
+      - ALL
     networks:
       - taiga
-    env_file:
-      - ./prod.env
     volumes:
       - taiga-postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=taiga
+      - POSTGRES_USER=taiga
+      - POSTGRES_PASSWORD=taiga
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+
+  #
+  # memcached
+  #
+  taiga-memcached:
+    image: memcached:alpine
+    hostname: taiga-memcached
+    container_name: taiga-memcached
+    cap_drop:
+      - ALL
+    networks:
+      - taiga
 
   #
   # rabbitmq
@@ -100,18 +131,20 @@ services:
     hostname: taiga-rabbitmq
     container_name: taiga-rabbitmq
     restart: always
-    # cap_add:
-    #   - CHOWN
-    #   - SETUID
-    #   - SETGID
-    # cap_drop:
-    #   - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    cap_drop:
+      - ALL
     networks:
       - taiga
-    env_file:
-      - ./prod.env
     volumes:
       - taiga-rabbitmq-data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=taiga
+      - RABBITMQ_DEFAULT_PASS=taiga
+      - RABBITMQ_DEFAULT_VHOST=taiga
 
   #
   # redis
@@ -121,12 +154,12 @@ services:
     hostname: taiga-redis
     container_name: taiga-redis
     restart: always
-    # cap_add:
-    #   - CHOWN
-    #   - SETUID
-    #   - SETGID
-    # cap_drop:
-    #   - ALL
+    cap_add:
+      - CHOWN
+      - SETUID
+      - SETGID
+    cap_drop:
+      - ALL
     networks:
       - taiga
 
