@@ -118,6 +118,25 @@ services:
       - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
 
   #
+  # memcached
+  #
+  taiga-test-memcached:
+    image: memcached:alpine
+    hostname: taiga-test-memcached
+    container_name: taiga-test-memcached
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    #   - FOWNER
+    cap_drop:
+      - ALL
+    networks:
+      - taiga
+    env_file:
+      - ./test.env
+
+  #
   # rabbitmq
   #
   taiga-test-rabbitmq:
