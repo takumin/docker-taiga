@@ -81,6 +81,9 @@ RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir 
 # Workaround Running uWSGI
 RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" uwsgi
 
+# Workaround Database Cache
+RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" python-memcached
+
 # Compile Static Files
 RUN cp -r /usr/local/backend /build
 WORKDIR /build
