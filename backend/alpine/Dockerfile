@@ -10,8 +10,7 @@ LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 RUN echo "Build Config Starting" \
  && apk --update add \
     gettext \
-    gcc \
-    musl-dev \
+    build-base \
     linux-headers \
     wget \
     ca-certificates \
@@ -22,11 +21,15 @@ RUN echo "Build Config Starting" \
     zlib-dev \
     ncurses-libs \
     ncurses-dev \
-    pcre \
-    libpcre-16 \
-    libpcre-32 \
-    libpcrecpp \
-    pcre-dev \
+    # pcre \
+    # libpcre-16 \
+    # libpcre-32 \
+    # libpcrecpp \
+    # pcre-dev \
+    pcre2 \
+    libpcre2-16 \
+    libpcre2-32 \
+    pcre2-dev \
     gdbm \
     gdbm-dev \
     libffi \
@@ -115,10 +118,13 @@ RUN echo "Deploy Config Starting" \
     python3 \
     zlib \
     ncurses-libs \
-    pcre \
-    libpcre-16 \
-    libpcre-32 \
-    libpcrecpp \
+    # pcre \
+    # libpcre-16 \
+    # libpcre-32 \
+    # libpcrecpp \
+    pcre2 \
+    libpcre2-16 \
+    libpcre2-32 \
     gdbm \
     libffi \
     libressl \
