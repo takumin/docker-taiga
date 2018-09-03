@@ -120,6 +120,7 @@ services:
     image: memcached:alpine
     hostname: taiga-memcached
     container_name: taiga-memcached
+    restart: always
     # cap_drop:
     #   - ALL
     networks:
