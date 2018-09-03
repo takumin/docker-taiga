@@ -41,8 +41,8 @@ services:
     hostname: taiga-events
     container_name: taiga-events
     restart: always
-    cap_drop:
-      - ALL
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     depends_on:
@@ -63,12 +63,12 @@ services:
     hostname: taiga-backend
     container_name: taiga-backend
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     depends_on:
@@ -101,12 +101,12 @@ services:
     #   - FOWNER
     # cap_drop:
     #   - ALL
+    # security_opt:
+    #   - apparmor:unconfined
     networks:
       - taiga
     volumes:
       - taiga-postgres-data:/var/lib/postgresql/data
-    security_opt:
-      - apparmor:unconfined
     environment:
       - POSTGRES_DB=taiga
       - POSTGRES_USER=taiga
@@ -120,8 +120,8 @@ services:
     image: memcached:alpine
     hostname: taiga-memcached
     container_name: taiga-memcached
-    cap_drop:
-      - ALL
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
 
@@ -133,12 +133,12 @@ services:
     hostname: taiga-rabbitmq
     container_name: taiga-rabbitmq
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
     volumes:
@@ -156,12 +156,12 @@ services:
     hostname: taiga-redis
     container_name: taiga-redis
     restart: always
-    cap_add:
-      - CHOWN
-      - SETUID
-      - SETGID
-    cap_drop:
-      - ALL
+    # cap_add:
+    #   - CHOWN
+    #   - SETUID
+    #   - SETGID
+    # cap_drop:
+    #   - ALL
     networks:
       - taiga
 
