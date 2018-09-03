@@ -43,5 +43,5 @@ RUN echo Start! \
 
 WORKDIR /taiga-frontend
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["default"]
+CMD ["taiga-frontend"]
 EXPOSE 80
