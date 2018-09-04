@@ -42,7 +42,7 @@ endif
 #
 
 .PHONY: all
-all: build up
+all: build up migrate initialize
 
 #
 # Build Rules
