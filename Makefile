@@ -51,6 +51,7 @@ backup:
 	@docker exec taiga-postgres nc -z -v -w10 localhost 5432
 	@docker exec taiga-postgres pg_dump -U $(DATABASE_NAME) -Fc $(DATABASE_NAME) > $(CURDIR)/recovery/$(BACKUP_DATE)/postgres.custom.dump
 	@docker run --rm -v taiga-backend-data:/volume:ro -v $(CURDIR)/recovery/$(BACKUP_DATE):/backup alpine tar czvf /backup/backend_media.tar.gz -C /volume/media .
+	@find $(CURDIR)/recovery -mindepth 1 -maxdepth 1 -type d -mtime +30 | xargs rm -fr
 	@docker-compose start
 
 .PHONY: restore
