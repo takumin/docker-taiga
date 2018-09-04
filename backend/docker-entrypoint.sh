@@ -294,6 +294,8 @@ if [ "$1" = 'taiga-backend' ]; then
 
   if grep -qs '^CELERY_ENABLED = True$' settings/local.py; then
     ln -fs ../async service/async
+  else
+    rm -f service/async
   fi
 
   ##############################################################################
