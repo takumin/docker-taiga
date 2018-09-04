@@ -10,7 +10,7 @@ all: up
 #
 
 .PHONY: up
-up: down
+up:
 	@docker-compose up -d
 
 .PHONY: migrate
@@ -50,6 +50,6 @@ endif
 #
 
 .PHONY: clean
-clean: down
+clean:
 	@docker system prune -f
 	@docker volume prune -f
