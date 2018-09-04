@@ -64,8 +64,8 @@ restore:
 	@sleep 3
 	@docker exec taiga-postgres nc -z -v -w10 localhost 5432
 	@cat $(CURDIR)/recovery/$(RESTORE_DATE)/postgres.custom.dump | docker exec -i taiga-postgres pg_restore -v -e -U $(DATABASE_NAME) -d $(DATABASE_NAME) -Fc
-	@docker run --rm -i -v taiga-backend-data:/volume alpine mkdir -p /volume/media
-	@docker run --rm -i -v taiga-backend-data:/volume -v $(CURDIR)/recovery/$(RESTORE_DATE):/restore:ro alpine tar xvf /restore/backend_media.tar.gz -C /volume/media
+	@docker run --rm -v taiga-backend-data:/volume alpine mkdir -p /volume/media
+	@docker run --rm -v taiga-backend-data:/volume -v $(CURDIR)/recovery/$(RESTORE_DATE):/restore:ro alpine tar xvf /restore/backend_media.tar.gz -C /volume/media
 	@docker-compose up -d
 
 .PHONY: down
