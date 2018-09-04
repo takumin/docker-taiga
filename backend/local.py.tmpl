@@ -71,7 +71,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'volume', 'static')
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
 # https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
 {{- if isTrue $FRONTEND_LISTEN_SSL }}
-{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536)) }}
 {{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 443) }}
 MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
 STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
@@ -84,7 +84,7 @@ MEDIA_URL = None
 STATIC_URL = None
 {{-   end }}
 {{- else }}
-{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536)) }}
 {{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 80) }}
 MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
 STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
@@ -101,7 +101,7 @@ STATIC_URL = None
 # Frontend
 {{- if isTrue $FRONTEND_LISTEN_SSL }}
 SITES['front']['scheme'] = 'https'
-{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536)) }}
 {{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 443) }}
 SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}'
 {{-     else }}
@@ -112,7 +112,7 @@ SITES['front']['domain'] = None
 {{-   end }}
 {{- else }}
 SITES['front']['scheme'] = 'http'
-{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536)) }}
 {{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 80) }}
 SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}'
 {{-     else }}
@@ -126,7 +126,7 @@ SITES['front']['domain'] = None
 # Backend
 {{- if isTrue $BACKEND_LISTEN_SSL }}
 SITES['api']['scheme'] = 'https'
-{{-   if (and (gt (atoi $BACKEND_LISTEN_PORT) 0) (lt (atoi $BACKEND_LISTEN_PORT) 65536))
+{{-   if (and (gt (atoi $BACKEND_LISTEN_PORT) 0) (lt (atoi $BACKEND_LISTEN_PORT) 65536)) }}
 {{-     if (ne (atoi $BACKEND_LISTEN_PORT) 443) }}
 SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }}'
 {{-     else }}
@@ -137,7 +137,7 @@ SITES['api']['domain'] = None
 {{-   end }}
 {{- else }}
 SITES['api']['scheme'] = 'http'
-{{-   if (and (gt (atoi $BACKEND_LISTEN_PORT) 0) (lt (atoi $BACKEND_LISTEN_PORT) 65536))
+{{-   if (and (gt (atoi $BACKEND_LISTEN_PORT) 0) (lt (atoi $BACKEND_LISTEN_PORT) 65536)) }}
 {{-     if (ne (atoi $BACKEND_LISTEN_PORT) 80) }}
 SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }}'
 {{-     else }}
