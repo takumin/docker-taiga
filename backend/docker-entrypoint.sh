@@ -158,21 +158,24 @@ if [ "$1" = 'taiga-backend' ]; then
     su-exec taiga:taiga python3 manage.py check --deploy
   fi
 
-  if [ "$2" = 'migrate' ]; then
-    su-exec taiga:taiga python3 manage.py migrate --noinput
-  fi
+  echo '#!/bin/sh'                                                                                  >  /usr/local/bin/django_migrate.sh
+  echo 'set -e'                                                                                     >> /usr/local/bin/django_migrate.sh
+  echo "export PYTHONPATH=\".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /usr/local/bin/django_migrate.sh
+  echo 'su-exec taiga:taiga python3 manage.py migrate --noinput'                                    >> /usr/local/bin/django_migrate.sh
+  chmod 0755 /usr/local/bin/django_migrate.sh
 
-  if [ "$2" = 'inituser' ]; then
-    su-exec taiga:taiga python3 manage.py loaddata initial_user
-  fi
+  echo '#!/bin/sh'                                                                                  >  /usr/local/bin/django_initialize.sh
+  echo 'set -e'                                                                                     >> /usr/local/bin/django_initialize.sh
+  echo "export PYTHONPATH=\".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /usr/local/bin/django_initialize.sh
+  echo 'su-exec taiga:taiga python3 manage.py loaddata initial_user'                                >> /usr/local/bin/django_initialize.sh
+  echo 'su-exec taiga:taiga python3 manage.py loaddata initial_project_templates'                   >> /usr/local/bin/django_initialize.sh
+  chmod 0755 /usr/local/bin/django_initialize.sh
 
-  if [ "$2" = 'initproj' ]; then
-    su-exec taiga:taiga python3 manage.py loaddata initial_project_templates
-  fi
-
-  if [ "$2" = 'example' ]; then
-    su-exec taiga:taiga python3 manage.py sample_data
-  fi
+  echo '#!/bin/sh'                                                                                  >  /usr/local/bin/django_example.sh
+  echo 'set -e'                                                                                     >> /usr/local/bin/django_example.sh
+  echo "export PYTHONPATH=\".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages\"" >> /usr/local/bin/django_example.sh
+  echo 'su-exec taiga:taiga python3 manage.py sample_data'                                          >> /usr/local/bin/django_example.sh
+  chmod 0755 /usr/local/bin/django_example.sh
 
   ##############################################################################
   # Create Static Files

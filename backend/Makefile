@@ -60,6 +60,14 @@ build:
 up: down
 	@docker-compose up -d
 
+.PHONY: migrate
+migrate:
+	@docker exec taiga-test-backend-alpine django_migrate.sh
+
+.PHONY: initialize
+initialize:
+	@docker exec taiga-test-backend-alpine django_initialize.sh
+
 .PHONY: down
 down:
 ifneq (x$(shell docker-compose --log-level ERROR ps -q),x)
