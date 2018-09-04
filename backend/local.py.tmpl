@@ -10,8 +10,13 @@
 {{- /* Listen */ -}}
 {{- $SITE_LISTEN_SSL               := default .Env.SITE_LISTEN_SSL "false" -}}
 {{- $SITE_LISTEN_HOST              := default .Env.SITE_LISTEN_HOST "localhost" -}}
-{{- $BACKEND_LISTEN_SSL            := default .Env.BACKEND_LISTEN_SSL "false" -}}
-{{- $BACKEND_LISTEN_HOST           := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- $SITE_LISTEN_PORT              := default .Env.SITE_LISTEN_PORT "" -}}
+{{- $FRONTEND_LISTEN_SSL           := default .Env.FRONTEND_LISTEN_SSL $SITE_LISTEN_SSL -}}
+{{- $FRONTEND_LISTEN_HOST          := default .Env.FRONTEND_LISTEN_HOST $SITE_LISTEN_HOST -}}
+{{- $FRONTEND_LISTEN_PORT          := default .Env.FRONTEND_LISTEN_PORT $SITE_LISTEN_PORT -}}
+{{- $BACKEND_LISTEN_SSL            := default .Env.BACKEND_LISTEN_SSL $SITE_LISTEN_SSL -}}
+{{- $BACKEND_LISTEN_HOST           := default .Env.BACKEND_LISTEN_HOST $SITE_LISTEN_HOST -}}
+{{- $BACKEND_LISTEN_PORT           := default .Env.BACKEND_LISTEN_PORT $SITE_LISTEN_PORT -}}
 {{- /* URL Suffix */ -}}
 {{- $BACKEND_MEDIA_URL_NAME        := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
 {{- $BACKEND_STATIC_URL_NAME       := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
@@ -74,30 +79,48 @@ SERVER_EMAIL = '{{ $BACKEND_SERVER_FROM_EMAIL }}'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
 DEFAULT_FROM_EMAIL = '{{ $BACKEND_DEFAULT_FROM_EMAIL }}'
 
+# Frontend
+{{- if isTrue $FRONTEND_LISTEN_SSL }}
+SITES['front']['scheme'] = 'https'
+{{- else }}
+SITES['front']['scheme'] = 'http'
+{{- end }}
+{{- if (gt (atoi $FRONTEND_LISTEN_PORT) 0) }}
+SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}'
+{{- else }}
+SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}'
+{{- end }}
+
 # Backend
 {{- if isTrue $BACKEND_LISTEN_SSL }}
 SITES['api']['scheme'] = 'https'
 {{- else }}
 SITES['api']['scheme'] = 'http'
 {{- end }}
-SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}'
-
-# Frontend
-{{- if isTrue $SITE_LISTEN_SSL }}
-SITES['front']['scheme'] = 'https'
+{{- if (gt (atoi $BACKEND_LISTEN_PORT) 0) }}
+SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }}'
 {{- else }}
-SITES['front']['scheme'] = 'http'
+SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}'
 {{- end }}
-SITES['front']['domain'] = '{{ $SITE_LISTEN_HOST }}'
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
 # https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
-{{- if isTrue $SITE_LISTEN_SSL }}
-MEDIA_URL = 'https://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'https://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{- if isTrue $FRONTEND_LISTEN_SSL }}
+{{-   if (gt (atoi $FRONTEND_LISTEN_PORT) 0) }}
+MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-   else }}
+MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-   end }}
 {{- else }}
-MEDIA_URL = 'http://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'http://{{ $SITE_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-   if (gt (atoi $FRONTEND_LISTEN_PORT) 0) }}
+MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-   else }}
+MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-   end }}
 {{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#media-root

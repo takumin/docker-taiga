@@ -60,6 +60,10 @@ services:
       - taiga-test-redis
     env_file:
       - ./test.env
+    # environment:
+    #   - "BACKEND_HTTP_PORT=${BACKEND_HTTP_PORT:-8000}"
+    #   - "BACKEND_WSGI_PORT=${BACKEND_WSGI_PORT:-8080}"
+    #   - "BACKEND_STAT_PORT=${BACKEND_STAT_PORT:-8888}"
 
   #
   # xenial service
@@ -108,8 +112,6 @@ services:
       - ALL
     networks:
       - taiga
-    env_file:
-      - ./test.env
     environment:
       - POSTGRES_DB=taiga
       - POSTGRES_USER=taiga
@@ -127,8 +129,6 @@ services:
       - ALL
     networks:
       - taiga
-    env_file:
-      - ./test.env
 
   #
   # rabbitmq
