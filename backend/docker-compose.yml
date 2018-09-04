@@ -12,6 +12,7 @@ services:
     image: takumi/taiga-backend:build-alpine
     hostname: taiga-build-backend-alpine
     container_name: taiga-build-backend-alpine
+    command: /bin/true
     networks:
       - taiga
 
