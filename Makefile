@@ -39,6 +39,24 @@ else
 endif
 	@docker exec taiga-backend django_initialize.sh
 
+.PHONY: backup
+backup:
+	@$(eval BACKUP_DATE := $(shell date '+%Y%m%d_%H%M%S_%3N'))
+	@$(eval DATABASE_NAME := $(shell docker-compose config | grep 'POSTGRES_DB' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E 's/ //g'))
+	@$(eval DATABASE_USER := $(shell docker-compose config | grep 'POSTGRES_USER' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E 's/ //g'))
+	@$(eval DATABASE_PASS := $(shell docker-compose config | grep 'POSTGRES_PASSWORD' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E 's/ //g'))
+	@mkdir -p $(CURDIR)/recovery/$(BACKUP_DATE)
+	@docker-compose stop
+	@docker-compose start taiga-postgres
+	@docker exec taiga-postgres nc -z -v -w10 localhost 5432
+	@docker exec taiga-postgres pg_dump -U $(DATABASE_NAME) -Fc $(DATABASE_NAME) > $(CURDIR)/recovery/$(BACKUP_DATE)/postgres.custom.dump
+	@docker run --rm -v docker-taiga_taiga-postgres-data:/volume -v $(CURDIR)/recovery/$(BACKUP_DATE):/backup alpine tar czvf /backup/backend_media.tar.gz /volume/media
+	@docker-compose start
+
+.PHONY: restore
+restore:
+	# @docker-compose start
+
 .PHONY: down
 down:
 ifneq (x$(shell docker-compose --log-level ERROR ps -q),x)

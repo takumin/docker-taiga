@@ -177,10 +177,17 @@ services:
     #   - ALL
     networks:
       - taiga
+    volumes:
+      - taiga-redis-data:/data
 
 networks:
   taiga:
 volumes:
   taiga-backend-data:
+    name: taiga-backend-data
   taiga-postgres-data:
+    name: taiga-postgres-data
   taiga-rabbitmq-data:
+    name: taiga-rabbitmq-data
+  taiga-redis-data:
+    name: taiga-redis-data
