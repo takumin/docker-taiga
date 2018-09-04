@@ -50,7 +50,7 @@ backup:
 	@docker-compose start taiga-postgres
 	@docker exec taiga-postgres nc -z -v -w10 localhost 5432
 	@docker exec taiga-postgres pg_dump -U $(DATABASE_NAME) -Fc $(DATABASE_NAME) > $(CURDIR)/recovery/$(BACKUP_DATE)/postgres.custom.dump
-	@docker run --rm -v docker-taiga_taiga-postgres-data:/volume -v $(CURDIR)/recovery/$(BACKUP_DATE):/backup alpine tar czvf /backup/backend_media.tar.gz /volume/media
+	@docker run --rm -v taiga-postgres-data:/volume -v $(CURDIR)/recovery/$(BACKUP_DATE):/backup alpine tar czvf /backup/backend_media.tar.gz /volume/media
 	@docker-compose start
 
 .PHONY: restore
