@@ -61,6 +61,9 @@ services:
       - taiga-test-rabbitmq
     env_file:
       - ./docker-compose.env
+    environment:
+      - "FRONTEND_LISTEN_HOST=${FRONTEND_LISTEN_HOST:-localhost}"
+      - "FRONTEND_LISTEN_PORT=${FRONTEND_LISTEN_PORT:-80}"
 
   #
   # backend
@@ -86,6 +89,9 @@ services:
       - taiga-test-backend-volume:/taiga-backend/volume
     env_file:
       - ./docker-compose.env
+    environment:
+      - "FRONTEND_LISTEN_HOST=${FRONTEND_LISTEN_HOST:-localhost}"
+      - "FRONTEND_LISTEN_PORT=${FRONTEND_LISTEN_PORT:-80}"
 
   #
   # postgres
