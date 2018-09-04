@@ -41,7 +41,7 @@ services:
     volumes:
       - taiga-test-backend-volume:/taiga-backend:ro
     env_file:
-      - ./test.env
+      - ./docker-compose.env
 
   #
   # events
@@ -57,7 +57,7 @@ services:
     depends_on:
       - taiga-test-rabbitmq
     env_file:
-      - ./test.env
+      - ./docker-compose.env
 
   #
   # backend
@@ -82,7 +82,7 @@ services:
     volumes:
       - taiga-test-backend-volume:/taiga-backend/volume
     env_file:
-      - ./test.env
+      - ./docker-compose.env
 
   #
   # postgres
