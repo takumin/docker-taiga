@@ -1,10 +1,11 @@
-{{- $SITE_LISTEN_SSL        := default .Env.SITE_LISTEN_SSL "false" -}}
-{{- $SITE_LISTEN_HOST       := default .Env.SITE_LISTEN_HOST "localhost:8000" -}}
-{{- $SITE_REGISTER_ENABLED  := default .Env.SITE_REGISTER_ENABLED "false" -}}
-{{- $SITE_FEEDBACK_ENABLED  := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
-{{- $SITE_GRAVATAR_ENABLED  := default .Env.SITE_GRAVATAR_ENABLED "false" -}}
-{{- $SITE_DEBUG_ENABLED     := default .Env.SITE_DEBUG_ENABLED "false" -}}
-{{- $FRONTEND_DEBUG_ENABLED := default .Env.FRONTEND_DEBUG $SITE_DEBUG_ENABLED -}}
+{{- $SITE_LISTEN_SSL           := default .Env.SITE_LISTEN_SSL "false" -}}
+{{- $SITE_LISTEN_HOST          := default .Env.SITE_LISTEN_HOST "localhost:8000" -}}
+{{- $SITE_REGISTER_ENABLED     := default .Env.SITE_REGISTER_ENABLED "false" -}}
+{{- $SITE_FEEDBACK_ENABLED     := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
+{{- $SITE_GRAVATAR_ENABLED     := default .Env.SITE_GRAVATAR_ENABLED "false" -}}
+{{- $SITE_DEBUG_ENABLED        := default .Env.SITE_DEBUG_ENABLED "false" -}}
+{{- $FRONTEND_DEBUG_ENABLED    := default .Env.FRONTEND_DEBUG $SITE_DEBUG_ENABLED -}}
+{{- $FRONTEND_DEFAULT_LANGUAGE := default .Env.FRONTEND_DEFAULT_LANGUAGE "en" -}}
 {
 {{- if isTrue $SITE_LISTEN_SSL }}
   "api": "https://{{ $SITE_LISTEN_HOST }}/api/v1",
@@ -23,7 +24,7 @@
   "debug": false,
   "debugInfo": false,
 {{- end }}
-  "defaultLanguage": "ja",
+  "defaultLanguage": "{{ $FRONTEND_DEFAULT_LANGUAGE }}",
   "themes": ["taiga"],
   "defaultTheme": "taiga",
 {{- if isTrue $SITE_REGISTER_ENABLED }}
