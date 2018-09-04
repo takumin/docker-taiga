@@ -49,9 +49,9 @@ services:
     networks:
       - taiga
     ports:
-      - ${BACKEND_HTTP_PORT}:8000
-      - ${BACKEND_WSGI_PORT}:8080
-      - ${BACKEND_STAT_PORT}:8888
+      - "${BACKEND_HTTP_PORT:-8000}:8000"
+      - "${BACKEND_WSGI_PORT:-8080}:8080"
+      - "${BACKEND_STAT_PORT:-8888}:8888"
     depends_on:
       - taiga-test-postgres
       - taiga-test-memcached
