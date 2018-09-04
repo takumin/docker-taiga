@@ -50,9 +50,9 @@ services:
     networks:
       - taiga
     ports:
-      - "${BACKEND_HTTP_PORT:-8000}:8000"
-      - "${BACKEND_WSGI_PORT:-8080}:8080"
-      - "${BACKEND_STAT_PORT:-8888}:8888"
+      - "${BACKEND_LISTEN_HTTP_PORT:-8000}:8000"
+      - "${BACKEND_LISTEN_WSGI_PORT:-8080}:8080"
+      - "${BACKEND_LISTEN_STAT_PORT:-8888}:8888"
     depends_on:
       - taiga-test-postgres
       - taiga-test-memcached
@@ -61,9 +61,9 @@ services:
     env_file:
       - ./test.env
     environment:
-      - "BACKEND_HTTP_PORT=${BACKEND_HTTP_PORT:-8000}"
-      - "BACKEND_WSGI_PORT=${BACKEND_WSGI_PORT:-8080}"
-      - "BACKEND_STAT_PORT=${BACKEND_STAT_PORT:-8888}"
+      - "BACKEND_LISTEN_HTTP_PORT=${BACKEND_LISTEN_HTTP_PORT:-8000}"
+      - "BACKEND_LISTEN_WSGI_PORT=${BACKEND_LISTEN_WSGI_PORT:-8080}"
+      - "BACKEND_LISTEN_STAT_PORT=${BACKEND_LISTEN_STAT_PORT:-8888}"
 
   #
   # xenial service
