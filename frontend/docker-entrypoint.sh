@@ -7,17 +7,17 @@ if [ "$1" = 'taiga-frontend' ]; then
   # Wait
   ##############################################################################
 
-  if [ -n "${EVENTS_LISTEN_HOST}" ]; then
-    dockerize -wait tcp://${EVENTS_LISTEN_HOST} -timeout 60s
+  if [ -n "${EVENTS_LISTEN_HOST}" -a -n "${EVENTS_LISTEN_PORT}" ]; then
+    dockerize -wait tcp://${EVENTS_LISTEN_HOST}:${EVENTS_LISTEN_PORT} -timeout 60s
   else
-    echo "Require environment variable: EVENTS_LISTEN_HOST"
+    echo "Require environment variable: EVENTS_LISTEN_HOST, EVENTS_LISTEN_PORT"
     exit 1
   fi
 
-  if [ -n "${BACKEND_LISTEN_HOST}" ]; then
-    dockerize -wait tcp://${BACKEND_LISTEN_HOST} -timeout 180s
+  if [ -n "${BACKEND_LISTEN_HOST}" -a -n "${BACKEND_LISTEN_PORT}" ]; then
+    dockerize -wait tcp://${BACKEND_LISTEN_HOST}:${BACKEND_LISTEN_PORT} -timeout 180s
   else
-    echo "Require environment variable: BACKEND_LISTEN_HOST"
+    echo "Require environment variable: BACKEND_LISTEN_HOST, BACKEND_LISTEN_PORT"
     exit 1
   fi
 
