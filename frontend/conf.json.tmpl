@@ -1,18 +1,42 @@
-{{- $SITE_LISTEN_SSL           := default .Env.SITE_LISTEN_SSL "false" -}}
-{{- $SITE_LISTEN_HOST          := default .Env.SITE_LISTEN_HOST "localhost:8000" -}}
+{{- /* Sites */ -}}
 {{- $SITE_REGISTER_ENABLED     := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- $SITE_FEEDBACK_ENABLED     := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
 {{- $SITE_GRAVATAR_ENABLED     := default .Env.SITE_GRAVATAR_ENABLED "false" -}}
 {{- $SITE_DEBUG_ENABLED        := default .Env.SITE_DEBUG_ENABLED "false" -}}
+{{- /* Listen */ -}}
+{{- $FRONTEND_LISTEN_SSL           := default .Env.FRONTEND_LISTEN_SSL "false" -}}
+{{- $FRONTEND_LISTEN_HOST          := default .Env.FRONTEND_LISTEN_HOST "localhost" -}}
+{{- $FRONTEND_LISTEN_PORT          := default .Env.FRONTEND_LISTEN_PORT "80" -}}
+{{- /* Frontend */ -}}
 {{- $FRONTEND_DEBUG_ENABLED    := default .Env.FRONTEND_DEBUG $SITE_DEBUG_ENABLED -}}
 {{- $FRONTEND_DEFAULT_LANGUAGE := default .Env.FRONTEND_DEFAULT_LANGUAGE "en" -}}
 {
-{{- if isTrue $SITE_LISTEN_SSL }}
-  "api": "https://{{ $SITE_LISTEN_HOST }}/api/v1",
-  "eventsUrl": "wss://{{ $SITE_LISTEN_HOST }}/events",
+{{- if isTrue $FRONTEND_LISTEN_SSL }}
+{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536)) }}
+{{-     if (eq (atoi $FRONTEND_LISTEN_PORT) 443) }}
+  "api": "https://{{ $FRONTEND_LISTEN_HOST }}/api/v1",
+  "eventsUrl": "wss://{{ $FRONTEND_LISTEN_HOST }}/events",
+{{-     else }}
+  "api": "https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/api/v1",
+  "eventsUrl": "wss://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/events",
+{{-     end }}
+{{-   else }}
+  "api": null,
+  "eventsUrl": null,
+{{-   end }}
 {{- else }}
-  "api": "http://{{ $SITE_LISTEN_HOST }}/api/v1",
-  "eventsUrl": "ws://{{ $SITE_LISTEN_HOST }}/events",
+{{-   if (and (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536)) }}
+{{-     if (eq (atoi $FRONTEND_LISTEN_PORT) 80) }}
+  "api": "http://{{ $FRONTEND_LISTEN_HOST }}/api/v1",
+  "eventsUrl": "ws://{{ $FRONTEND_LISTEN_HOST }}/events",
+{{-     else }}
+  "api": "http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/api/v1",
+  "eventsUrl": "ws://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/events",
+{{-     end }}
+{{-   else }}
+  "api": null,
+  "eventsUrl": null,
+{{-   end }}
 {{- end }}
   "eventsMaxMissedHeartbeats": 5,
   "eventsHeartbeatIntervalTime": 60000,
