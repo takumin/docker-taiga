@@ -154,10 +154,25 @@ if [ "$1" = 'taiga-backend' ]; then
   PYTHON_MINOR="$(python3 -c 'import sys; print(sys.version_info.minor)')"
   export PYTHONPATH=".:/usr/local/lib/python${PYTHON_MEJOR}.${PYTHON_MINOR}/site-packages"
 
-  su-exec taiga:taiga python3 manage.py check --deploy
-  su-exec taiga:taiga python3 manage.py migrate --noinput
-  su-exec taiga:taiga python3 manage.py loaddata initial_user
-  su-exec taiga:taiga python3 manage.py loaddata initial_project_templates
+  if grep -qs '^DEBUG = False$' settings/local.py; then
+    su-exec taiga:taiga python3 manage.py check --deploy
+  fi
+
+  if [ "$2" = 'migrate' ]; then
+    su-exec taiga:taiga python3 manage.py migrate --noinput
+  fi
+
+  if [ "$2" = 'inituser' ]; then
+    su-exec taiga:taiga python3 manage.py loaddata initial_user
+  fi
+
+  if [ "$2" = 'initproj' ]; then
+    su-exec taiga:taiga python3 manage.py loaddata initial_project_templates
+  fi
+
+  if [ "$2" = 'example' ]; then
+    su-exec taiga:taiga python3 manage.py sample_data
+  fi
 
   ##############################################################################
   # Create Static Files
