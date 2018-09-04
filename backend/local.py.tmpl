@@ -1,5 +1,6 @@
 {{- /* Sites */ -}}
 {{- $SITE_SECRET_KEY               := default .Env.SITE_SECRET_KEY "taiga" -}}
+{{- $SITE_TIMEZONE                 := default .Env.SITE_TIMEZONE "UTC" -}}
 {{- $SITE_REGISTER_ENABLED         := default .Env.SITE_REGISTER_ENABLED "false" -}}
 {{- $SITE_FEEDBACK_ENABLED         := default .Env.SITE_FEEDBACK_ENABLED "false" -}}
 {{- $SITE_SITEMAP_ENABLED          := default .Env.SITE_SITEMAP_ENABLED "false" -}}
@@ -15,6 +16,8 @@
 {{- $BACKEND_MEDIA_URL_NAME        := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
 {{- $BACKEND_STATIC_URL_NAME       := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
 {{- /* Backend */ -}}
+{{- $BACKEND_TIMEZONE              := default .Env.BACKEND_TIMEZONE $SITE_TIMEZONE -}}
+{{- $BACKEND_LANGUAGE_CODE         := default .Env.BACKEND_LANGUAGE_CODE "en-us" -}}
 {{- $BACKEND_DEBUG_ENABLED         := default .Env.BACKEND_DEBUG_ENABLED $SITE_DEBUG_ENABLED -}}
 {{- $BACKEND_CELERY_ENABLED        := default .Env.BACKEND_CELERY_ENABLED "false" -}}
 {{- $BACKEND_SERVER_FROM_EMAIL     := default .Env.BACKEND_SERVER_FROM_EMAIL "taiga@localhost" -}}
@@ -42,13 +45,6 @@
 # Load Default Configuration
 from .common import *
 
-# Register
-{{- if isTrue $SITE_REGISTER_ENABLED }}
-PUBLIC_REGISTER_ENABLED = True
-{{- else }}
-PUBLIC_REGISTER_ENABLED = False
-{{- end }}
-
 # https://docs.djangoproject.com/en/1.11/ref/settings/#debug
 {{- if isTrue $BACKEND_DEBUG_ENABLED }}
 DEBUG = True
@@ -56,8 +52,21 @@ DEBUG = True
 DEBUG = False
 {{- end }}
 
+# Timezone
+TIME_ZONE = '{{ $BACKEND_TIMEZONE }}'
+
+# Language
+LANGUAGE_CODE = '{{ $BACKEND_LANGUAGE_CODE }}'
+
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 SECRET_KEY = '{{ $SITE_SECRET_KEY }}'
+
+# Register
+{{- if isTrue $SITE_REGISTER_ENABLED }}
+PUBLIC_REGISTER_ENABLED = True
+{{- else }}
+PUBLIC_REGISTER_ENABLED = False
+{{- end }}
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#server-email
 SERVER_EMAIL = '{{ $BACKEND_SERVER_FROM_EMAIL }}'
@@ -165,6 +174,3 @@ STATS_ENABLED = True
 STATS_ENABLED = False
 {{- end }}
 STATS_CACHE_TIMEOUT = {{ $BACKEND_STATS_CACHE_TIMEOUT }}
-
-# Language
-LANGUAGE_CODE = 'ja-jp'

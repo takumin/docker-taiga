@@ -1,6 +1,8 @@
+{{- /* Sites */ -}}
+{{- $SITE_TIMEZONE            := default .Env.SITE_TIMEZONE "UTC" -}}
 {{- /* Backend */ -}}
+{{- $BACKEND_TIMEZONE         := default .Env.BACKEND_TIMEZONE $SITE_TIMEZONE -}}
 {{- $BACKEND_CELERY_IN_MEMORY := default .Env.BACKEND_CELERY_IN_MEMORY "false" -}}
-{{- $BACKEND_CELERY_TIMEZONE  := default .Env.BACKEND_CELERY_TIMEZONE "UTC" -}}
 {{- /* RabbitMQ */ -}}
 {{- $RABBITMQ_USER            := default .Env.RABBITMQ_USER "taiga" -}}
 {{- $RABBITMQ_PASS            := default .Env.RABBITMQ_PASS "taiga" -}}
@@ -17,7 +19,7 @@ from .celery import *
 # http://docs.celeryproject.org/en/v4.0.2/index.html
 
 # http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#timezone
-timezone = '{{ $BACKEND_CELERY_TIMEZONE }}'
+timezone = '{{ $BACKEND_TIMEZONE }}'
 
 # http://docs.celeryproject.org/en/v4.0.2/userguide/configuration.html#broker-url
 broker_url = 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}'
