@@ -24,7 +24,7 @@ else
 	@$(eval WAIT_PORT := $(shell docker-compose config | grep 'FRONTEND_LISTEN_PORT' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E "s/'//g; s/ //g"))
 	@while true; do echo uWSGI HTTP Listen Waiting... && curl -I -s -o /dev/null http://$(WAIT_HOST):$(WAIT_PORT) && break || sleep 3; done
 endif
-	@docker exec taiga-test-backend django_migrate.sh
+	@docker exec taiga-backend django_migrate.sh
 
 .PHONY: initialize
 initialize:
@@ -37,7 +37,7 @@ else
 	@$(eval WAIT_PORT := $(shell docker-compose config | grep 'FRONTEND_LISTEN_PORT' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E "s/'//g; s/ //g"))
 	@while true; do echo uWSGI HTTP Listen Waiting... && curl -I -s -o /dev/null http://$(WAIT_HOST):$(WAIT_PORT) && break || sleep 3; done
 endif
-	@docker exec taiga-test-backend django_initialize.sh
+	@docker exec taiga-backend django_initialize.sh
 
 .PHONY: down
 down:
