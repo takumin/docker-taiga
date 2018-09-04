@@ -4,7 +4,7 @@
 # Build Container
 #
 
-FROM alpine:3.8 AS build
+FROM alpine AS build
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 RUN echo "Build Config Starting" \
@@ -113,7 +113,7 @@ RUN chmod 0755 /usr/local/bin/docker-entrypoint.sh
 # Deploy Container
 #
 
-FROM alpine:3.8 AS prod
+FROM alpine AS prod
 LABEL maintainer "Takumi Takahashi <takumiiinn@gmail.com>"
 
 COPY --from=build /usr/local /usr/local
