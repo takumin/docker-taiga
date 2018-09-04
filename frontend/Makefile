@@ -37,7 +37,7 @@ endif
 #
 
 .PHONY: all
-all: build up
+all: build up migrate initialize
 
 #
 # Build Rules
@@ -46,6 +46,18 @@ all: build up
 .PHONY: build
 build:
 	@docker-compose build $(BUILD_ARGS)
+
+.PHONY: migrate
+migrate:
+	@$(eval WAIT_HTTP_PORT := $(shell docker-compose config | grep 'BACKEND_LISTEN_HTTP_PORT' | awk -F ':' -- '{print $$2}' | sed -E "s/'//g; s/ //g"))
+	@while true; do echo uWSGI HTTP Listen Waiting... && curl -I -s -o /dev/null http://localhost:$(WAIT_HTTP_PORT) && break || sleep 3; done
+	@docker exec taiga-test-backend-alpine django_migrate.sh
+
+.PHONY: initialize
+initialize:
+	@$(eval WAIT_HTTP_PORT := $(shell docker-compose config | grep 'BACKEND_LISTEN_HTTP_PORT' | awk -F ':' -- '{print $$2}' | sed -E "s/'//g; s/ //g"))
+	@while true; do echo uWSGI HTTP Listen Waiting... && curl -I -s -o /dev/null http://localhost:$(WAIT_HTTP_PORT) && break || sleep 3; done
+	@docker exec taiga-test-backend-alpine django_initialize.sh
 
 #
 # Test Rules
