@@ -8,15 +8,12 @@
 {{- $SITE_STATS_ENABLED            := default .Env.SITE_STATS_ENABLED "false" -}}
 {{- $SITE_DEBUG_ENABLED            := default .Env.SITE_DEBUG_ENABLED "false" -}}
 {{- /* Listen */ -}}
-{{- $SITE_LISTEN_SSL               := default .Env.SITE_LISTEN_SSL "false" -}}
-{{- $SITE_LISTEN_HOST              := default .Env.SITE_LISTEN_HOST "localhost" -}}
-{{- $SITE_LISTEN_PORT              := default .Env.SITE_LISTEN_PORT "" -}}
-{{- $FRONTEND_LISTEN_SSL           := default .Env.FRONTEND_LISTEN_SSL $SITE_LISTEN_SSL -}}
-{{- $FRONTEND_LISTEN_HOST          := default .Env.FRONTEND_LISTEN_HOST $SITE_LISTEN_HOST -}}
-{{- $FRONTEND_LISTEN_PORT          := default .Env.FRONTEND_LISTEN_PORT $SITE_LISTEN_PORT -}}
-{{- $BACKEND_LISTEN_SSL            := default .Env.BACKEND_LISTEN_SSL $SITE_LISTEN_SSL -}}
-{{- $BACKEND_LISTEN_HOST           := default .Env.BACKEND_LISTEN_HOST $SITE_LISTEN_HOST -}}
-{{- $BACKEND_LISTEN_PORT           := default .Env.BACKEND_LISTEN_PORT $SITE_LISTEN_PORT -}}
+{{- $FRONTEND_LISTEN_SSL           := default .Env.FRONTEND_LISTEN_SSL "false" -}}
+{{- $FRONTEND_LISTEN_HOST          := default .Env.FRONTEND_LISTEN_HOST "localhost" -}}
+{{- $FRONTEND_LISTEN_PORT          := default .Env.FRONTEND_LISTEN_PORT "80" -}}
+{{- $BACKEND_LISTEN_SSL            := default .Env.BACKEND_LISTEN_SSL "false" -}}
+{{- $BACKEND_LISTEN_HOST           := default .Env.BACKEND_LISTEN_HOST "localhost" -}}
+{{- $BACKEND_LISTEN_PORT           := default .Env.BACKEND_LISTEN_PORT "8000" -}}
 {{- /* URL Suffix */ -}}
 {{- $BACKEND_MEDIA_URL_NAME        := default .Env.BACKEND_MEDIA_URL_NAME "media" -}}
 {{- $BACKEND_STATIC_URL_NAME       := default .Env.BACKEND_STATIC_URL_NAME "static" -}}
@@ -66,67 +63,90 @@ LANGUAGE_CODE = '{{ $BACKEND_LANGUAGE_CODE }}'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#secret-key
 SECRET_KEY = '{{ $SITE_SECRET_KEY }}'
 
-# Register
-{{- if isTrue $SITE_REGISTER_ENABLED }}
-PUBLIC_REGISTER_ENABLED = True
+# https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
+# https://docs.djangoproject.com/en/1.11/ref/settings/#static-root
+MEDIA_ROOT = os.path.join(BASE_DIR, 'volume', 'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'volume', 'static')
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
+# https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
+{{- if isTrue $FRONTEND_LISTEN_SSL }}
+{{-   if (or (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 443) }}
+MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-     else }}
+MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-     end }}
+{{-   else }}
+MEDIA_URL = None
+STATIC_URL = None
+{{-   end }}
 {{- else }}
-PUBLIC_REGISTER_ENABLED = False
+{{-   if (or (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 80) }}
+MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-     else }}
+MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
+STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-     end }}
+{{-   else }}
+MEDIA_URL = None
+STATIC_URL = None
+{{-   end }}
 {{- end }}
-
-# https://docs.djangoproject.com/en/1.11/ref/settings/#server-email
-SERVER_EMAIL = '{{ $BACKEND_SERVER_FROM_EMAIL }}'
-
-# https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
-DEFAULT_FROM_EMAIL = '{{ $BACKEND_DEFAULT_FROM_EMAIL }}'
 
 # Frontend
 {{- if isTrue $FRONTEND_LISTEN_SSL }}
 SITES['front']['scheme'] = 'https'
+{{-   if (or (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 443) }}
+SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}'
+{{-     else }}
+SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}'
+{{-     end }}
+{{-   else }}
+SITES['front']['domain'] = None
+{{-   end }}
 {{- else }}
 SITES['front']['scheme'] = 'http'
-{{- end }}
-{{- if (gt (atoi $FRONTEND_LISTEN_PORT) 0) }}
+{{-   if (or (gt (atoi $FRONTEND_LISTEN_PORT) 0) (lt (atoi $FRONTEND_LISTEN_PORT) 65536))
+{{-     if (ne (atoi $FRONTEND_LISTEN_PORT) 80) }}
 SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}'
-{{- else }}
+{{-     else }}
 SITES['front']['domain'] = '{{ $FRONTEND_LISTEN_HOST }}'
+{{-     end }}
+{{-   else }}
+SITES['front']['domain'] = None
+{{-   end }}
 {{- end }}
 
 # Backend
 {{- if isTrue $BACKEND_LISTEN_SSL }}
 SITES['api']['scheme'] = 'https'
+{{-   if (or (gt (atoi $BACKEND_LISTEN_PORT) 0) (lt (atoi $BACKEND_LISTEN_PORT) 65536))
+{{-     if (ne (atoi $BACKEND_LISTEN_PORT) 443) }}
+SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }}'
+{{-     else }}
+SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}'
+{{-     end }}
+{{-   else }}
+SITES['api']['domain'] = None
+{{-   end }}
 {{- else }}
 SITES['api']['scheme'] = 'http'
-{{- end }}
-{{- if (gt (atoi $BACKEND_LISTEN_PORT) 0) }}
+{{-   if (or (gt (atoi $BACKEND_LISTEN_PORT) 0) (lt (atoi $BACKEND_LISTEN_PORT) 65536))
+{{-     if (ne (atoi $BACKEND_LISTEN_PORT) 80) }}
 SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }}'
-{{- else }}
+{{-     else }}
 SITES['api']['domain'] = '{{ $BACKEND_LISTEN_HOST }}'
-{{- end }}
-
-# https://docs.djangoproject.com/en/1.11/ref/settings/#media-url
-# https://docs.djangoproject.com/en/1.11/ref/settings/#static-url
-{{- if isTrue $FRONTEND_LISTEN_SSL }}
-{{-   if (gt (atoi $FRONTEND_LISTEN_PORT) 0) }}
-MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+{{-     end }}
 {{-   else }}
-MEDIA_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'https://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
-{{-   end }}
-{{- else }}
-{{-   if (gt (atoi $FRONTEND_LISTEN_PORT) 0) }}
-MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}:{{ $FRONTEND_LISTEN_PORT }}/{{ $BACKEND_STATIC_URL_NAME }}/'
-{{-   else }}
-MEDIA_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_MEDIA_URL_NAME }}/'
-STATIC_URL = 'http://{{ $FRONTEND_LISTEN_HOST }}/{{ $BACKEND_STATIC_URL_NAME }}/'
+SITES['api']['domain'] = None
 {{-   end }}
 {{- end }}
-
-# https://docs.djangoproject.com/en/1.11/ref/settings/#media-root
-# https://docs.djangoproject.com/en/1.11/ref/settings/#static-root
-MEDIA_ROOT = os.path.join(BASE_DIR, 'volume', 'media')
-STATIC_ROOT = os.path.join(BASE_DIR, 'volume', 'static')
 
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 DATABASES = {
@@ -159,6 +179,19 @@ EVENTS_PUSH_BACKEND = 'taiga.events.backends.rabbitmq.EventsPushBackend'
 EVENTS_PUSH_BACKEND_OPTIONS = {
   'url': 'amqp://{{ $RABBITMQ_USER }}:{{ $RABBITMQ_PASS }}@{{ $RABBITMQ_HOST }}:{{ $RABBITMQ_PORT }}/{{ $RABBITMQ_NAME }}',
 }
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#server-email
+SERVER_EMAIL = '{{ $BACKEND_SERVER_FROM_EMAIL }}'
+
+# https://docs.djangoproject.com/en/1.11/ref/settings/#default-from-email
+DEFAULT_FROM_EMAIL = '{{ $BACKEND_DEFAULT_FROM_EMAIL }}'
+
+# Register
+{{- if isTrue $SITE_REGISTER_ENABLED }}
+PUBLIC_REGISTER_ENABLED = True
+{{- else }}
+PUBLIC_REGISTER_ENABLED = False
+{{- end }}
 
 # Async
 {{- if isTrue $BACKEND_CELERY_ENABLED }}
