@@ -47,6 +47,14 @@ all: build up migrate initialize
 build:
 	@docker-compose build $(BUILD_ARGS)
 
+#
+# Test Rules
+#
+
+.PHONY: up
+up: down
+	@docker-compose up -d
+
 .PHONY: migrate
 migrate:
 	@$(eval WAIT_HTTP_PORT := $(shell docker-compose config | grep 'FRONTEND_LISTEN_PORT' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E "s/'//g; s/ //g"))
@@ -58,14 +66,6 @@ initialize:
 	@$(eval WAIT_HTTP_PORT := $(shell docker-compose config | grep 'FRONTEND_LISTEN_PORT' | head -n 1 | awk -F ':' -- '{print $$2}' | sed -E "s/'//g; s/ //g"))
 	@while true; do echo uWSGI HTTP Listen Waiting... && curl -I -s -o /dev/null http://localhost:$(WAIT_HTTP_PORT) && break || sleep 3; done
 	@docker exec taiga-test-backend django_initialize.sh
-
-#
-# Test Rules
-#
-
-.PHONY: up
-up: down
-	@docker-compose up -d
 
 .PHONY: down
 down:
