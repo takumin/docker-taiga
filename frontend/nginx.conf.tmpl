@@ -4,9 +4,11 @@
 {{- $FRONTEND_KEEPALIVE_TIMEOUT  := default .Env.FRONTEND_KEEPALIVE_TIMEOUT "10" -}}
 {{- $FRONTEND_MAX_BODY_SIZE      := default .Env.FRONTEND_MAX_BODY_SIZE "50m" -}}
 {{- $BACKEND_LISTEN_SSL          := default .Env.BACKEND_LISTEN_SSL "false" -}}
-{{- $BACKEND_LISTEN_HOST         := default .Env.BACKEND_LISTEN_HOST "localhost:8080" -}}
+{{- $BACKEND_LISTEN_HOST         := default .Env.BACKEND_LISTEN_HOST "localhost" -}}
+{{- $BACKEND_LISTEN_PORT         := default .Env.BACKEND_LISTEN_PORT "8080" -}}
 {{- $EVENTS_LISTEN_SSL           := default .Env.EVENTS_LISTEN_SSL "false" -}}
-{{- $EVENTS_LISTEN_HOST          := default .Env.EVENTS_LISTEN_HOST "localhost:8888" -}}
+{{- $EVENTS_LISTEN_HOST          := default .Env.EVENTS_LISTEN_HOST "localhost" -}}
+{{- $EVENTS_LISTEN_PORT          := default .Env.EVENTS_LISTEN_PORT "8888" -}}
 user nginx;
 error_log /dev/stderr warn;
 worker_processes {{ $FRONTEND_WORKER_PROC }};
@@ -59,7 +61,7 @@ http {
 
     location ^~ /api {
       include uwsgi_params;
-      uwsgi_pass {{ $BACKEND_LISTEN_HOST }};
+      uwsgi_pass {{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }};
       uwsgi_param Host $http_host;
       uwsgi_param X-Real-IP $remote_addr;
       uwsgi_param X-Scheme $scheme;
@@ -73,7 +75,7 @@ http {
 
     location ^~ /admin {
       include uwsgi_params;
-      uwsgi_pass {{ $BACKEND_LISTEN_HOST }};
+      uwsgi_pass {{ $BACKEND_LISTEN_HOST }}:{{ $BACKEND_LISTEN_PORT }};
       uwsgi_param Host $http_host;
       uwsgi_param X-Real-IP $remote_addr;
       uwsgi_param X-Scheme $scheme;
@@ -87,9 +89,9 @@ http {
 
     location ^~ /events {
 {{- if isTrue $EVENTS_LISTEN_SSL }}
-      proxy_pass https://{{ $EVENTS_LISTEN_HOST }}/events;
+      proxy_pass https://{{ $EVENTS_LISTEN_HOST }}:{{ $EVENTS_LISTEN_PORT }}/events;
 {{- else }}
-      proxy_pass http://{{ $EVENTS_LISTEN_HOST }}/events;
+      proxy_pass http://{{ $EVENTS_LISTEN_HOST }}:{{ $EVENTS_LISTEN_PORT }}/events;
 {{- end }}
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
