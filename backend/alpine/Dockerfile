@@ -67,35 +67,24 @@ RUN pip3 install --no-cache-dir --install-option="--prefix=/usr/local" -r six.tx
 # Workaround Security Update
 RUN sed -i -e 's/^Django==.*/Django~=1.11.0/' /usr/local/backend/requirements.txt
 
-# Workaround Running Celery
-RUN sed -i -e 's/^celery==.*/celery[redis]==4.2.1/' /usr/local/backend/requirements.txt
-RUN sed -i -e 's/^kombu==.*/kombu==4.2.1/' /usr/local/backend/requirements.txt
-
 # Workaround Running uWSGI
 RUN sed -i -e '/^gunicorn==.*/d' /usr/local/backend/requirements.txt
 
-# Workaround Patch Update
-RUN sed -i -e 's/^psycopg2==.*/psycopg2==2.7.5/' /usr/local/backend/requirements.txt
-RUN sed -i -e 's/^redis==.*/redis==2.10.6/' /usr/local/backend/requirements.txt
-
-# Workaround Performance Tuning
-RUN sed -i -e 's/^CairoSVG==.*/CairoSVG==2.1.3/' /usr/local/backend/requirements.txt
-RUN sed -i -e 's/^PyJWT==.*/PyJWT==1.6.4/' /usr/local/backend/requirements.txt
-RUN sed -i -e 's/^amqp==.*/amqp==2.3.2/' /usr/local/backend/requirements.txt
-RUN sed -i -e 's/^lxml==.*/lxml==4.2.4/' /usr/local/backend/requirements.txt
-RUN sed -i -e 's/^serpy==.*/serpy==0.3.1/' /usr/local/backend/requirements.txt
-
-# Workaround Alpine Linux 3.8 & LibreSSL 2.7
-RUN sed -i -e 's/^cryptography==.*/cryptography==2.3.1/' /usr/local/backend/requirements.txt
+# Workaround Support Python 3.6 & 3.7 & 3.8
+RUN sed -i -e 's/^celery==.*/celery[redis]~=4.4.0/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^kombu==.*/kombu~=4.6.0/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^amqp==.*/amqp~=2.5.0/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^psycopg2-binary==.*/psycopg2-binary~=2.8.0/' /usr/local/backend/requirements.txt
+RUN sed -i -e 's/^serpy==.*/serpy~=0.3.0/' /usr/local/backend/requirements.txt
 
 # Install Require Python Module
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
+RUN env PYTHONPATH="$(python3 -c 'import site; print(site.getsitepackages()[0])')" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" -r /usr/local/backend/requirements.txt
 
 # Workaround Running uWSGI
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" uwsgi
+RUN env PYTHONPATH="$(python3 -c 'import site; print(site.getsitepackages()[0])')" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" uwsgi
 
 # Workaround Database Cache
-RUN env PYTHONPATH="/usr/local/lib/python3.6/site-packages" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" python-memcached
+RUN env PYTHONPATH="$(python3 -c 'import site; print(site.getsitepackages()[0])')" pip3 --no-cache-dir install --install-option="--prefix=/usr/local" python-memcached
 
 # Cleanup Python Cache
 RUN find /usr/lib -type d -name '__pycache__' | xargs rm -fr

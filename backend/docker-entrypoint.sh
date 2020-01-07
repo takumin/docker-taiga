@@ -145,6 +145,7 @@ if [ "$1" = 'taiga-backend' ]; then
   mkdir -m 0755 -p volume/static
   chown -R taiga:taiga volume/media
   chown -R taiga:taiga volume/static
+  chown -R taiga:taiga taiga/locale
 
   ##############################################################################
   # Initialize

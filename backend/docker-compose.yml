@@ -110,6 +110,7 @@ services:
       - SETUID
       - SETGID
       - FOWNER
+      - DAC_READ_SEARCH
     cap_drop:
       - ALL
     networks:
